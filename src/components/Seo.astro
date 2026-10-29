@@ -1,0 +1,148 @@
+---
+// All indexing metadata for a page: canonical, Open Graph, Twitter,
+// Google Scholar (Highwire citation_*), Dublin Core and JSON-LD.
+import { SITE, TYPES } from '../site.config.mjs';
+import { absUrl, projectNumber, projectUrl, topicLabel, isoDate, type Project } from '../lib/projects';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+  project?: Project;
+  jsonLd?: object[];
+  noindex?: boolean;
+}
+
+const { title, description, image, imageAlt, project, jsonLd = [], noindex = false } = Astro.props;
+const canonical = absUrl(Astro.url.pathname);
+const fullTitle = title === SITE.name ? title : `${title} — ${SITE.name}`;
+const ogImage = absUrl(image ?? '/og-default.png');
+
+const d = project?.data;
+const scholarDate = d ? isoDate(d.date).replaceAll('-', '/') : '';
+const allKeywords = d ? [...new Set([...d.topics.map(topicLabel), ...d.keywords])] : [];
+const license = d?.license ?? SITE.license;
+
+const breadcrumbs = project
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: absUrl('/') },
+        { '@type': 'ListItem', position: 2, name: TYPES[d!.type].plural, item: absUrl(`/${TYPES[d!.type].section}/`) },
+        { '@type': 'ListItem', position: 3, name: d!.title, item: canonical },
+      ],
+    }
+  : null;
+
+const schemaType = { report: 'Report', dashboard: 'WebApplication', project: 'CreativeWork' } as const;
+const projectLd = project
+  ? {
+      '@context': 'https://schema.org',
+      '@type': schemaType[d!.type],
+      '@id': canonical + '#work',
+      url: canonical,
+      name: d!.title,
+      headline: d!.title,
+      alternativeHeadline: d!.subtitle,
+      description: d!.description,
+      abstract: d!.abstract,
+      identifier: projectNumber(project),
+      ...(d!.type === 'report' ? { reportNumber: projectNumber(project) } : {}),
+      ...(d!.type === 'dashboard' ? { applicationCategory: 'DataVisualization', operatingSystem: 'Any (web browser)' } : {}),
+      genre: TYPES[d!.type].label,
+      isPartOf: d!.series ? { '@type': 'CreativeWorkSeries', name: d!.series } : undefined,
+      author: d!.authors.map((a) => ({ '@type': 'Person', name: a.name, jobTitle: a.role, url: a.url, affiliation: { '@type': 'Organization', name: SITE.publisher } })),
+      publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.publisherUrl },
+      datePublished: isoDate(d!.date),
+      dateModified: isoDate(d!.updated ?? d!.date),
+      inLanguage: d!.language,
+      keywords: allKeywords.join(', '),
+      about: d!.topics.map((t) => ({ '@type': 'Thing', name: topicLabel(t) })),
+      spatialCoverage: d!.regions.length ? d!.regions.map((r) => ({ '@type': 'Place', name: r })) : undefined,
+      image: ogImage,
+      isAccessibleForFree: true,
+      license: license === SITE.license ? SITE.licenseUrl : license,
+      sameAs: d!.doi ? `https://doi.org/${d!.doi}` : undefined,
+      encoding: d!.pdf ? { '@type': 'MediaObject', encodingFormat: 'application/pdf', contentUrl: absUrl(d!.pdf) } : undefined,
+      numberOfPages: d!.pages,
+      wordCount: d!.stats?.words,
+      hasPart: d!.chapters.length
+        ? d!.chapters.map((c, i) => ({ '@type': 'WebPageElement', position: i + 1, name: c.title, url: `${canonical}#${c.id}` }))
+        : undefined,
+    }
+  : null;
+
+const ld = [breadcrumbs, projectLd, ...jsonLd].filter(Boolean);
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, follow" />}
+<meta name="author" content={d ? d.authors.map((a) => a.name).join(', ') : SITE.defaultAuthor.name} />
+{allKeywords.length > 0 && <meta name="keywords" content={allKeywords.join(', ')} />}
+
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:type" content={project ? 'article' : 'website'} />
+<meta property="og:title" content={d?.title ?? title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+{imageAlt && <meta property="og:image:alt" content={imageAlt} />}
+<meta property="og:locale" content={SITE.locale} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={d?.title ?? title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{d && (
+  <>
+    <meta property="article:published_time" content={isoDate(d.date)} />
+    <meta property="article:modified_time" content={isoDate(d.updated ?? d.date)} />
+    {d.authors.map((a) => <meta property="article:author" content={a.name} />)}
+    <meta property="article:section" content={TYPES[d.type].plural} />
+    {d.topics.map((t) => <meta property="article:tag" content={topicLabel(t)} />)}
+
+    <!-- Google Scholar / Highwire Press -->
+    <meta name="citation_title" content={d.subtitle ? `${d.title}: ${d.subtitle}` : d.title} />
+    {d.authors.map((a) => {
+      const parts = a.name.trim().split(/\s+/);
+      const last = parts.pop();
+      return (
+        <>
+          <meta name="citation_author" content={`${last}, ${parts.join(' ')}`} />
+          <meta name="citation_author_institution" content={SITE.publisher} />
+        </>
+      );
+    })}
+    <meta name="citation_publication_date" content={scholarDate} />
+    <meta name="citation_online_date" content={scholarDate} />
+    <meta name="citation_publisher" content={SITE.publisher} />
+    {d.type === 'report' && <meta name="citation_technical_report_institution" content={SITE.publisher} />}
+    {d.type === 'report' && <meta name="citation_technical_report_number" content={projectNumber(project!)} />}
+    <meta name="citation_language" content={d.language} />
+    <meta name="citation_keywords" content={allKeywords.join('; ')} />
+    <meta name="citation_abstract_html_url" content={canonical} />
+    {d.pdf && <meta name="citation_pdf_url" content={absUrl(d.pdf)} />}
+    {d.pages && <meta name="citation_firstpage" content="1" />}
+    {d.pages && <meta name="citation_lastpage" content={String(d.pages)} />}
+    {d.doi && <meta name="citation_doi" content={d.doi} />}
+
+    <!-- Dublin Core -->
+    <meta name="DC.title" content={d.title} />
+    {d.authors.map((a) => <meta name="DC.creator" content={a.name} />)}
+    <meta name="DC.date" content={isoDate(d.date)} />
+    <meta name="DC.publisher" content={SITE.publisher} />
+    <meta name="DC.type" content={d.type === 'dashboard' ? 'InteractiveResource' : 'Text'} />
+    <meta name="DC.identifier" content={canonical} />
+    {d.doi && <meta name="DC.identifier" content={`https://doi.org/${d.doi}`} />}
+    <meta name="DC.language" content={d.language} />
+    <meta name="DC.rights" content={license} />
+    <meta name="DC.description" content={d.description} />
+    <meta name="DC.subject" content={allKeywords.join('; ')} />
+  </>
+)}
+
+{ld.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}

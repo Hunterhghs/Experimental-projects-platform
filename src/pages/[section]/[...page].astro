@@ -1,0 +1,39 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { SITE, TYPES } from '../../site.config.mjs';
+import { getProjects, type Project, type ProjectType } from '../../lib/projects';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const types = Object.keys(TYPES) as ProjectType[];
+  const paths = await Promise.all(
+    types.map(async (type) =>
+      paginate(await getProjects(type), { pageSize: SITE.pageSize, params: { section: TYPES[type].section }, props: { type } }),
+    ),
+  );
+  return paths.flat();
+}) satisfies GetStaticPaths;
+
+const { page, type } = Astro.props as { page: Page<Project>; type: ProjectType };
+const meta = TYPES[type];
+const title = page.currentPage > 1 ? `${meta.plural} — page ${page.currentPage}` : meta.plural;
+---
+
+<Base title={title} description={`${meta.blurb} ${page.total} ${meta.plural.toLowerCase()} from H Heuristics.`}>
+  <section class="wrap pagehead">
+    <p class="eyebrow">H Heuristics · {SITE.shortName}</p>
+    <h1>{meta.plural}</h1>
+    <p class="pagehead__lede">{meta.blurb}</p>
+    <p class="meta">{page.total} {page.total === 1 ? meta.label.toLowerCase() : meta.plural.toLowerCase()} · newest first · <a href="/search/">search all projects</a></p>
+  </section>
+  <section class="wrap block">
+    {page.data.length ? (
+      <div class="grid">{page.data.map((p) => <ProjectCard project={p} headingLevel="h2" />)}</div>
+    ) : (
+      <p class="empty">No {meta.plural.toLowerCase()} published yet. The first {meta.label.toLowerCase()} is in preparation.</p>
+    )}
+    <Pagination page={page} />
+  </section>
+</Base>

@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ReportView from '../../components/views/ReportView.astro';
+import DashboardView from '../../components/views/DashboardView.astro';
+import { getProjects, sectionOf, related, type Project } from '../../lib/projects';
+
+export const getStaticPaths = (async () => {
+  const all = await getProjects();
+  return all.map((p) => ({ params: { section: sectionOf(p.data.type), slug: p.id }, props: { project: p, all } }));
+}) satisfies GetStaticPaths;
+
+const { project, all } = Astro.props as { project: Project; all: Project[] };
+const { Content } = await render(project);
+const rel = related(project, all);
+const d = project.data;
+---
+
+<Base title={d.title} description={d.description} image={d.cover} imageAlt={d.coverAlt} project={project} bodyClass={`is-${d.type}`}>
+  {d.type === 'dashboard'
+    ? <DashboardView project={project} related={rel}><Content /></DashboardView>
+    : <ReportView project={project} related={rel}><Content /></ReportView>}
+</Base>

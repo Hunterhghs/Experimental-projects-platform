@@ -1,0 +1,59 @@
+---
+import { SITE, TYPES } from '../../site.config.mjs';
+import Citation from '../Citation.astro';
+import ProjectCard from '../ProjectCard.astro';
+import { projectNumber, fmtDate, topicLabel, type Project } from '../../lib/projects';
+interface Props { project: Project; related: Project[] }
+const { project: p, related } = Astro.props;
+const d = p.data;
+const t = TYPES[d.type];
+---
+
+<article class="dash" data-pagefind-body>
+  <header class="wrap dash__head">
+    <nav class="crumbs crumbs--light" aria-label="Breadcrumb" data-pagefind-ignore>
+      <a href="/">Home</a> <span>/</span> <a href={`/${t.section}/`}>{t.plural}</a>
+    </nav>
+    <p class="eyebrow">{t.label} · № {projectNumber(p)} · {fmtDate(d.date)}
+      {d.status === 'experimental' && <span class="badge">Experimental</span>}</p>
+    <h1 data-pagefind-meta="title">{d.title}</h1>
+    {d.subtitle && <p class="lead__subtitle">{d.subtitle}</p>}
+    <p class="pagehead__lede">{d.description}</p>
+    {d.embed && (
+      <p class="actions" data-pagefind-ignore>
+        <a class="btn btn--primary" href={d.embed}>Open full screen ↗</a>
+      </p>
+    )}
+  </header>
+
+  {d.embed && (
+    <div class="dash__frame" data-pagefind-ignore>
+      <iframe src={d.embed} title={d.title} loading="lazy" allow="fullscreen; clipboard-write"></iframe>
+    </div>
+  )}
+
+  <div class="wrap dash__body">
+    <div class="prose"><slot /></div>
+  </div>
+
+  <div class="wrap rfoot" data-pagefind-ignore>
+    <div class="rfoot__topics">
+      <h2 class="label">Topics</h2>
+      <ul class="chips">{d.topics.map((tp) => <li><a class="chip" href={`/topics/${tp}/`}>{topicLabel(tp)}</a></li>)}</ul>
+      <p class="license">Published open access under <a href={SITE.licenseUrl}>{d.license ?? SITE.license}</a>.</p>
+    </div>
+    <Citation project={p} />
+  </div>
+
+  <span hidden data-pagefind-filter="type">{t.label}</span>
+  {d.topics.map((tp) => <span hidden data-pagefind-filter="topic">{topicLabel(tp)}</span>)}
+  <span hidden data-pagefind-filter="year">{d.date.getUTCFullYear()}</span>
+  <span hidden data-pagefind-meta="number">{projectNumber(p)}</span>
+</article>
+
+{related.length > 0 && (
+  <section class="wrap block">
+    <div class="block__head"><h2 class="label">Related</h2></div>
+    <div class="grid">{related.map((r) => <ProjectCard project={r} />)}</div>
+  </section>
+)}

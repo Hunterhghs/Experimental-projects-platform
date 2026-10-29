@@ -1,0 +1,56 @@
+---
+import { SITE } from '../site.config.mjs';
+import { absUrl, projectNumber, projectUrl, type Project } from '../lib/projects';
+interface Props { project: Project }
+const { project: p } = Astro.props;
+const d = p.data;
+const year = d.date.getUTCFullYear();
+const url = absUrl(projectUrl(p));
+const fullTitle = d.subtitle ? `${d.title}: ${d.subtitle}` : d.title;
+const apaAuthors = d.authors
+  .map((a) => {
+    const parts = a.name.split(/\s+/);
+    const last = parts.pop();
+    return `${last}, ${parts.map((n) => n[0] + '.').join(' ')}`;
+  })
+  .join(', ');
+const kind = d.type === 'report' ? 'Report' : d.type === 'dashboard' ? 'Interactive dashboard' : 'Project';
+const apa = `${apaAuthors} (${year}). ${fullTitle} (${kind} No. ${projectNumber(p)}). ${SITE.publisher}. ${d.doi ? `https://doi.org/${d.doi}` : url}`;
+const key = `${d.authors[0].name.split(/\s+/).pop()!.toLowerCase()}${year}${p.id.split('-').slice(0, 2).join('')}`;
+const bib = `@techreport{${key},
+  author      = {${d.authors.map((a) => a.name).join(' and ')}},
+  title       = {{${fullTitle}}},
+  institution = {${SITE.publisher}},
+  number      = {${projectNumber(p)}},
+  type        = {${kind}},
+  year        = {${year}},
+  url         = {${url}},${d.doi ? `\n  doi         = {${d.doi}},` : ''}
+  note        = {Open access, ${d.license ?? SITE.license}}
+}`;
+---
+
+<section class="cite" id="cite" aria-labelledby="cite-h">
+  <h2 id="cite-h" class="label">How to cite</h2>
+  <div class="cite__block">
+    <p class="cite__fmt">APA</p>
+    <p class="cite__text" data-copy-src>{apa}</p>
+    <button type="button" class="btn btn--sm" data-copy>Copy</button>
+  </div>
+  <div class="cite__block">
+    <p class="cite__fmt">BibTeX</p>
+    <pre class="cite__text" data-copy-src>{bib}</pre>
+    <button type="button" class="btn btn--sm" data-copy>Copy</button>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const src = btn.parentElement?.querySelector('[data-copy-src]');
+      if (!src) return;
+      await navigator.clipboard.writeText(src.textContent ?? '');
+      btn.textContent = 'Copied';
+      setTimeout(() => (btn.textContent = 'Copy'), 1600);
+    });
+  });
+</script>

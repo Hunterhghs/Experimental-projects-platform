@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import { TOPICS } from '../../data/topics.mjs';
+import { getProjects } from '../../lib/projects';
+const all = await getProjects();
+const topics = TOPICS.map((t) => ({ ...t, count: all.filter((p) => p.data.topics.includes(t.id)).length }));
+---
+
+<Base title="Topics" description="Browse H Heuristics reports, dashboards and projects by topic.">
+  <section class="wrap pagehead">
+    <p class="eyebrow">Browse</p>
+    <h1>Topics</h1>
+    <p class="pagehead__lede">Every project is tagged against one controlled vocabulary, so related work stays together as the library grows.</p>
+  </section>
+  <section class="wrap block">
+    <ul class="topic-list">
+      {topics.map((t) => (
+        <li class={t.count ? '' : 'is-empty'}>
+          <a href={t.count ? `/topics/${t.id}/` : undefined}>
+            <span class="topic-list__name">{t.label}</span>
+            <span class="topic-list__desc">{t.description}</span>
+            <span class="topic-list__count">{t.count} {t.count === 1 ? 'project' : 'projects'}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

@@ -1,0 +1,134 @@
+---
+import { SITE, TYPES } from '../../site.config.mjs';
+import Citation from '../Citation.astro';
+import ProjectCard from '../ProjectCard.astro';
+import { projectNumber, fmtDate, topicLabel, absUrl, projectUrl, type Project } from '../../lib/projects';
+interface Props { project: Project; related: Project[] }
+const { project: p, related } = Astro.props;
+const d = p.data;
+const t = TYPES[d.type];
+const shareUrl = absUrl(projectUrl(p));
+---
+
+<article class="report" data-pagefind-body>
+  <header class="rhead">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+        <a href="/">Home</a> <span>/</span> <a href={`/${t.section}/`}>{t.plural}</a>
+      </nav>
+      <p class="rhead__eyebrow">
+        H Heuristics · {d.series ?? t.label} · № {projectNumber(p)} · {fmtDate(d.date, 'month')}
+        {d.status === 'experimental' && <span class="badge badge--dark">Experimental</span>}
+      </p>
+      <h1 class="rhead__title" data-pagefind-meta="title">{d.title}</h1>
+      {d.subtitle && <p class="rhead__subtitle">{d.subtitle}</p>}
+      {d.abstract && <p class="rhead__abstract">{d.abstract}</p>}
+      <dl class="rhead__meta">
+        <div><dt>Author</dt><dd>{d.authors.map((a) => a.name).join(', ')}</dd></div>
+        <div><dt>Institution</dt><dd>{SITE.publisher}</dd></div>
+        <div><dt>Published</dt><dd><time datetime={d.date.toISOString()}>{fmtDate(d.date)}</time></dd></div>
+        <div><dt>{t.label} №</dt><dd>{projectNumber(p)}</dd></div>
+        {d.stats && <div><dt>Reading time</dt><dd>{d.stats.readingMinutes} min</dd></div>}
+        {d.pages && <div><dt>PDF edition</dt><dd>{d.pages} pages</dd></div>}
+      </dl>
+      <p class="actions" data-pagefind-ignore>
+        {d.pdf && <a class="btn btn--gold" href={d.pdf} download>Download PDF</a>}
+        {d.externalUrl && <a class="btn btn--ghost" href={d.externalUrl}>Open project ↗</a>}
+        <a class="btn btn--ghost" href="#cite">Cite</a>
+        <button type="button" class="btn btn--ghost" data-share={shareUrl} data-title={d.title}>Share</button>
+      </p>
+    </div>
+  </header>
+
+  {d.highlights.length > 0 && (
+    <section class="wrap highlights" aria-labelledby="hl-h">
+      <h2 id="hl-h" class="label">Key insights</h2>
+      <ol>{d.highlights.slice(0, 6).map((h) => <li>{h}</li>)}</ol>
+      {d.highlights.length > 6 && (
+        <details>
+          <summary>All {d.highlights.length} chapter insights</summary>
+          <ol start={7}>{d.highlights.slice(6).map((h) => <li>{h}</li>)}</ol>
+        </details>
+      )}
+    </section>
+  )}
+
+  <div class={`wrap rbody ${d.chapters.length ? 'has-toc' : ''}`}>
+    {d.chapters.length > 0 && (
+      <aside class="toc" data-pagefind-ignore>
+        <details open>
+          <summary class="label">Contents</summary>
+          <ol>
+            {d.chapters.map((c) => (
+              <li><a href={`#${c.id}`}>{c.number && <span>{c.number}</span>}{c.title}</a></li>
+            ))}
+          </ol>
+        </details>
+      </aside>
+    )}
+    <div class="prose">
+      <slot />
+    </div>
+  </div>
+
+  <div class="wrap rfoot" data-pagefind-ignore>
+    <div class="rfoot__topics">
+      <h2 class="label">Topics</h2>
+      <ul class="chips">{d.topics.map((tp) => <li><a class="chip" href={`/topics/${tp}/`}>{topicLabel(tp)}</a></li>)}</ul>
+      {d.keywords.length > 0 && (
+        <>
+          <h2 class="label">Keywords</h2>
+          <p class="keywords">{d.keywords.join(' · ')}</p>
+        </>
+      )}
+      <p class="license">Published open access under <a href={SITE.licenseUrl}>{d.license ?? SITE.license}</a>. © {d.date.getUTCFullYear()} {SITE.publisher}.</p>
+    </div>
+    <Citation project={p} />
+  </div>
+
+  <span hidden data-pagefind-filter="type">{t.label}</span>
+  {d.topics.map((tp) => <span hidden data-pagefind-filter="topic">{topicLabel(tp)}</span>)}
+  <span hidden data-pagefind-filter="year">{d.date.getUTCFullYear()}</span>
+  <span hidden data-pagefind-meta="number">{projectNumber(p)}</span>
+  {d.cover && <span hidden data-pagefind-meta="image">{d.cover}</span>}
+</article>
+
+{related.length > 0 && (
+  <section class="wrap block" data-pagefind-ignore>
+    <div class="block__head"><h2 class="label">Related</h2></div>
+    <div class="grid">{related.map((r) => <ProjectCard project={r} />)}</div>
+  </section>
+)}
+
+<script>
+  // Share button: native share sheet where available, otherwise copy link.
+  document.querySelectorAll<HTMLButtonElement>('[data-share]').forEach((b) =>
+    b.addEventListener('click', async () => {
+      const url = b.dataset.share!;
+      if (navigator.share) return navigator.share({ title: b.dataset.title, url }).catch(() => {});
+      await navigator.clipboard.writeText(url);
+      b.textContent = 'Link copied';
+      setTimeout(() => (b.textContent = 'Share'), 1600);
+    }),
+  );
+
+  // Highlight the chapter currently in view: the last heading above the top quarter of the viewport.
+  const toc = document.querySelector<HTMLElement>('.toc');
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+  const targets = links.map((a) => document.getElementById(a.hash.slice(1))).filter((el): el is HTMLElement => !!el);
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const line = window.innerHeight * 0.25;
+    let idx = -1;
+    targets.forEach((el, i) => { if (el.getBoundingClientRect().top <= line) idx = i; });
+    links.forEach((a, i) => (i === idx ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
+    // Keep the active entry visible inside the sticky sidebar (no-op when the TOC isn't scrollable).
+    const a = links[idx];
+    if (a && toc && toc.scrollHeight > toc.clientHeight) toc.scrollTop = a.offsetTop - toc.clientHeight / 2;
+  };
+  if (targets.length) {
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+</script>

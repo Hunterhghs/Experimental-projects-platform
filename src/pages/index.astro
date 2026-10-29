@@ -1,0 +1,99 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { SITE, TYPES } from '../site.config.mjs';
+import { TOPICS } from '../data/topics.mjs';
+import { getProjects, projectUrl, projectNumber, fmtDate, topicLabel, type ProjectType } from '../lib/projects';
+
+const all = await getProjects();
+const lead = all.find((p) => p.data.featured) ?? all[0];
+const byType = (Object.keys(TYPES) as ProjectType[]).map((t) => ({
+  type: t,
+  meta: TYPES[t],
+  items: all.filter((p) => p.data.type === t),
+}));
+const usedTopics = TOPICS.map((t) => ({ ...t, count: all.filter((p) => p.data.topics.includes(t.id)).length })).filter((t) => t.count > 0);
+const since = all.length ? Math.min(...all.map((p) => p.data.date.getUTCFullYear())) : new Date().getFullYear();
+
+const ld = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.name,
+  url: SITE.url,
+  publisher: { '@type': 'Organization', name: SITE.publisher, url: SITE.publisherUrl },
+  potentialAction: { '@type': 'SearchAction', target: `${SITE.url}/search/?q={query}`, 'query-input': 'required name=query' },
+}];
+---
+
+<Base title={SITE.name} jsonLd={ld}>
+  <section class="wrap hero">
+    <div class="hero__rule">
+      <span class="eyebrow">H Heuristics · {SITE.tagline}</span>
+      {lead && <span class="eyebrow eyebrow--muted">Latest № {projectNumber(lead)} · {fmtDate(lead.data.date)}</span>}
+    </div>
+    <h1 class="hero__title">Experimental Projects</h1>
+    <div class="hero__sub">
+      <p>Reports, interactive dashboards and analytical experiments on systemic risk, climate, public health, development and the energy transition.</p>
+      <dl class="stats">
+        {byType.map((t) => <div><dt>{t.meta.plural}</dt><dd>{t.items.length}</dd></div>)}
+        <div><dt>Topics</dt><dd>{usedTopics.length}</dd></div>
+        <div><dt>Since</dt><dd>{since}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  {lead && (
+    <section class="wrap lead">
+      <div class="lead__main">
+        <p class="meta"><span class="tag-dark">Latest {TYPES[lead.data.type].label.toLowerCase()}</span> № {projectNumber(lead)} · {fmtDate(lead.data.date)}{lead.data.stats ? ` · ${lead.data.stats.readingMinutes} min read` : ''}</p>
+        <h2 class="lead__title"><a href={projectUrl(lead)}>{lead.data.title}</a></h2>
+        {lead.data.subtitle && <p class="lead__subtitle">{lead.data.subtitle}</p>}
+        <p class="lead__abstract dropcap">{lead.data.abstract ?? lead.data.description}</p>
+        <p class="actions">
+          <a class="btn btn--primary" href={projectUrl(lead)}>Read the {TYPES[lead.data.type].label.toLowerCase()}</a>
+          {lead.data.pdf && <a class="btn" href={lead.data.pdf}>Download PDF</a>}
+        </p>
+      </div>
+      <aside class="lead__panel">
+        <span class="lead__panel-num" aria-hidden="true">{lead.data.number.split('-')[1].replace(/^0+(?=\d{2})/, '')}</span>
+        <p class="label label--gold">At a glance</p>
+        <dl>
+          {lead.data.chapters.filter((c) => c.number).length > 0 && <div><dt>{lead.data.chapters.filter((c) => c.number).length}</dt><dd>Chapters of analysis</dd></div>}
+          {lead.data.stats?.figures ? <div><dt>{lead.data.stats.figures}</dt><dd>Exhibits and charts</dd></div> : null}
+          {lead.data.stats?.tables ? <div><dt>{lead.data.stats.tables}</dt><dd>Data tables</dd></div> : null}
+          {lead.data.stats?.references ? <div><dt>{lead.data.stats.references}</dt><dd>Cited sources</dd></div> : null}
+          {lead.data.pages && <div><dt>{lead.data.pages} pp</dt><dd>Full PDF edition</dd></div>}
+        </dl>
+        <ul class="chips chips--dark">
+          {lead.data.topics.map((t) => <li><a class="chip" href={`/topics/${t}/`}>{topicLabel(t)}</a></li>)}
+        </ul>
+      </aside>
+    </section>
+  )}
+
+  {byType.map(({ meta, items }) => (
+    <section class="wrap block">
+      <div class="block__head">
+        <h2 class="label">Recent {meta.plural.toLowerCase()}</h2>
+        <a class="label label--link" href={`/${meta.section}/`}>{items.length ? `All ${items.length} ${meta.plural.toLowerCase()} →` : `${meta.plural} →`}</a>
+      </div>
+      {items.length ? (
+        <div class="grid">{items.slice(0, 6).map((p) => <ProjectCard project={p} />)}</div>
+      ) : (
+        <p class="empty">{meta.blurb} The first {meta.label.toLowerCase()} is in preparation.</p>
+      )}
+    </section>
+  ))}
+
+  {usedTopics.length > 0 && (
+    <section class="wrap block">
+      <div class="block__head">
+        <h2 class="label">Browse by topic</h2>
+        <a class="label label--link" href="/topics/">All topics →</a>
+      </div>
+      <ul class="chips chips--lg">
+        {usedTopics.map((t) => <li><a class="chip" href={`/topics/${t.id}/`}>{t.label} <span>{t.count}</span></a></li>)}
+      </ul>
+    </section>
+  )}
+</Base>

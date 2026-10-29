@@ -1,0 +1,37 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import Base from '../../../layouts/Base.astro';
+import ProjectRow from '../../../components/ProjectRow.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { SITE } from '../../../site.config.mjs';
+import { TOPICS } from '../../../data/topics.mjs';
+import { getProjects, type Project } from '../../../lib/projects';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const all = await getProjects();
+  // Only topics with at least one project get a page (keeps the sitemap free of empty pages).
+  return TOPICS.flatMap((topic) => {
+    const items = all.filter((p) => p.data.topics.includes(topic.id));
+    return items.length ? paginate(items, {
+      pageSize: SITE.pageSize,
+      params: { topic: topic.id },
+      props: { topic },
+    }) : [];
+  });
+}) satisfies GetStaticPaths;
+
+const { page, topic } = Astro.props as { page: Page<Project>; topic: (typeof TOPICS)[number] };
+---
+
+<Base title={`${topic.label}${page.currentPage > 1 ? ` — page ${page.currentPage}` : ''}`} description={`${topic.description} Reports, dashboards and projects from H Heuristics.`}>
+  <section class="wrap pagehead">
+    <p class="eyebrow"><a href="/topics/">Topics</a></p>
+    <h1>{topic.label}</h1>
+    <p class="pagehead__lede">{topic.description}</p>
+    <p class="meta">{page.total} {page.total === 1 ? 'project' : 'projects'}</p>
+  </section>
+  <section class="wrap block">
+    {page.data.map((p) => <ProjectRow project={p} />)}
+    <Pagination page={page} />
+  </section>
+</Base>

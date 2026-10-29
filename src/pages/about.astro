@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE, TYPES } from '../site.config.mjs';
+---
+
+<Base title="About" description={`About ${SITE.name}: how H Heuristics publishes reports, dashboards and experimental projects.`}>
+  <section class="wrap pagehead">
+    <p class="eyebrow">About</p>
+    <h1>About this platform</h1>
+    <p class="pagehead__lede">{SITE.name} is where H Heuristics publishes its working output: long-form reports, interactive dashboards and experimental analytical projects.</p>
+  </section>
+  <section class="wrap block prose prose--page">
+    <h2>What is published here</h2>
+    <ul>
+      {Object.values(TYPES).map((t) => <li><strong>{t.plural}.</strong> {t.blurb}</li>)}
+    </ul>
+    <h2>Identifiers and citation</h2>
+    <p>Each project carries a permanent identifier of the form <code>{SITE.numberPrefix}-YYYY-NNN</code>, a stable URL and a suggested citation in APA and BibTeX formats. Report pages expose Google Scholar, Dublin Core and schema.org metadata so they can be indexed by search engines and academic databases.</p>
+    <h2>Open access</h2>
+    <p>Unless a project states otherwise, content is published under the <a href={SITE.licenseUrl}>{SITE.license}</a> licence. You may share and adapt it with attribution to {SITE.publisher}.</p>
+    <h2>Author</h2>
+    <p>{SITE.defaultAuthor.name}, {SITE.defaultAuthor.role}. More at <a href={SITE.publisherUrl}>hheuristics.com</a>.</p>
+  </section>
+</Base>

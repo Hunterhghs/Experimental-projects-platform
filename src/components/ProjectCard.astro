@@ -1,0 +1,24 @@
+---
+import { TYPES } from '../site.config.mjs';
+import { projectUrl, projectNumber, fmtDate, topicLabel, type Project } from '../lib/projects';
+interface Props { project: Project; headingLevel?: 'h2' | 'h3' }
+const { project: p, headingLevel: H = 'h3' } = Astro.props;
+const d = p.data;
+const seq = d.number.split('-')[1].replace(/^0+(?=\d{2})/, '');
+const tones = ['navy', 'umber', 'slate', 'ink', 'indigo'];
+const tone = tones[parseInt(d.number.replace('-', ''), 10) % tones.length];
+---
+
+<article class="card">
+  <a class={`card__tile tone-${tone}`} href={projectUrl(p)} tabindex="-1" aria-hidden="true">
+    {d.cover && <img src={d.cover} alt="" loading="lazy" decoding="async" />}
+    <span class="card__num">{seq}</span>
+    <span class="card__topic">{TYPES[d.type].label} · {topicLabel(d.topics[0])}</span>
+  </a>
+  <p class="meta">
+    № {projectNumber(p)} · {fmtDate(d.date, 'month')}{d.stats ? ` · ${d.stats.readingMinutes} min` : ''}
+    {d.status === 'experimental' && <span class="badge">Experimental</span>}
+  </p>
+  <H class="card__title"><a href={projectUrl(p)}>{d.title}</a></H>
+  <p class="card__desc">{d.description}</p>
+</article>

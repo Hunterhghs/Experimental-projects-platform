@@ -1,0 +1,26 @@
+---
+import { SITE, TYPES } from '../site.config.mjs';
+const path = Astro.url.pathname;
+const nav = [
+  ...Object.values(TYPES).map((t) => ({ href: `/${t.section}/`, label: t.plural })),
+  { href: '/topics/', label: 'Topics' },
+  { href: '/about/', label: 'About' },
+];
+---
+
+<header class="masthead">
+  <div class="wrap masthead__inner">
+    <a class="brand" href="/" aria-label={`${SITE.name} home`}>
+      <span class="brand__h">H Heuristics</span> <span class="brand__p">{SITE.shortName}</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      {nav.map((n) => (
+        <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>
+      ))}
+      <a class="nav__search" href="/search/" aria-label="Search" aria-current={path.startsWith('/search') ? 'page' : undefined}>
+        <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Search</span>
+      </a>
+    </nav>
+  </div>
+</header>

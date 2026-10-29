@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Search" description="Search every H Heuristics report, dashboard and project." noindex>
+  <section class="wrap pagehead">
+    <p class="eyebrow">Search</p>
+    <h1>Search the library</h1>
+    <p class="pagehead__lede">Full-text search across every report, dashboard and project. Filter by type, topic and year.</p>
+  </section>
+  <section class="wrap block">
+    <div id="search"></div>
+    <noscript><p class="empty">Search needs JavaScript. You can browse by <a href="/topics/">topic</a> instead.</p></noscript>
+  </section>
+  <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+  <script is:inline src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!window.PagefindUI) {
+        document.getElementById('search').innerHTML = '<p class="empty">The search index is built during <code>npm run build</code>; it is not available in dev mode.</p>';
+        return;
+      }
+      const ui = new PagefindUI({ element: '#search', showSubResults: true, showImages: false, resetStyles: false });
+      const q = new URLSearchParams(location.search).get('q');
+      if (q) ui.triggerSearch(q);
+    });
+  </script>
+</Base>

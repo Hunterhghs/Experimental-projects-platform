@@ -1,0 +1,30 @@
+{
+  "name": "h-heuristics-projects",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "H Heuristics — publishing platform for research reports, experimental dashboards and projects.",
+  "engines": {
+    "node": ">=20.3"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "ingest": "node scripts/ingest.mjs",
+    "new": "node scripts/new.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/newsreader": "^5.3.0",
+    "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "mammoth": "^1.13.0",
+    "node-html-parser": "^7.1.0",
+    "pagefind": "^1.5.2"
+  }
+}

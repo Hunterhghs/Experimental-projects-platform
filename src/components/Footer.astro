@@ -1,0 +1,41 @@
+---
+import { SITE, TYPES } from '../site.config.mjs';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div>
+      <p class="footer__brand"><span class="brand__h">H Heuristics</span> <span class="brand__p">{SITE.shortName}</span></p>
+      <p class="footer__desc">{SITE.description}</p>
+    </div>
+    <div>
+      <p class="label">Browse</p>
+      <ul>
+        {Object.values(TYPES).map((t) => <li><a href={`/${t.section}/`}>{t.plural}</a></li>)}
+        <li><a href="/topics/">Topics</a></li>
+        <li><a href="/search/">Search</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="label">H Heuristics</p>
+      <ul>
+        <li><a href={SITE.publisherUrl}>hheuristics.com</a></li>
+        {SITE.sister.map((s) => <li><a href={s.url}>{s.label}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <p class="label">Machine-readable</p>
+      <ul>
+        <li><a href="/rss.xml">RSS feed</a></li>
+        <li><a href="/catalog.json">Catalog (JSON)</a></li>
+        <li><a href="/sitemap-index.xml">Sitemap</a></li>
+        <li><a href="/llms.txt">llms.txt</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer__base">
+    <span>© {year} {SITE.publisher} · Hunter Hughes</span>
+    <span>Open access · <a href={SITE.licenseUrl}>{SITE.license}</a> unless stated otherwise</span>
+  </div>
+</footer>
