@@ -48,21 +48,9 @@ stats:
   references: 14
 ---
 
-<div class="rtop-toc">
-  <div class="rtop-toc-label">Report Navigation</div>
-  <ol class="rtop-toc-list">
-    <li><a href="#chapter-01"><span class="rtop-toc-num">01</span> The Two-Way Engine: When Climate and Air Pollution Collide</a></li>
-    <li><a href="#chapter-02"><span class="rtop-toc-num">02</span> The Ozone Penalty: Why Hotter Air Creates Toxic Smog</a></li>
-    <li><a href="#chapter-03"><span class="rtop-toc-num">03</span> The Wildfire Surge: Drier Forests, Massive Smoke Pulses, and Carbon Releases</a></li>
-    <li><a href="#chapter-04"><span class="rtop-toc-num">04</span> The Aerosol Masking Dilemma: Cooling Shields vs. Soot Heating</a></li>
-    <li><a href="#chapter-05"><span class="rtop-toc-num">05</span> Global Feedbacks vs. Local Realities: A Framework for Policy Action</a></li>
-    <li><a href="#references"><span class="rtop-toc-num">—</span> References</a></li>
-  </ol>
-</div>
-
 <h2 id="chapter-01">Chapter 1: The Two-Way Engine: When Climate and Air Pollution Collide</h2>
 
-For decades, environmental policy has treated global climate change and urban air pollution as separate crises. Climate change was viewed as a long-term planetary warming problem caused by invisible greenhouse gases like carbon dioxide ($CO<sub>2</sub>$), while air pollution was viewed as an immediate, local public health hazard caused by visible smog, vehicle exhaust, and industrial particulates ($PM<sub>2.5</sub>$).
+For decades, environmental policy has treated global climate change and urban air pollution as separate crises. Climate change was viewed as a long-term planetary warming problem caused by invisible greenhouse gases like carbon dioxide (CO<sub>2</sub>), while air pollution was viewed as an immediate, local public health hazard caused by visible smog, vehicle exhaust, and industrial particulates (PM<sub>2.5</sub>).
 
 In the modern polycrisis, this artificial division has completely collapsed. The Earth’s atmosphere does not maintain separate compartments for "climate" and "pollution." Instead, they form a tightly coupled, bidirectional feedback engine:
 
