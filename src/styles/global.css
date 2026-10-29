@@ -32,7 +32,7 @@
 .t-project { --type: var(--indigo); }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 24px; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 24px; scroll-behavior: smooth; }
 body {
   margin: 0;
   background: var(--paper);
@@ -304,14 +304,29 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--paper-2); 
 .toc--sticky { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; scrollbar-width: thin; }
 @media (max-width: 1000px) { .toc--sticky { position: static; max-height: none; } }
 
-/* ---------- Digital report body ---------- */
-.rbody { padding-top: 56px; padding-bottom: 24px; }
-.rbody.has-toc { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 56px; align-items: start; }
-@media (max-width: 1000px) { .rbody.has-toc { grid-template-columns: 1fr; gap: 28px; } }
+/* ---------- Digital report top TOC ---------- */
+.rtop-toc { background: var(--card); border: 1px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); max-width: 800px; margin: 0 auto 52px; }
+.rtop-toc__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 18px; background: var(--ink); color: var(--paper); }
+.rtop-toc__label { font-family: var(--mono); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--paper); }
+.rtop-toc__meta { font-family: var(--mono); font-size: 0.68rem; color: #c9cbc4; letter-spacing: 0.04em; }
+.rtop-toc__list { list-style: none; padding: 0; margin: 0; }
+.rtop-toc__list li { border-bottom: 1px solid var(--line-2); }
+.rtop-toc__list li:last-child { border-bottom: 0; }
+.rtop-toc a { display: grid; grid-template-columns: 32px 1fr auto; gap: 14px; align-items: baseline; padding: 13px 18px; text-decoration: none; color: var(--ink-2); transition: background 0.12s ease, color 0.12s ease; }
+.rtop-toc a:not(:has(.rtop-toc__n)) .rtop-toc__t { grid-column: 1 / 3; }
+.rtop-toc a:hover { background: #fafaf7; color: var(--ink); }
+.rtop-toc__n { font-family: var(--mono); font-size: 0.74rem; font-weight: 600; color: var(--signal); padding-top: 1px; }
+.rtop-toc__t { font-family: var(--sans); font-size: 0.95rem; font-weight: 600; line-height: 1.35; color: var(--ink); }
+.rtop-toc__arr { font-family: var(--mono); font-size: 0.85rem; color: var(--ink-3); transition: transform 0.15s ease, color 0.15s ease; }
+.rtop-toc a:hover .rtop-toc__arr { color: var(--signal); transform: translateY(2px); }
 
-.prose { max-width: 760px; font-family: var(--serif); font-size: 1.14rem; line-height: 1.72; color: #1f2329; }
+/* ---------- Digital report body ---------- */
+.rbody { padding-top: 48px; padding-bottom: 24px; }
+.rbody.has-toc { display: block; }
+
+.prose { max-width: 800px; margin-inline: auto; font-family: var(--serif); font-size: 1.14rem; line-height: 1.72; color: #1f2329; }
 .prose > * + * { margin-top: 1.05em; }
-.prose h2 { font-size: clamp(1.6rem, 3.2vw, 2.2rem); font-stretch: 110%; font-weight: 800; letter-spacing: -0.02em; margin-top: 2.6em; padding-top: 0.9em; border-top: 2px solid var(--ink); }
+.prose h2 { font-size: clamp(1.6rem, 3.2vw, 2.2rem); font-stretch: 110%; font-weight: 800; letter-spacing: -0.02em; margin-top: 2.6em; padding-top: 0.9em; border-top: 2px solid var(--ink); scroll-margin-top: 28px; }
 .prose h2:first-child { margin-top: 0; }
 .prose h2 .chapter-num { display: block; font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; color: var(--signal); margin-bottom: 12px; }
 .prose h3 { font-size: 1.28rem; font-weight: 700; margin-top: 2em; display: flex; gap: 10px; align-items: baseline; }
@@ -405,7 +420,7 @@ pre.cite__text { font-family: var(--mono); font-size: 0.74rem; white-space: pre-
 #search mark { background: #ffd9cc; }
 
 @media print {
-  .strip, .masthead, .footer, .toc, .actions, .cite .btn, .grid, .reader { display: none !important; }
+  .strip, .masthead, .footer, .toc, .rtop-toc, .actions, .cite .btn, .grid, .reader { display: none !important; }
   .gridpaper { background: none; }
   .rbody.has-toc { display: block; }
 }

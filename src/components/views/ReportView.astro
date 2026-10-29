@@ -120,13 +120,22 @@ const numbered = d.chapters.filter((c) => c.number);
       </div>
     </section>
   ) : (
-    <div class={`wrap rbody ${d.chapters.length ? 'has-toc' : ''}`}>
+    <div class="wrap rbody">
       {d.chapters.length > 0 && (
-        <nav class="toc toc--sticky" aria-label="Chapters" data-pagefind-ignore>
-          <p class="toc__label">Contents</p>
-          <ol>
+        <nav class="rtop-toc" aria-label="Table of contents" data-pagefind-ignore>
+          <div class="rtop-toc__head">
+            <span class="rtop-toc__label">Contents</span>
+            <span class="rtop-toc__meta">{d.chapters.length} chapters{d.stats?.readingMinutes ? ` · ${d.stats.readingMinutes} min read` : ''}</span>
+          </div>
+          <ol class="rtop-toc__list">
             {d.chapters.map((c) => (
-              <li><a href={`#${c.id}`}>{c.number && <span class="toc__n">{c.number}</span>}<span class="toc__t">{c.title}</span></a></li>
+              <li>
+                <a href={`#${c.id}`}>
+                  {c.number && <span class="rtop-toc__n">{c.number}</span>}
+                  <span class="rtop-toc__t">{c.title}</span>
+                  <span class="rtop-toc__arr" aria-hidden="true">↓</span>
+                </a>
+              </li>
             ))}
           </ol>
         </nav>
