@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Human Exposure to the Climate–Pollution Polycrisis · 2000–2100</title>
+<meta name="description" content="Interactive dashboard modelling compound human exposure to air pollution, extreme heat and flood risk across the 21st century under three scenarios.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --paper: #f2f2ee;
+    --paper-2: #e8e8e2;
+    --card: #ffffff;
+    --ink: #0d0f12;
+    --ink-2: #353a42;
+    --ink-3: #6a6f78;
+    --line: #d3d4cd;
+    --grid: rgba(13, 15, 18, 0.05);
+    --teal: #0e6b67;      /* air pollution */
+    --signal: #d9441f;    /* extreme heat */
+    --indigo: #3a48b5;    /* flood */
+    --compound: #0d0f12;  /* compound exposure */
+    --sans: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --serif: 'Source Serif 4', Georgia, serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+    color: var(--ink);
+    font: 400 15px/1.55 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 48px;
+  }
+  a { color: var(--ink); }
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 clamp(16px, 3.4vw, 36px); }
+
+  /* ---------- masthead ---------- */
+  .topbar { border-bottom: 1px solid var(--ink); background: var(--paper); position: sticky; top: 0; z-index: 20; }
+  .topbar__inner { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 52px; flex-wrap: wrap; padding-top: 6px; padding-bottom: 6px; }
+  .topbar__brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .topbar__brand b { font-weight: 500; }
+  .mark { width: 22px; height: 22px; background: var(--ink); color: var(--paper); display: grid; place-items: center; font: 800 0.72rem/1 var(--sans); position: relative; }
+  .mark::after { content: ""; position: absolute; right: -3px; bottom: -3px; width: 7px; height: 7px; background: var(--teal); }
+  .topbar__meta { font-family: var(--mono); font-size: 0.66rem; color: var(--ink-2); letter-spacing: 0.04em; }
+
+  /* ---------- header ---------- */
+  .head { padding: 34px 0 24px; border-bottom: 1px solid var(--ink); }
+  .kicker { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+  .sq { width: 10px; height: 10px; background: var(--teal); display: inline-block; }
+  h1 { font-family: var(--sans); font-weight: 800; font-stretch: 116%; letter-spacing: -0.03em; line-height: 1.02; margin: 14px 0 10px; font-size: clamp(1.9rem, 4.6vw, 3.4rem); max-width: 22ch; }
+  .lede { font-family: var(--serif); font-size: clamp(1rem, 1.6vw, 1.16rem); line-height: 1.5; color: var(--ink-2); max-width: 74ch; margin: 0; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.05em; color: var(--ink-3); text-transform: uppercase; }
+  .meta-row .tag { border: 1px dashed var(--ink-3); padding: 2px 7px; }
+
+  /* ---------- controls ---------- */
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; padding: 20px 0; border-bottom: 1px solid var(--ink); background: rgba(242, 242, 238, 0.92); }
+  .controls__group { display: flex; align-items: center; gap: 10px; }
+  .controls__label { font-family: var(--mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-3); }
+  .scen { display: flex; border: 1px solid var(--ink); background: var(--card); }
+  .scen button {
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font: 600 0.74rem/1 var(--sans); padding: 9px 12px; color: var(--ink-2);
+    border-right: 1px solid var(--line);
+  }
+  .scen button:last-child { border-right: 0; }
+  .scen button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .scen button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .slider-wrap { flex: 1 1 260px; display: flex; align-items: center; gap: 12px; min-width: 240px; }
+  input[type="range"] { flex: 1; accent-color: var(--teal); cursor: pointer; height: 28px; }
+  .year-readout { font-family: var(--mono); font-size: 0.9rem; font-weight: 500; min-width: 3.4ch; }
+  .play-btn {
+    appearance: none; cursor: pointer; font: 600 0.74rem/1 var(--sans);
+    padding: 10px 12px; border: 1px solid var(--ink); background: var(--card); color: var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .play-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* ---------- KPI cards ---------- */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; padding: 22px 0 6px; }
+  .kpi { background: var(--card); border: 1px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .kpi__label { font-family: var(--mono); font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-3); display: flex; align-items: center; gap: 7px; }
+  .kpi__label i { width: 8px; height: 8px; display: inline-block; }
+  .kpi__value { font-family: var(--sans); font-weight: 800; font-size: clamp(1.5rem, 2.6vw, 2.1rem); letter-spacing: -0.02em; line-height: 1; }
+  .kpi__unit { font-family: var(--mono); font-size: 0.66rem; color: var(--ink-2); letter-spacing: 0.03em; }
+  .kpi__delta { font-family: var(--mono); font-size: 0.66rem; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 7px; }
+  .kpi__delta b.up { color: var(--signal); }
+  .kpi__delta b.down { color: var(--teal); }
+
+  /* ---------- charts ---------- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 18px 0; }
+  .grid-2 .span-2 { grid-column: 1 / -1; }
+  .panel { background: var(--card); border: 1px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); padding: 18px 18px 14px; display: flex; flex-direction: column; }
+  .panel__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .panel__title { font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink); font-weight: 500; }
+  .panel__note { font-family: var(--mono); font-size: 0.64rem; color: var(--ink-3); }
+  .chart-hold { position: relative; height: 300px; }
+  .chart-hold--tall { height: 320px; }
+
+  /* ---------- regional table ---------- */
+  .table-wrap { border: 1px solid var(--ink); background: var(--card); box-shadow: 3px 3px 0 var(--ink); padding: 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  thead th { font-family: var(--mono); font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--ink); }
+  tbody td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.reg { font-weight: 600; }
+  td.num { font-family: var(--mono); font-size: 0.8rem; text-align: right; white-space: nowrap; }
+  .bar-cell { width: 42%; }
+  .bar { height: 10px; background: var(--teal); display: inline-block; vertical-align: middle; }
+  .bar-track { background: var(--paper-2, #e8e8e2); height: 10px; width: 100%; }
+
+  /* ---------- insights ---------- */
+  .insights { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 18px 0; }
+  .insight { border: 1px solid var(--ink); background: var(--card); padding: 16px; }
+  .insight__num { font-family: var(--mono); font-size: 0.66rem; color: var(--teal); letter-spacing: 0.1em; }
+  .insight h3 { font-size: 1rem; margin: 8px 0 6px; font-weight: 700; letter-spacing: -0.01em; }
+  .insight p { font-size: 0.86rem; color: var(--ink-2); margin: 0; }
+
+  /* ---------- method / footer ---------- */
+  .method { border-top: 1px solid var(--ink); padding: 26px 0 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .method h2, .sources h2 { font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 10px; }
+  .method p, .sources p, .sources li { font-size: 0.82rem; color: var(--ink-2); margin: 0 0 8px; }
+  .sources ol { margin: 0; padding-left: 18px; }
+  .foot-note { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 14px; font-family: var(--mono); font-size: 0.64rem; color: var(--ink-3); letter-spacing: 0.03em; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+  @media (max-width: 980px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-2 .span-2 { grid-column: auto; }
+    .insights { grid-template-columns: 1fr; }
+    .method { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .kpis { grid-template-columns: 1fr; }
+    .topbar__meta { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="shell topbar__inner">
+    <span class="topbar__brand"><span class="mark">H</span><span><b>H Heuristics</b> · Projects Lab</span></span>
+    <span class="topbar__meta">HX-2026-006 · DASHBOARD · EXPERIMENTAL · MODEL v1.0</span>
+  </div>
+</div>
+
+<header class="shell head">
+  <p class="kicker"><span class="sq"></span>Human Exposure · Polycrisis Systems Monitor</p>
+  <h1>Human Exposure to the Climate–Pollution Polycrisis</h1>
+  <p class="lede">Compound exposure to air pollution, extreme heat and flood risk is the defining metric of 21st-century climate risk. This dashboard projects exposed populations under three scenarios from 2000 to 2100 — and shows where hazards overlap, not just where they strike.</p>
+  <div class="meta-row">
+    <span class="tag">Time horizon 2000–2100</span>
+    <span class="tag">3 scenarios</span>
+    <span class="tag">4 exposure pathways</span>
+    <span class="tag">8 world regions</span>
+  </div>
+</header>
+
+<section class="shell controls" aria-label="Dashboard controls">
+  <div class="controls__group">
+    <span class="controls__label">Scenario</span>
+    <div class="scen" role="group" aria-label="Climate-pollution scenario">
+      <button data-scenario="ssp126" aria-pressed="true">Rapid decarbonisation</button>
+      <button data-scenario="ssp245" aria-pressed="false">Middle of the road</button>
+      <button data-scenario="ssp370" aria-pressed="false">High pollution</button>
+    </div>
+  </div>
+  <div class="controls__group slider-wrap">
+    <span class="controls__label">Year</span>
+    <input type="range" id="year" min="0" max="10" step="1" value="5" aria-label="Select projection year">
+    <output class="year-readout" id="year-readout" for="year" aria-live="polite">2050</output>
+    <button class="play-btn" id="play" type="button" aria-label="Animate through the century">▶ Play</button>
+  </div>
+</section>
+
+<section class="shell kpis" aria-label="Key exposure indicators">
+  <article class="kpi" id="kpi-compound">
+    <span class="kpi__label"><i style="background:var(--compound)"></i>Compound exposure</span>
+    <span class="kpi__value" id="kpi-compound-v">—</span>
+    <span class="kpi__unit" id="kpi-compound-u">people facing ≥2 hazards</span>
+    <span class="kpi__delta" id="kpi-compound-d">—</span>
+  </article>
+  <article class="kpi">
+    <span class="kpi__label"><i style="background:var(--teal)"></i>Air pollution</span>
+    <span class="kpi__value" id="kpi-air-v">—</span>
+    <span class="kpi__unit">exposed to PM₂.₅ &gt; 35 µg/m³</span>
+    <span class="kpi__delta" id="kpi-air-d">—</span>
+  </article>
+  <article class="kpi">
+    <span class="kpi__label"><i style="background:var(--signal)"></i>Extreme heat</span>
+    <span class="kpi__value" id="kpi-heat-v">—</span>
+    <span class="kpi__unit">≥30 dangerous-heat days/yr</span>
+    <span class="kpi__delta" id="kpi-heat-d">—</span>
+  </article>
+  <article class="kpi">
+    <span class="kpi__label"><i style="background:var(--indigo)"></i>Flood risk</span>
+    <span class="kpi__value" id="kpi-flood-v">—</span>
+    <span class="kpi__unit">in 100-year flood zones</span>
+    <span class="kpi__delta" id="kpi-flood-d">—</span>
+  </article>
+  <article class="kpi">
+    <span class="kpi__label"><i style="background:var(--signal)"></i>Mortality burden</span>
+    <span class="kpi__value" id="kpi-deaths-v">—</span>
+    <span class="kpi__unit">attributable deaths per year</span>
+    <span class="kpi__delta" id="kpi-deaths-d">—</span>
+  </article>
+</section>
+
+<section class="shell grid-2" aria-label="Charts">
+  <article class="panel span-2">
+    <div class="panel__head">
+      <h2 class="panel__title">Population exposed by hazard · 2000–2100</h2>
+      <span class="panel__note" id="chart1-note">Scenario: Rapid decarbonisation</span>
+    </div>
+    <div class="chart-hold chart-hold--tall"><canvas id="chart-hazards" role="img" aria-label="Line chart of billions of people exposed to air pollution, extreme heat, flood risk and compound hazards from 2000 to 2100"></canvas></div>
+  </article>
+
+  <article class="panel">
+    <div class="panel__head">
+      <h2 class="panel__title">Compound exposure · share of world population</h2>
+      <span class="panel__note">≥2 simultaneous hazards · %</span>
+    </div>
+    <div class="chart-hold"><canvas id="chart-share" role="img" aria-label="Line chart comparing the share of world population facing compound exposure across three scenarios"></canvas></div>
+  </article>
+
+  <article class="panel">
+    <div class="panel__head">
+      <h2 class="panel__title">Attributable mortality by pathway</h2>
+      <span class="panel__note" id="chart3-note">Millions of deaths per year</span>
+    </div>
+    <div class="chart-hold"><canvas id="chart-deaths" role="img" aria-label="Stacked bar chart of annual attributable deaths from air pollution, extreme heat and floods by decade"></canvas></div>
+  </article>
+</section>
+
+<section class="shell" style="padding-top:2px;" aria-label="Regional exposure table">
+  <div class="table-wrap">
+    <div class="panel__head">
+      <h2 class="panel__title">Compound exposure by region</h2>
+      <span class="panel__note" id="region-note">Selected year · % of regional population facing ≥2 hazards</span>
+    </div>
+    <div class="table-scroll" style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Region</th>
+            <th scope="col" style="width:42%;">Share exposed</th>
+            <th scope="col" style="text-align:right;">% of population</th>
+            <th scope="col" style="text-align:right;">People exposed</th>
+          </tr>
+        </thead>
+        <tbody id="region-body"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="shell insights" aria-label="Key insights">
+  <article class="insight">
+    <span class="insight__num">01 / COMPOUNDING</span>
+    <h3>Overlap, not single hazards, drives the polycrisis</h3>
+    <p>Exposure to any one hazard is only part of the story. The population facing two or more simultaneous hazards is the metric that captures cascading health, water and infrastructure stress — and it grows faster than any single-hazard curve in high-pollution futures.</p>
+  </article>
+  <article class="insight">
+    <span class="insight__num">02 / MITIGATION PAYOFF</span>
+    <h3>Decarbonisation is also de-pollution</h3>
+    <p>In the rapid decarbonisation scenario, PM₂.₅ exposure falls from ~4.3 billion people today toward ~0.9 billion by 2100 because the same transition that ends coal also removes the largest source of ambient particulate matter.</p>
+  </article>
+  <article class="insight">
+    <span class="insight__num">03 / REGIONAL ASYMMETRY</span>
+    <h3>South Asia and Sub-Saharan Africa carry the heaviest burden</h3>
+    <p>Compound exposure concentrates where high population density, biomass burning, and flood-prone deltas coincide. The regional table shows the burden is least mobile and least insured precisely where adaptive capacity is thinnest.</p>
+  </article>
+</section>
+
+<section class="shell method" aria-label="Method and sources">
+  <div class="method">
+    <h2>Method</h2>
+    <p>Projections are produced by the <strong>H Heuristics Polycrisis Exposure Model v1.0</strong>, a reduced-form cohort model anchored to published 2000–2020 benchmarks and extrapolated along three shared socio-economic pathway (SSP) narratives. Hazard thresholds: annual mean PM₂.₅ above 35 µg/m³ (WHO Interim Target-1); 30 or more days per year with dangerous heat (wet-bulb or 40°C+ equivalent); and residence in the 100-year coastal or riverine flood zone. Compound exposure counts people facing two or more of the three hazards simultaneously.</p>
+    <p><strong>Status:</strong> experimental. Scenario curves are illustrative model estimates, not observational data; they are designed for systems reasoning, scenario comparison and magnitude intuition rather than point forecasting.</p>
+  </div>
+  <div class="sources">
+    <h2>Sources</h2>
+    <ol>
+      <li>WHO (2021). <em>WHO Global Air Quality Guidelines</em> and ambient air pollution burden estimates.</li>
+      <li>IPCC (2023). <em>AR6 Synthesis Report</em> — hazard exposure and SSP scenario framework.</li>
+      <li>World Bank (2021). <em>Groundswell Part 2</em> — internal climate migration and flood exposure.</li>
+      <li>Climate Impact Lab / CIL (2022). Mortality-temperature response functions.</li>
+      <li>UN DESA (2024). <em>World Population Prospects</em> — medium-variant population path used for share calculations.</li>
+    </ol>
+  </div>
+</section>
+
+<footer class="shell foot-note">
+  <span>H Heuristics Projects Lab · CC BY 4.0</span>
+  <span>Model v1.0 · generated 29 October 2026 · illustrative scenario projections</span>
+</footer>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   H Heuristics Polycrisis Exposure Model v1.0 (illustrative)
+   Hazard exposure in billions of people, mortality in millions.
+   ──────────────────────────────────────────────────────────── */
+const YEARS = [2000, 2010, 2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100];
+const WORLD_POP = [6.14, 6.96, 7.79, 8.55, 9.20, 9.71, 10.06, 10.22, 10.20, 10.05, 9.85]; // billions, UN WPP medium
+
+const DATA = {
+  ssp126: {
+    label: 'Rapid decarbonisation',
+    air:    [4.30, 4.45, 4.50, 4.20, 3.70, 3.05, 2.40, 1.85, 1.40, 1.10, 0.90],
+    heat:   [0.35, 0.45, 0.55, 0.70, 0.85, 0.95, 1.00, 1.05, 1.05, 1.10, 1.10],
+    flood:  [1.20, 1.30, 1.40, 1.52, 1.65, 1.78, 1.90, 2.00, 2.08, 2.15, 2.20],
+    compound: [0.95, 1.05, 1.15, 1.22, 1.25, 1.22, 1.15, 1.05, 0.95, 0.90, 0.85],
+    airD:   [6.70, 6.60, 6.40, 5.90, 5.10, 4.10, 3.20, 2.50, 2.00, 1.60, 1.40],
+    heatD:  [0.50, 0.55, 0.60, 0.70, 0.75, 0.80, 0.80, 0.82, 0.82, 0.85, 0.85],
+    floodD: [0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15],
+  },
+  ssp245: {
+    label: 'Middle of the road',
+    air:    [4.30, 4.50, 4.55, 4.50, 4.35, 4.15, 3.90, 3.60, 3.30, 3.00, 2.75],
+    heat:   [0.35, 0.48, 0.60, 0.80, 1.05, 1.35, 1.70, 2.05, 2.40, 2.70, 3.00],
+    flood:  [1.20, 1.32, 1.45, 1.62, 1.82, 2.05, 2.30, 2.55, 2.80, 3.05, 3.30],
+    compound: [0.95, 1.08, 1.20, 1.40, 1.65, 1.90, 2.15, 2.40, 2.60, 2.80, 2.95],
+    airD:   [6.70, 6.60, 6.50, 6.40, 6.30, 6.20, 6.10, 6.00, 5.90, 5.80, 5.70],
+    heatD:  [0.50, 0.60, 0.70, 0.85, 1.05, 1.30, 1.60, 1.90, 2.20, 2.50, 2.80],
+    floodD: [0.05, 0.07, 0.09, 0.12, 0.15, 0.19, 0.23, 0.28, 0.33, 0.38, 0.44],
+  },
+  ssp370: {
+    label: 'High pollution',
+    air:    [4.30, 4.55, 4.60, 4.70, 4.85, 5.05, 5.25, 5.45, 5.60, 5.70, 5.75],
+    heat:   [0.35, 0.50, 0.65, 0.90, 1.25, 1.70, 2.25, 2.90, 3.60, 4.30, 5.00],
+    flood:  [1.20, 1.34, 1.50, 1.72, 2.00, 2.35, 2.75, 3.20, 3.65, 4.10, 4.55],
+    compound: [0.95, 1.10, 1.28, 1.55, 1.90, 2.35, 2.85, 3.40, 3.95, 4.45, 4.90],
+    airD:   [6.70, 6.70, 6.80, 7.10, 7.70, 8.40, 9.20, 10.00, 10.70, 11.30, 11.80],
+    heatD:  [0.50, 0.62, 0.75, 1.00, 1.35, 1.85, 2.45, 3.15, 3.90, 4.70, 5.50],
+    floodD: [0.05, 0.08, 0.11, 0.15, 0.20, 0.27, 0.35, 0.45, 0.56, 0.68, 0.80],
+  },
+};
+
+const REGIONS = [
+  { name: 'South Asia', pop2020: 1.95, base: 42, sens: 1.15 },
+  { name: 'East Asia & Pacific', pop2020: 2.30, base: 38, sens: 0.90 },
+  { name: 'Sub-Saharan Africa', pop2020: 1.15, base: 30, sens: 1.25 },
+  { name: 'Middle East & North Africa', pop2020: 0.58, base: 28, sens: 1.10 },
+  { name: 'Latin America & Caribbean', pop2020: 0.66, base: 18, sens: 0.80 },
+  { name: 'Europe & Central Asia', pop2020: 0.92, base: 6, sens: 0.50 },
+  { name: 'North America', pop2020: 0.38, base: 5, sens: 0.45 },
+  { name: 'Oceania', pop2020: 0.045, base: 4, sens: 0.50 },
+];
+
+const COLORS = {
+  air: '#0e6b67',
+  heat: '#d9441f',
+  flood: '#3a48b5',
+  compound: '#0d0f12',
+  ssp126: '#0e6b67',
+  ssp245: '#6a6f78',
+  ssp370: '#d9441f',
+};
+const SCEN_LABEL = { ssp126: 'Rapid decarbonisation', ssp245: 'Middle of the road', ssp370: 'High pollution' };
+
+let scenario = 'ssp126';
+let yearIdx = 5; // 2050
+let playing = false;
+let playTimer = null;
+
+const $ = (id) => document.getElementById(id);
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const fmtB = (v) => v >= 10 ? v.toFixed(1) : v.toFixed(2);
+const fmtPct = (v) => v.toFixed(1) + '%';
+const signDelta = (cur, base) => {
+  const d = cur - base;
+  const pct = base > 0 ? (d / base) * 100 : 0;
+  const cls = d > 0.005 ? 'up' : (d < -0.005 ? 'down' : '');
+  const arrow = d > 0.005 ? '▲' : (d < -0.005 ? '▼' : '▸');
+  return { html: `vs 2000 <b class="${cls}">${arrow} ${Math.abs(d).toFixed(2)} B</b> (${pct >= 0 ? '+' : ''}${pct.toFixed(0)}%)`, cls };
+};
+
+/* ---------- charts ---------- */
+const gridColor = 'rgba(13,15,18,0.07)';
+const tickColor = '#6a6f78';
+const baseFont = { family: "'IBM Plex Mono', monospace", size: 10 };
+
+function makeChart(id, config) {
+  const ctx = $(id);
+  if (!ctx) return null;
+  const defaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 350 },
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: {
+        position: 'top',
+        align: 'end',
+        labels: { color: '#353a42', font: { family: "'Archivo', sans-serif", size: 11, weight: 600 }, boxWidth: 10, boxHeight: 10, usePointStyle: true, padding: 14 },
+      },
+      tooltip: {
+        backgroundColor: '#0d0f12', titleColor: '#f2f2ee', bodyColor: '#f2f2ee',
+        titleFont: { family: "'IBM Plex Mono', monospace", size: 11 },
+        bodyFont: { family: "'Archivo', sans-serif", size: 12 },
+        padding: 10, cornerRadius: 0, displayColors: true, boxWidth: 8, boxHeight: 8, usePointStyle: true,
+      },
+    },
+    scales: {
+      x: {
+        grid: { color: gridColor, drawTicks: false },
+        ticks: { color: tickColor, font: baseFont, maxRotation: 0, autoSkip: true, maxTicksLimit: 11 },
+        border: { color: '#0d0f12' },
+      },
+      y: {
+        grid: { color: gridColor, drawTicks: false },
+        ticks: { color: tickColor, font: baseFont },
+        border: { color: '#0d0f12' },
+      },
+    },
+  };
+  const opts = Object.assign({}, defaults, config.options || {});
+  if (config.options && config.options.scales) {
+    const axes = new Set([...Object.keys(defaults.scales), ...Object.keys(config.options.scales)]);
+    opts.scales = {};
+    axes.forEach((ax) => {
+      opts.scales[ax] = Object.assign({}, defaults.scales[ax] || {}, config.options.scales[ax] || {});
+    });
+  }
+  const chart = new Chart(ctx, {
+    type: config.type,
+    data: config.data,
+    options: opts,
+  });
+  return chart;
+}
+
+function chartHazards() {
+  const d = DATA[scenario];
+  const ds = [
+    { label: 'PM₂.₅ > 35 µg/m³', data: d.air, borderColor: COLORS.air, backgroundColor: COLORS.air, tension: 0.25, borderWidth: 2.5, pointRadius: 2.5, pointHoverRadius: 5, fill: false },
+    { label: 'Extreme heat', data: d.heat, borderColor: COLORS.heat, backgroundColor: COLORS.heat, tension: 0.25, borderWidth: 2.5, pointRadius: 2.5, pointHoverRadius: 5, fill: false },
+    { label: 'Flood zones', data: d.flood, borderColor: COLORS.flood, backgroundColor: COLORS.flood, tension: 0.25, borderWidth: 2.5, pointRadius: 2.5, pointHoverRadius: 5, fill: false },
+    { label: 'Compound (≥2 hazards)', data: d.compound, borderColor: COLORS.compound, backgroundColor: COLORS.compound, tension: 0.25, borderWidth: 2.5, borderDash: [7, 5], pointRadius: 3, pointHoverRadius: 5, fill: false },
+  ];
+  if (chartHazards._c) { chartHazards._c.data.datasets = ds; chartHazards._c.update(); return; }
+  chartHazards._c = makeChart('chart-hazards', {
+    type: 'line',
+    data: { labels: YEARS, datasets: ds },
+    options: { scales: { y: { title: { display: true, text: 'billions of people', color: tickColor, font: baseFont } } } },
+  });
+}
+
+function chartShare() {
+  const datasets = ['ssp126', 'ssp245', 'ssp370'].map((sc) => {
+    const d = DATA[sc];
+    const selected = sc === scenario;
+    return {
+      label: SCEN_LABEL[sc],
+      data: d.compound.map((v, i) => (v / WORLD_POP[i]) * 100),
+      borderColor: COLORS[sc],
+      backgroundColor: COLORS[sc],
+      borderWidth: selected ? 3.5 : 1.5,
+      borderDash: selected ? [] : [4, 4],
+      pointRadius: selected ? 3 : 1.5,
+      pointHoverRadius: 5,
+      tension: 0.25,
+      fill: false,
+    };
+  });
+  if (chartShare._c) { chartShare._c.data.datasets = datasets; chartShare._c.update(); return; }
+  chartShare._c = makeChart('chart-share', {
+    type: 'line',
+    data: { labels: YEARS, datasets },
+    options: { scales: { y: { title: { display: true, text: '% of world population', color: tickColor, font: baseFont }, ticks: { callback: (v) => v + '%' } } } },
+  });
+}
+
+function chartDeaths() {
+  const d = DATA[scenario];
+  const ds = [
+    { label: 'Air pollution', data: d.airD, backgroundColor: COLORS.air, stack: 'm' },
+    { label: 'Extreme heat', data: d.heatD, backgroundColor: COLORS.heat, stack: 'm' },
+    { label: 'Floods', data: d.floodD, backgroundColor: COLORS.flood, stack: 'm' },
+  ];
+  if (chartDeaths._c) { chartDeaths._c.data.datasets = ds; chartDeaths._c.update(); return; }
+  chartDeaths._c = makeChart('chart-deaths', {
+    type: 'bar',
+    data: { labels: YEARS, datasets: ds },
+    options: {
+      scales: { x: { stacked: true }, y: { stacked: true, title: { display: true, text: 'millions of deaths / year', color: tickColor, font: baseFont } } },
+    },
+  });
+}
+
+/* ---------- KPI + table rendering ---------- */
+function renderKpis() {
+  const d = DATA[scenario];
+  const i = yearIdx;
+  const pop = WORLD_POP[i];
+  const compoundShare = (d.compound[i] / pop) * 100;
+
+  $('kpi-compound-v').textContent = fmtB(d.compound[i]) + ' B';
+  $('kpi-compound-u').textContent = fmtPct(compoundShare) + ' of world population';
+  $('kpi-compound-d').innerHTML = signDelta(d.compound[i], d.compound[0]).html;
+
+  $('kpi-air-v').textContent = fmtB(d.air[i]) + ' B';
+  $('kpi-air-d').innerHTML = signDelta(d.air[i], d.air[0]).html;
+
+  $('kpi-heat-v').textContent = fmtB(d.heat[i]) + ' B';
+  $('kpi-heat-d').innerHTML = signDelta(d.heat[i], d.heat[0]).html;
+
+  $('kpi-flood-v').textContent = fmtB(d.flood[i]) + ' B';
+  $('kpi-flood-d').innerHTML = signDelta(d.flood[i], d.flood[0]).html;
+
+  const totalDeaths = d.airD[i] + d.heatD[i] + d.floodD[i];
+  $('kpi-deaths-v').textContent = totalDeaths.toFixed(1) + ' M';
+  const deathsDelta = totalDeaths - (DATA[scenario].airD[0] + DATA[scenario].heatD[0] + DATA[scenario].floodD[0]);
+  const cls = deathsDelta > 0.05 ? 'up' : (deathsDelta < -0.05 ? 'down' : '');
+  const arrow = deathsDelta > 0.05 ? '▲' : (deathsDelta < -0.05 ? '▼' : '▸');
+  $('kpi-deaths-d').innerHTML = `vs 2000 <b class="${cls}">${arrow} ${Math.abs(deathsDelta).toFixed(1)} M</b>/yr`;
+}
+
+function renderRegions() {
+  const d = DATA[scenario];
+  const factor = d.compound[yearIdx] / d.compound[0]; // global compound growth multiple
+  const popScale = WORLD_POP[yearIdx] / 7.79;          // scale region pops from 2020
+  const rows = REGIONS.map((r) => {
+    const share = clamp(r.base * (1 + (factor - 1) * r.sens), 1, 100);
+    const pop = r.pop2020 * popScale;
+    const exposed = pop * (share / 100);
+    return { ...r, share, pop, exposed };
+  }).sort((a, b) => b.share - a.share);
+
+  $('region-body').innerHTML = rows.map((r) => `
+    <tr>
+      <td class="reg">${r.name}</td>
+      <td class="bar-cell"><div class="bar-track"><span class="bar" style="width:${r.share}%;"></span></div></td>
+      <td class="num">${fmtPct(r.share)}</td>
+      <td class="num">${r.exposed >= 1 ? r.exposed.toFixed(2) : (r.exposed * 1000).toFixed(0)} ${r.exposed >= 1 ? 'B' : 'M'} people</td>
+    </tr>`).join('');
+
+  $('region-note').textContent = `${YEARS[yearIdx]} · ${SCEN_LABEL[scenario]} · % of regional population facing ≥2 hazards`;
+}
+
+function renderAll() {
+  renderKpis();
+  renderRegions();
+  chartHazards();
+  chartShare();
+  chartDeaths();
+  $('chart1-note').textContent = `Scenario: ${SCEN_LABEL[scenario]}`;
+  $('chart3-note').textContent = `${SCEN_LABEL[scenario]} · millions of deaths per year`;
+}
+
+/* ---------- controls ---------- */
+document.querySelectorAll('.scen button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    scenario = btn.dataset.scenario;
+    document.querySelectorAll('.scen button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    renderAll();
+  });
+});
+
+$('year').addEventListener('input', (e) => {
+  yearIdx = Number(e.target.value);
+  $('year-readout').textContent = YEARS[yearIdx];
+  renderAll();
+});
+
+$('play').addEventListener('click', () => {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (playing) {
+    playing = false;
+    clearInterval(playTimer);
+    $('play').textContent = '▶ Play';
+    return;
+  }
+  playing = true;
+  $('play').textContent = '■ Stop';
+  if (yearIdx >= YEARS.length - 1) { yearIdx = 0; }
+  playTimer = setInterval(() => {
+    yearIdx = (yearIdx + 1) % YEARS.length;
+    $('year').value = yearIdx;
+    $('year-readout').textContent = YEARS[yearIdx];
+    renderAll();
+    if (!playing || reduced) { clearInterval(playTimer); playing = false; $('play').textContent = '▶ Play'; }
+  }, reduced ? 1600 : 480);
+});
+
+/* ---------- init ---------- */
+$('year').value = yearIdx;
+$('year-readout').textContent = YEARS[yearIdx];
+renderAll();
+</script>
+</body>
+</html>
