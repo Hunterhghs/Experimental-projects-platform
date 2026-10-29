@@ -44,8 +44,16 @@ const numbered = d.chapters.filter((c) => c.number);
             <div><dt>Identifier</dt><dd class="id">{projectNumber(p)}</dd></div>
             <div><dt>Author</dt><dd>{d.authors.map((a) => a.name).join(', ')}</dd></div>
             <div><dt>Publisher</dt><dd>{SITE.publisher}</dd></div>
-            <div><dt>Published</dt><dd><time datetime={d.date.toISOString()}>{fmtDate(d.date)}</time></dd></div>
-            {d.pages && <div><dt>Length</dt><dd>{d.pages} pages{d.stats ? ` · ${d.stats.readingMinutes} min read` : ''}</dd></div>}
+            {(d.pages || d.stats) && (
+              <div>
+                <dt>Length</dt>
+                <dd>
+                  {d.pages ? `${d.pages} pages` : ''}
+                  {d.pages && d.stats ? ' · ' : ''}
+                  {d.stats ? `${d.stats.readingMinutes} min read` : ''}
+                </dd>
+              </div>
+            )}
             {d.doi && <div><dt>DOI</dt><dd><a href={`https://doi.org/${d.doi}`}>{d.doi}</a></dd></div>}
             <div><dt>Licence</dt><dd>{d.license ?? SITE.license}</dd></div>
           </dl>
