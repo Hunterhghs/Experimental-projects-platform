@@ -7,10 +7,12 @@ const topics = TOPICS.map((t) => ({ ...t, count: all.filter((p) => p.data.topics
 ---
 
 <Base title="Topics" description="Browse H Heuristics reports, dashboards and projects by topic.">
-  <section class="wrap pagehead">
-    <p class="eyebrow">Browse</p>
+  <section class="pagehead gridpaper">
+    <div class="wrap">
+      <p class="kicker"><span class="sq"></span>Browse</p>
     <h1>Topics</h1>
     <p class="pagehead__lede">Every project is tagged against one controlled vocabulary, so related work stays together as the library grows.</p>
+    </div>
   </section>
   <section class="wrap block">
     <ul class="topic-list">

@@ -11,17 +11,17 @@ const t = TYPES[d.type];
 
 <article class="dash" data-pagefind-body>
   <header class="wrap dash__head">
-    <nav class="crumbs crumbs--light" aria-label="Breadcrumb" data-pagefind-ignore>
-      <a href="/">Home</a> <span>/</span> <a href={`/${t.section}/`}>{t.plural}</a>
+    <nav class="crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
+      <a href="/">Index</a><span>/</span><a href={`/${t.section}/`}>{t.plural}</a><span>/</span><span class="id">{projectNumber(p)}</span>
     </nav>
-    <p class="eyebrow">{t.label} · № {projectNumber(p)} · {fmtDate(d.date)}
+    <p class="typetag-row"><span class={`typetag t-${d.type}`}><i></i>{t.label}</span><span class="meta">{fmtDate(d.date)}</span>
       {d.status === 'experimental' && <span class="badge">Experimental</span>}</p>
     <h1 data-pagefind-meta="title">{d.title}</h1>
-    {d.subtitle && <p class="lead__subtitle">{d.subtitle}</p>}
+    {d.subtitle && <p class="rhead__subtitle">{d.subtitle}</p>}
     <p class="pagehead__lede">{d.description}</p>
     {d.embed && (
       <p class="actions" data-pagefind-ignore>
-        <a class="btn btn--primary" href={d.embed}>Open full screen ↗</a>
+        <a class="btn btn--ink" href={d.embed}>Open full screen ↗</a>
       </p>
     )}
   </header>
@@ -37,7 +37,7 @@ const t = TYPES[d.type];
   </div>
 
   <div class="wrap rfoot" data-pagefind-ignore>
-    <div class="rfoot__topics">
+    <div>
       <h2 class="label">Topics</h2>
       <ul class="chips">{d.topics.map((tp) => <li><a class="chip" href={`/topics/${tp}/`}>{topicLabel(tp)}</a></li>)}</ul>
       <p class="license">Published open access under <a href={SITE.licenseUrl}>{d.license ?? SITE.license}</a>.</p>
@@ -53,7 +53,7 @@ const t = TYPES[d.type];
 
 {related.length > 0 && (
   <section class="wrap block">
-    <div class="block__head"><h2 class="label">Related</h2></div>
+    <div class="section-head"><h2>Related entries</h2></div>
     <div class="grid">{related.map((r) => <ProjectCard project={r} />)}</div>
   </section>
 )}

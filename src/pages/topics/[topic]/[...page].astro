@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPaths, Page } from 'astro';
 import Base from '../../../layouts/Base.astro';
-import ProjectRow from '../../../components/ProjectRow.astro';
+import Ledger from '../../../components/Ledger.astro';
 import Pagination from '../../../components/Pagination.astro';
 import { SITE } from '../../../site.config.mjs';
 import { TOPICS } from '../../../data/topics.mjs';
@@ -24,14 +24,16 @@ const { page, topic } = Astro.props as { page: Page<Project>; topic: (typeof TOP
 ---
 
 <Base title={`${topic.label}${page.currentPage > 1 ? ` — page ${page.currentPage}` : ''}`} description={`${topic.description} Reports, dashboards and projects from H Heuristics.`}>
-  <section class="wrap pagehead">
-    <p class="eyebrow"><a href="/topics/">Topics</a></p>
-    <h1>{topic.label}</h1>
-    <p class="pagehead__lede">{topic.description}</p>
-    <p class="meta">{page.total} {page.total === 1 ? 'project' : 'projects'}</p>
+  <section class="pagehead gridpaper">
+    <div class="wrap">
+      <p class="kicker"><span class="sq"></span><a href="/topics/">Topics</a> / {topic.label}</p>
+      <h1>{topic.label}</h1>
+      <p class="pagehead__lede">{topic.description}</p>
+      <p class="meta">{page.total} {page.total === 1 ? 'entry' : 'entries'}</p>
+    </div>
   </section>
   <section class="wrap block">
-    {page.data.map((p) => <ProjectRow project={p} />)}
+    <Ledger items={page.data} />
     <Pagination page={page} />
   </section>
 </Base>

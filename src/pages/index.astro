@@ -1,6 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import Ledger from '../components/Ledger.astro';
+import Signal from '../components/Signal.astro';
 import { SITE, TYPES } from '../site.config.mjs';
 import { TOPICS } from '../data/topics.mjs';
 import { getProjects, projectUrl, projectNumber, fmtDate, topicLabel, type ProjectType } from '../lib/projects';
@@ -13,7 +15,8 @@ const byType = (Object.keys(TYPES) as ProjectType[]).map((t) => ({
   items: all.filter((p) => p.data.type === t),
 }));
 const usedTopics = TOPICS.map((t) => ({ ...t, count: all.filter((p) => p.data.topics.includes(t.id)).length })).filter((t) => t.count > 0);
-const since = all.length ? Math.min(...all.map((p) => p.data.date.getUTCFullYear())) : new Date().getFullYear();
+const L = lead?.data;
+const numbered = L ? L.chapters.filter((c) => c.number).length : 0;
 
 const ld = [{
   '@context': 'https://schema.org',
@@ -26,71 +29,83 @@ const ld = [{
 ---
 
 <Base title={SITE.name} jsonLd={ld}>
-  <section class="wrap hero">
-    <div class="hero__rule">
-      <span class="eyebrow">H Heuristics · {SITE.tagline}</span>
-      {lead && <span class="eyebrow eyebrow--muted">Latest № {projectNumber(lead)} · {fmtDate(lead.data.date)}</span>}
-    </div>
-    <h1 class="hero__title">Experimental Projects</h1>
-    <div class="hero__sub">
-      <p>Reports, interactive dashboards and analytical experiments on systemic risk, climate, public health, development and the energy transition.</p>
-      <dl class="stats">
-        {byType.map((t) => <div><dt>{t.meta.plural}</dt><dd>{t.items.length}</dd></div>)}
-        <div><dt>Topics</dt><dd>{usedTopics.length}</dd></div>
-        <div><dt>Since</dt><dd>{since}</dd></div>
-      </dl>
+  <section class="hero gridpaper">
+    <div class="wrap hero__inner">
+      <div class="hero__copy">
+        <p class="kicker"><span class="sq"></span>H Heuristics / Projects Lab / Index {new Date().getFullYear()}</p>
+        <h1 class="hero__title">Experimental research, published <em>in the open.</em></h1>
+        <p class="hero__lede">Reports, interactive dashboards and analytical experiments on systemic risk, climate, public health, development and the energy transition. Every entry is numbered, citable and openly licensed.</p>
+        <p class="actions">
+          <a class="btn btn--ink" href="/reports/">Browse the index</a>
+          <a class="btn" href="/search/">Search all projects</a>
+        </p>
+      </div>
+      <aside class="registry" aria-label="Registry">
+        <div class="registry__head">
+          <span>Registry</span><span>{all.length} {all.length === 1 ? 'entry' : 'entries'}</span>
+        </div>
+        <dl class="counters">
+          {byType.map((t) => <div class={`t-${t.type}`}><dt>{t.meta.plural}</dt><dd>{String(t.items.length).padStart(2, '0')}</dd></div>)}
+          <div><dt>Topics</dt><dd>{String(usedTopics.length).padStart(2, '0')}</dd></div>
+        </dl>
+        {all.length > 0 && <Ledger items={all.slice(0, 5)} compact />}
+      </aside>
     </div>
   </section>
 
-  {lead && (
-    <section class="wrap lead">
-      <div class="lead__main">
-        <p class="meta"><span class="tag-dark">Latest {TYPES[lead.data.type].label.toLowerCase()}</span> № {projectNumber(lead)} · {fmtDate(lead.data.date)}{lead.data.stats ? ` · ${lead.data.stats.readingMinutes} min read` : ''}</p>
-        <h2 class="lead__title"><a href={projectUrl(lead)}>{lead.data.title}</a></h2>
-        {lead.data.subtitle && <p class="lead__subtitle">{lead.data.subtitle}</p>}
-        <p class="lead__abstract dropcap">{lead.data.abstract ?? lead.data.description}</p>
-        <p class="actions">
-          <a class="btn btn--primary" href={projectUrl(lead)}>Read the {TYPES[lead.data.type].label.toLowerCase()}</a>
-          {lead.data.pdf && <a class="btn" href={lead.data.pdf}>Download PDF</a>}
-        </p>
+  {lead && L && (
+    <section class="wrap feature">
+      <div class="section-head"><h2>Featured entry</h2><span class="id">{projectNumber(lead)}</span></div>
+      <div class="feature__grid">
+        <div class="feature__main">
+          <p class="typetag-row">
+            <span class={`typetag t-${L.type}`}><i></i>{TYPES[L.type].label}{L.format === 'pdf' ? ' · PDF' : ' · Digital'}</span>
+            <span class="meta">{fmtDate(L.date)}{L.pages ? ` · ${L.pages} pages` : ''}</span>
+          </p>
+          <h3 class="feature__title"><a href={projectUrl(lead)}>{L.title}</a></h3>
+          {L.subtitle && <p class="feature__subtitle">{L.subtitle}</p>}
+          <p class="feature__abstract">{L.abstract ?? L.description}</p>
+          <p class="actions">
+            <a class="btn btn--signal" href={projectUrl(lead)}>Open entry</a>
+            {L.pdf && <a class="btn" href={L.pdf} download>Download PDF</a>}
+          </p>
+        </div>
+        <aside class="spec">
+          <Signal seed={lead.id} bars={64} height={72} class="spec__signal" />
+          <p class="spec__label">Specification</p>
+          <dl>
+            {numbered > 0 && <div><dt>Chapters</dt><dd>{numbered}</dd></div>}
+            {L.stats?.figures ? <div><dt>Exhibits</dt><dd>{L.stats.figures}</dd></div> : null}
+            {L.stats?.tables ? <div><dt>Data tables</dt><dd>{L.stats.tables}</dd></div> : null}
+            {L.stats?.references ? <div><dt>References</dt><dd>{L.stats.references}</dd></div> : null}
+            {L.pages && <div><dt>Pages</dt><dd>{L.pages}</dd></div>}
+            <div><dt>Licence</dt><dd>{L.license ?? SITE.license}</dd></div>
+          </dl>
+          <ul class="chips">
+            {L.topics.map((t) => <li><a class="chip" href={`/topics/${t}/`}>{topicLabel(t)}</a></li>)}
+          </ul>
+        </aside>
       </div>
-      <aside class="lead__panel">
-        <span class="lead__panel-num" aria-hidden="true">{lead.data.number.split('-')[1].replace(/^0+(?=\d{2})/, '')}</span>
-        <p class="label label--gold">At a glance</p>
-        <dl>
-          {lead.data.chapters.filter((c) => c.number).length > 0 && <div><dt>{lead.data.chapters.filter((c) => c.number).length}</dt><dd>Chapters of analysis</dd></div>}
-          {lead.data.stats?.figures ? <div><dt>{lead.data.stats.figures}</dt><dd>Exhibits and charts</dd></div> : null}
-          {lead.data.stats?.tables ? <div><dt>{lead.data.stats.tables}</dt><dd>Data tables</dd></div> : null}
-          {lead.data.stats?.references ? <div><dt>{lead.data.stats.references}</dt><dd>Cited sources</dd></div> : null}
-          {lead.data.pages && <div><dt>{lead.data.pages} pp</dt><dd>Full PDF edition</dd></div>}
-        </dl>
-        <ul class="chips chips--dark">
-          {lead.data.topics.map((t) => <li><a class="chip" href={`/topics/${t}/`}>{topicLabel(t)}</a></li>)}
-        </ul>
-      </aside>
     </section>
   )}
 
-  {byType.map(({ meta, items }) => (
+  {byType.map(({ type, meta, items }) => (
     <section class="wrap block">
-      <div class="block__head">
-        <h2 class="label">Recent {meta.plural.toLowerCase()}</h2>
-        <a class="label label--link" href={`/${meta.section}/`}>{items.length ? `All ${items.length} ${meta.plural.toLowerCase()} →` : `${meta.plural} →`}</a>
+      <div class="section-head">
+        <h2><span class={`sq t-${type}`}></span>{meta.plural}</h2>
+        <a href={`/${meta.section}/`}>{items.length ? `View all ${items.length} →` : 'View section →'}</a>
       </div>
       {items.length ? (
         <div class="grid">{items.slice(0, 6).map((p) => <ProjectCard project={p} />)}</div>
       ) : (
-        <p class="empty">{meta.blurb} The first {meta.label.toLowerCase()} is in preparation.</p>
+        <div class="empty"><span class="id">— — —</span><p>{meta.blurb} The first {meta.label.toLowerCase()} is in preparation.</p></div>
       )}
     </section>
   ))}
 
   {usedTopics.length > 0 && (
     <section class="wrap block">
-      <div class="block__head">
-        <h2 class="label">Browse by topic</h2>
-        <a class="label label--link" href="/topics/">All topics →</a>
-      </div>
+      <div class="section-head"><h2>Topics</h2><a href="/topics/">All topics →</a></div>
       <ul class="chips chips--lg">
         {usedTopics.map((t) => <li><a class="chip" href={`/topics/${t.id}/`}>{t.label} <span>{t.count}</span></a></li>)}
       </ul>

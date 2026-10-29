@@ -1,6 +1,13 @@
 ---
 import { SITE, TYPES } from '../site.config.mjs';
+import { getProjects, projectNumber, fmtDate, type ProjectType } from '../lib/projects';
 const path = Astro.url.pathname;
+const all = await getProjects();
+const latest = all[0];
+const counts = (Object.keys(TYPES) as ProjectType[]).map((t) => {
+  const n = all.filter((p) => p.data.type === t).length;
+  return `${n} ${(n === 1 ? TYPES[t].label : TYPES[t].plural).toLowerCase()}`;
+});
 const nav = [
   ...Object.values(TYPES).map((t) => ({ href: `/${t.section}/`, label: t.plural })),
   { href: '/topics/', label: 'Topics' },
@@ -8,18 +15,25 @@ const nav = [
 ];
 ---
 
+<div class="strip">
+  <div class="wrap strip__inner">
+    <span><i class="pulse" aria-hidden="true"></i>Live index · {counts.join(' · ')}</span>
+    {latest && <span class="strip__latest">Last entry {projectNumber(latest)} · {fmtDate(latest.data.date)}</span>}
+  </div>
+</div>
 <header class="masthead">
   <div class="wrap masthead__inner">
     <a class="brand" href="/" aria-label={`${SITE.name} home`}>
-      <span class="brand__h">H Heuristics</span> <span class="brand__p">{SITE.shortName}</span>
+      <span class="brand__mark" aria-hidden="true">H<i></i></span>
+      <span class="brand__text"><b>H Heuristics</b><span>Projects Lab</span></span>
     </a>
     <nav class="nav" aria-label="Primary">
-      {nav.map((n) => (
-        <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>
+      {nav.map((n, i) => (
+        <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}><span>{String(i + 1).padStart(2, '0')}</span>{n.label}</a>
       ))}
-      <a class="nav__search" href="/search/" aria-label="Search" aria-current={path.startsWith('/search') ? 'page' : undefined}>
-        <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <span>Search</span>
+      <a class="nav__search" href="/search/" aria-current={path.startsWith('/search') ? 'page' : undefined}>
+        <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></svg>
+        Search
       </a>
     </nav>
   </div>

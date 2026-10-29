@@ -4,20 +4,27 @@ Static publishing platform for H Heuristics **reports**, **dashboards** and **pr
 
 ## Publishing workflow
 
-### Reports (from an H Heuristics monograph .docx)
+### Reports
+
+Reports come in two editions:
+
+| Edition | What readers get | Command |
+|---|---|---|
+| **PDF** (default) | Landing page with abstract, key insights, record sheet, chapter index that jumps to PDF pages, embedded PDF viewer, download, citation | `npm run ingest -- Report.pdf` |
+| **Digital** | Full web-native report: chapters, exhibits, tables, takeaways and references as HTML | `npm run ingest -- Report.docx --digital` |
 
 ```bash
-npm run ingest -- ~/Desktop/My_Report.docx            # picks up My_Report.pdf next to it automatically
-npm run ingest -- My_Report.docx --topics water,climate --featured
+npm run ingest -- ~/Desktop/My_Report.pdf                     # PDF edition; uses My_Report.docx for metadata if it sits next to it
+npm run ingest -- ~/Desktop/My_Report.docx --digital           # digital edition
+npm run ingest -- My_Report.pdf --topics water,climate --featured
 ```
 
-The ingest script:
+Metadata comes from the `.docx` when available (most accurate), otherwise straight from the PDF via poppler (`brew install poppler`): title, subtitle, series, author, date, chapters with page numbers, key insights, counts of exhibits, tables and references. Files written:
 
-- converts the Word document to web HTML: chapters → `<h2>`, exhibits → `<figure>` with captions and sources, tables, key-takeaway callouts and the reference list
-- re-encodes figures as WebP and copies the PDF to `public/reports/<slug>/`
-- writes `src/content/projects/reports/<year>/<slug>.md` with front matter: number (`HX-YYYY-NNN`), title, subtitle, series, description, abstract, topics, keywords, chapters, highlights and stats
+- `src/content/projects/reports/<year>/<slug>.md`: front matter with number (`HX-YYYY-NNN`), format, title, description, abstract, topics, keywords, chapters, highlights and stats (plus the HTML body for digital editions)
+- `public/reports/<slug>/`: the PDF, a cover image, and (digital) every exhibit as WebP
 
-Review the generated `description`, `abstract` and `topics` before publishing: they are good drafts, not final copy. Options: `--slug`, `--date YYYY-MM-DD`, `--number YYYY-NNN`, `--topics a,b`, `--featured`, `--draft`, `--force` (re-ingest an existing slug).
+Review the generated `description`, `abstract` and `topics` before publishing: they are drafts. Options: `--slug`, `--date YYYY-MM-DD`, `--number YYYY-NNN`, `--topics a,b`, `--featured`, `--draft`, `--force` (re-ingest an existing slug, keeping its number).
 
 ### Dashboards and projects
 

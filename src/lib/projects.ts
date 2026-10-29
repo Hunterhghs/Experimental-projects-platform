@@ -42,3 +42,21 @@ export function related(p: Project, all: Project[], n = 3): Project[] {
     .slice(0, n)
     .map((x) => x.o);
 }
+
+/** Deterministic bar heights (0–1) seeded by a string: each project's unique "signal" glyph. */
+export function signal(seed: string, bars = 56): number[] {
+  let h = 2166136261;
+  for (const c of seed) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  const rand = () => {
+    h = (h + 0x6d2b79f5) | 0;
+    let t = Math.imul(h ^ (h >>> 15), 1 | h);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  // Smoothed random walk so the glyph reads like a measured series, not noise.
+  let v = rand();
+  return Array.from({ length: bars }, () => {
+    v = Math.min(1, Math.max(0.08, v + (rand() - 0.5) * 0.45));
+    return Math.round(v * 100) / 100;
+  });
+}

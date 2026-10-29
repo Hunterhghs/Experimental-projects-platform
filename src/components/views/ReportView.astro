@@ -1,78 +1,136 @@
 ---
+// Report and project pages. `format: pdf` shows the PDF edition with a chapter
+// index that jumps to pages; `format: digital` renders the full web body.
 import { SITE, TYPES } from '../../site.config.mjs';
 import Citation from '../Citation.astro';
 import ProjectCard from '../ProjectCard.astro';
+import Signal from '../Signal.astro';
 import { projectNumber, fmtDate, topicLabel, absUrl, projectUrl, type Project } from '../../lib/projects';
 interface Props { project: Project; related: Project[] }
 const { project: p, related } = Astro.props;
 const d = p.data;
 const t = TYPES[d.type];
 const shareUrl = absUrl(projectUrl(p));
+const isPdf = d.format === 'pdf' && !!d.pdf;
+const numbered = d.chapters.filter((c) => c.number);
 ---
 
-<article class="report" data-pagefind-body>
-  <header class="rhead">
+<article class={`report t-${d.type}`} data-pagefind-body>
+  <header class="rhead gridpaper">
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb" data-pagefind-ignore>
-        <a href="/">Home</a> <span>/</span> <a href={`/${t.section}/`}>{t.plural}</a>
+        <a href="/">Index</a><span>/</span><a href={`/${t.section}/`}>{t.plural}</a><span>/</span><span class="id">{projectNumber(p)}</span>
       </nav>
-      <p class="rhead__eyebrow">
-        H Heuristics · {d.series ?? t.label} · № {projectNumber(p)} · {fmtDate(d.date, 'month')}
-        {d.status === 'experimental' && <span class="badge badge--dark">Experimental</span>}
-      </p>
-      <h1 class="rhead__title" data-pagefind-meta="title">{d.title}</h1>
-      {d.subtitle && <p class="rhead__subtitle">{d.subtitle}</p>}
-      {d.abstract && <p class="rhead__abstract">{d.abstract}</p>}
-      <dl class="rhead__meta">
-        <div><dt>Author</dt><dd>{d.authors.map((a) => a.name).join(', ')}</dd></div>
-        <div><dt>Institution</dt><dd>{SITE.publisher}</dd></div>
-        <div><dt>Published</dt><dd><time datetime={d.date.toISOString()}>{fmtDate(d.date)}</time></dd></div>
-        <div><dt>{t.label} №</dt><dd>{projectNumber(p)}</dd></div>
-        {d.stats && <div><dt>Reading time</dt><dd>{d.stats.readingMinutes} min</dd></div>}
-        {d.pages && <div><dt>PDF edition</dt><dd>{d.pages} pages</dd></div>}
-      </dl>
-      <p class="actions" data-pagefind-ignore>
-        {d.pdf && <a class="btn btn--gold" href={d.pdf} download>Download PDF</a>}
-        {d.externalUrl && <a class="btn btn--ghost" href={d.externalUrl}>Open project ↗</a>}
-        <a class="btn btn--ghost" href="#cite">Cite</a>
-        <button type="button" class="btn btn--ghost" data-share={shareUrl} data-title={d.title}>Share</button>
-      </p>
+      <div class="rhead__grid">
+        <div class="rhead__main">
+          <p class="typetag-row">
+            <span class="typetag"><i></i>{t.label} · {isPdf ? 'PDF edition' : 'Digital edition'}</span>
+            {d.series && <span class="meta">{d.series}</span>}
+            {d.status === 'experimental' && <span class="badge">Experimental</span>}
+          </p>
+          <h1 class="rhead__title" data-pagefind-meta="title">{d.title}</h1>
+          {d.subtitle && <p class="rhead__subtitle">{d.subtitle}</p>}
+          <p class="actions" data-pagefind-ignore>
+            {d.pdf && <a class="btn btn--signal" href={d.pdf} download>Download PDF{d.pages ? ` · ${d.pages} pp` : ''}</a>}
+            {isPdf && <a class="btn" href={d.pdf} target="_blank" rel="noopener">Open in new tab ↗</a>}
+            {d.externalUrl && <a class="btn" href={d.externalUrl}>Open project ↗</a>}
+            <a class="btn" href="#cite">Cite</a>
+            <button type="button" class="btn" data-share={shareUrl} data-title={d.title}>Share</button>
+          </p>
+        </div>
+        <aside class="sheet">
+          <p class="sheet__label">Record</p>
+          <dl>
+            <div><dt>Identifier</dt><dd class="id">{projectNumber(p)}</dd></div>
+            <div><dt>Author</dt><dd>{d.authors.map((a) => a.name).join(', ')}</dd></div>
+            <div><dt>Publisher</dt><dd>{SITE.publisher}</dd></div>
+            <div><dt>Published</dt><dd><time datetime={d.date.toISOString()}>{fmtDate(d.date)}</time></dd></div>
+            {d.pages && <div><dt>Length</dt><dd>{d.pages} pages{d.stats ? ` · ${d.stats.readingMinutes} min read` : ''}</dd></div>}
+            {d.doi && <div><dt>DOI</dt><dd><a href={`https://doi.org/${d.doi}`}>{d.doi}</a></dd></div>}
+            <div><dt>Licence</dt><dd>{d.license ?? SITE.license}</dd></div>
+          </dl>
+        </aside>
+      </div>
     </div>
+    <Signal seed={p.id} bars={120} height={56} class="rhead__signal" />
   </header>
+
+  <div class="wrap rintro">
+    {d.abstract && (
+      <section class="abstract">
+        <h2 class="label">Abstract</h2>
+        <p>{d.abstract}</p>
+      </section>
+    )}
+    {(numbered.length > 0 || d.stats) && (
+      <dl class="figures">
+        {numbered.length > 0 && <div><dt>{numbered.length}</dt><dd>Chapters</dd></div>}
+        {d.stats?.figures ? <div><dt>{d.stats.figures}</dt><dd>Exhibits</dd></div> : null}
+        {d.stats?.tables ? <div><dt>{d.stats.tables}</dt><dd>Data tables</dd></div> : null}
+        {d.stats?.references ? <div><dt>{d.stats.references}</dt><dd>References</dd></div> : null}
+      </dl>
+    )}
+  </div>
 
   {d.highlights.length > 0 && (
     <section class="wrap highlights" aria-labelledby="hl-h">
-      <h2 id="hl-h" class="label">Key insights</h2>
+      <div class="section-head"><h2 id="hl-h">Key insights</h2><span class="meta">{d.highlights.length} findings</span></div>
       <ol>{d.highlights.slice(0, 6).map((h) => <li>{h}</li>)}</ol>
       {d.highlights.length > 6 && (
         <details>
-          <summary>All {d.highlights.length} chapter insights</summary>
+          <summary>Show all {d.highlights.length} findings</summary>
           <ol start={7}>{d.highlights.slice(6).map((h) => <li>{h}</li>)}</ol>
         </details>
       )}
     </section>
   )}
 
-  <div class={`wrap rbody ${d.chapters.length ? 'has-toc' : ''}`}>
-    {d.chapters.length > 0 && (
-      <aside class="toc" data-pagefind-ignore>
-        <details open>
-          <summary class="label">Contents</summary>
+  {isPdf ? (
+    <section class="wrap reader" aria-label="PDF edition">
+      <div class="section-head"><h2>Read the report</h2><span class="meta">PDF · {d.pages ? `${d.pages} pages` : ''}</span></div>
+      <div class={`reader__grid ${d.chapters.length ? 'has-toc' : ''}`}>
+        {d.chapters.length > 0 && (
+          <nav class="toc" aria-label="Chapters">
+            <p class="toc__label">Contents</p>
+            <ol>
+              {d.chapters.map((c) => (
+                <li>
+                  <a href={c.page ? `${d.pdf}#page=${c.page}` : d.pdf} target="pdf-reader">
+                    {c.number && <span class="toc__n">{c.number}</span>}
+                    <span class="toc__t">{c.title}</span>
+                    {c.page && <span class="toc__p">p.{c.page}</span>}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+        <div class="reader__frame">
+          <iframe name="pdf-reader" src={`${d.pdf}#view=FitH`} title={`${d.title} (PDF)`} loading="lazy"></iframe>
+          <p class="reader__fallback">Your browser can't display the PDF inline. <a href={d.pdf} download>Download the PDF</a>.</p>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <div class={`wrap rbody ${d.chapters.length ? 'has-toc' : ''}`}>
+      {d.chapters.length > 0 && (
+        <nav class="toc toc--sticky" aria-label="Chapters" data-pagefind-ignore>
+          <p class="toc__label">Contents</p>
           <ol>
             {d.chapters.map((c) => (
-              <li><a href={`#${c.id}`}>{c.number && <span>{c.number}</span>}{c.title}</a></li>
+              <li><a href={`#${c.id}`}>{c.number && <span class="toc__n">{c.number}</span>}<span class="toc__t">{c.title}</span></a></li>
             ))}
           </ol>
-        </details>
-      </aside>
-    )}
-    <div class="prose">
-      <slot />
+        </nav>
+      )}
+      <div class="prose">
+        <slot />
+      </div>
     </div>
-  </div>
+  )}
 
   <div class="wrap rfoot" data-pagefind-ignore>
-    <div class="rfoot__topics">
+    <div>
       <h2 class="label">Topics</h2>
       <ul class="chips">{d.topics.map((tp) => <li><a class="chip" href={`/topics/${tp}/`}>{topicLabel(tp)}</a></li>)}</ul>
       {d.keywords.length > 0 && (
@@ -81,21 +139,27 @@ const shareUrl = absUrl(projectUrl(p));
           <p class="keywords">{d.keywords.join(' · ')}</p>
         </>
       )}
+      {d.regions.length > 0 && (
+        <>
+          <h2 class="label">Geographic coverage</h2>
+          <p class="keywords">{d.regions.join(' · ')}</p>
+        </>
+      )}
       <p class="license">Published open access under <a href={SITE.licenseUrl}>{d.license ?? SITE.license}</a>. © {d.date.getUTCFullYear()} {SITE.publisher}.</p>
     </div>
     <Citation project={p} />
   </div>
 
   <span hidden data-pagefind-filter="type">{t.label}</span>
+  <span hidden data-pagefind-filter="format">{isPdf ? 'PDF' : 'Digital'}</span>
   {d.topics.map((tp) => <span hidden data-pagefind-filter="topic">{topicLabel(tp)}</span>)}
   <span hidden data-pagefind-filter="year">{d.date.getUTCFullYear()}</span>
   <span hidden data-pagefind-meta="number">{projectNumber(p)}</span>
-  {d.cover && <span hidden data-pagefind-meta="image">{d.cover}</span>}
 </article>
 
 {related.length > 0 && (
   <section class="wrap block" data-pagefind-ignore>
-    <div class="block__head"><h2 class="label">Related</h2></div>
+    <div class="section-head"><h2>Related entries</h2></div>
     <div class="grid">{related.map((r) => <ProjectCard project={r} />)}</div>
   </section>
 )}
@@ -112,9 +176,9 @@ const shareUrl = absUrl(projectUrl(p));
     }),
   );
 
-  // Highlight the chapter currently in view: the last heading above the top quarter of the viewport.
-  const toc = document.querySelector<HTMLElement>('.toc');
-  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+  // Digital edition: highlight the chapter currently in view.
+  const toc = document.querySelector<HTMLElement>('.toc--sticky');
+  const links = toc ? [...toc.querySelectorAll<HTMLAnchorElement>('a')] : [];
   const targets = links.map((a) => document.getElementById(a.hash.slice(1))).filter((el): el is HTMLElement => !!el);
   let ticking = false;
   const update = () => {
@@ -131,4 +195,19 @@ const shareUrl = absUrl(projectUrl(p));
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
     update();
   }
+
+  // PDF edition: jump the embedded viewer to a chapter's page. Browsers ignore a
+  // hash-only change inside a PDF viewer, so reload the frame with the new #page.
+  const frame = document.querySelector<HTMLIFrameElement>('iframe[name="pdf-reader"]');
+  document.querySelectorAll<HTMLAnchorElement>('a[target="pdf-reader"]').forEach((a) =>
+    a.addEventListener('click', (e) => {
+      if (!frame || frame.offsetParent === null) return;
+      e.preventDefault();
+      document.querySelectorAll('a[target="pdf-reader"]').forEach((x) => x.removeAttribute('aria-current'));
+      a.setAttribute('aria-current', 'true');
+      frame.src = 'about:blank';
+      setTimeout(() => (frame.src = a.href), 40);
+      if (frame.getBoundingClientRect().top < 0) frame.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }),
+  );
 </script>

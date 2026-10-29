@@ -1,0 +1,15 @@
+---
+import { signal } from '../lib/projects';
+interface Props { seed: string; bars?: number; class?: string; height?: number }
+const { seed, bars = 56, class: cls, height = 48 } = Astro.props;
+const values = signal(seed, bars);
+const w = bars * 5;
+---
+
+<svg class:list={['signal', cls]} viewBox={`0 0 ${w} ${height}`} preserveAspectRatio="none" aria-hidden="true">
+  <line x1="0" y1={height - 0.5} x2={w} y2={height - 0.5} class="signal__base" />
+  {values.map((v, i) => {
+    const bh = Math.max(2, v * (height - 4));
+    return <rect x={i * 5} y={height - 1 - bh} width="3" height={bh} class={i % 9 === 4 ? 'signal__hi' : undefined} />;
+  })}
+</svg>

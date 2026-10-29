@@ -1,0 +1,29 @@
+---
+// Tabular index of projects: scales to long lists better than cards.
+import { TYPES } from '../site.config.mjs';
+import { projectUrl, projectNumber, fmtDate, topicLabel, isoDate, type Project } from '../lib/projects';
+interface Props { items: Project[]; compact?: boolean }
+const { items, compact = false } = Astro.props;
+---
+
+<div class:list={['ledger', { 'ledger--compact': compact }]} role="table" aria-label="Projects">
+  <div class="ledger__head" role="row">
+    <span role="columnheader">ID</span>
+    <span role="columnheader">Title</span>
+    {!compact && <span role="columnheader">Topics</span>}
+    <span role="columnheader">Type</span>
+    <span role="columnheader">Date</span>
+  </div>
+  {items.map((p) => (
+    <a class={`ledger__row t-${p.data.type}`} href={projectUrl(p)} role="row">
+      <span class="id" role="cell">{projectNumber(p)}</span>
+      <span class="ledger__title" role="cell">
+        <b>{p.data.title}</b>
+        {!compact && <em>{p.data.description}</em>}
+      </span>
+      {!compact && <span class="ledger__topics" role="cell">{p.data.topics.slice(0, 3).map(topicLabel).join(' · ')}</span>}
+      <span class="typetag" role="cell"><i></i>{TYPES[p.data.type].label}</span>
+      <span class="ledger__date" role="cell"><time datetime={isoDate(p.data.date)}>{fmtDate(p.data.date, compact ? 'month' : 'long')}</time></span>
+    </a>
+  ))}
+</div>

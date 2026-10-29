@@ -2,8 +2,10 @@
 
 The user uploads documents or content and expects them published live. The site deploys automatically from `main` on Cloudflare Pages, so publishing = commit + push.
 
-## Report from a .docx (and optional .pdf)
-1. `npm run ingest -- "/path/to/Report.docx"` (finds a same-named .pdf; or pass `--pdf`).
+## Reports
+Two editions. **PDF edition is the default** (landing page + embedded PDF + full metadata); use `--digital` only when the user asks for a digital / web-native report.
+1. PDF edition: `npm run ingest -- "/path/to/Report.pdf"` (uses a same-named .docx for metadata if present).
+   Digital edition: `npm run ingest -- "/path/to/Report.docx" --digital`.
 2. Open the generated `src/content/projects/reports/<year>/<slug>.md` and improve the front matter:
    - `description`: ≤ 300 chars, summarises the whole report (the auto version is just the first paragraph).
    - `abstract`: 3–5 sentences.

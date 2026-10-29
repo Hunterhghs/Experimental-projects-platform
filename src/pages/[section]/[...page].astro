@@ -1,7 +1,7 @@
 ---
 import type { GetStaticPaths, Page } from 'astro';
 import Base from '../../layouts/Base.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import Ledger from '../../components/Ledger.astro';
 import Pagination from '../../components/Pagination.astro';
 import { SITE, TYPES } from '../../site.config.mjs';
 import { getProjects, type Project, type ProjectType } from '../../lib/projects';
@@ -22,17 +22,19 @@ const title = page.currentPage > 1 ? `${meta.plural} — page ${page.currentPage
 ---
 
 <Base title={title} description={`${meta.blurb} ${page.total} ${meta.plural.toLowerCase()} from H Heuristics.`}>
-  <section class="wrap pagehead">
-    <p class="eyebrow">H Heuristics · {SITE.shortName}</p>
-    <h1>{meta.plural}</h1>
-    <p class="pagehead__lede">{meta.blurb}</p>
-    <p class="meta">{page.total} {page.total === 1 ? meta.label.toLowerCase() : meta.plural.toLowerCase()} · newest first · <a href="/search/">search all projects</a></p>
+  <section class="pagehead gridpaper">
+    <div class="wrap">
+      <p class="kicker"><span class={`sq t-${type}`}></span>Index / {meta.plural}</p>
+      <h1>{meta.plural}</h1>
+      <p class="pagehead__lede">{meta.blurb}</p>
+      <p class="meta">{page.total} {page.total === 1 ? 'entry' : 'entries'} · newest first · <a href="/search/">search all projects</a></p>
+    </div>
   </section>
   <section class="wrap block">
     {page.data.length ? (
-      <div class="grid">{page.data.map((p) => <ProjectCard project={p} headingLevel="h2" />)}</div>
+      <Ledger items={page.data} />
     ) : (
-      <p class="empty">No {meta.plural.toLowerCase()} published yet. The first {meta.label.toLowerCase()} is in preparation.</p>
+      <div class="empty"><span class="id">— — —</span><p>No {meta.plural.toLowerCase()} published yet. The first {meta.label.toLowerCase()} is in preparation.</p></div>
     )}
     <Pagination page={page} />
   </section>
