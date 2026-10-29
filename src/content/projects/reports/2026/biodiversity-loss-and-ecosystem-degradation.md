@@ -190,20 +190,22 @@ stats: { words: 1890, readingMinutes: 8, figures: 5, tables: 1, references: 15 }
 
 <p>The final pillar demands the mandatory incorporation of natural capital accounting into national balance sheets and corporate financial reporting. Under the Taskforce on Nature-related Financial Disclosures (TNFD) framework, financial institutions and sovereign treasuries must quantify and disclose nature dependencies and degradation liabilities. Transitioning global finance away from subsidizing biocide—where governments currently spend $1.8 trillion annually on subsidies that actively encourage deforestation, fossil extraction, and overfishing—and redirecting capital toward biodiversity restoration credits is the indispensable foundation for twenty-first-century planetary survival.</p>
 
-<ul class="references" id="references">
-<li><span class="ref-n">[1]</span>IPBES. (2019). <em>Global Assessment Report on Biodiversity and Ecosystem Services of the Intergovernmental Science-Policy Platform on Biodiversity and Ecosystem Services</em>. IPBES Secretariat, Bonn, Germany.</li>
-<li><span class="ref-n">[2]</span>WWF & Zoological Society of London. (2024). <em>Living Planet Report 2024: A System in Peril</em>. WWF International, Gland, Switzerland.</li>
-<li><span class="ref-n">[3]</span>Richardson, K., Steffen, W., Lucht, W., et al. (2023). Earth beyond six of nine planetary boundaries. <em>Science Advances</em>, 9(37), eadh2458.</li>
-<li><span class="ref-n">[4]</span>Dasgupta, P. (2021). <em>The Economics of Biodiversity: The Dasgupta Review</em>. HM Treasury, London.</li>
-<li><span class="ref-n">[5]</span>Costanza, R., de Groot, R., Sutton, P., et al. (2014). Changes in the global value of ecosystem services. <em>Global Environmental Change</em>, 26, 152–158.</li>
-<li><span class="ref-n">[6]</span>Lenton, T. M., Rockström, J., Gaffney, O., et al. (2019). Climate tipping points — too risky to bet against. <em>Nature</em>, 575(7784), 592–595.</li>
-<li><span class="ref-n">[7]</span>Lovejoy, T. E., & Nobre, C. (2018). Amazon tipping point. <em>Science Advances</em>, 4(2), eaat2340.</li>
-<li><span class="ref-n">[8]</span>Hughes, T. P., Kerry, J. T., Baird, A. H., et al. (2018). Global warming transforms coral reef assemblages. <em>Nature</em>, 556(7702), 492–496.</li>
-<li><span class="ref-n">[9]</span>Potts, S. G., Imperatriz-Fonseca, V., Ngo, H. T., et al. (2016). <em>The Assessment Report on Pollinators, Pollination and Food Production</em>. Secretariat of the IPBES, Bonn.</li>
-<li><span class="ref-n">[10]</span>FAO & ITPS. (2015). <em>Status of the World's Soil Resources (SWSR) – Main Report</em>. Food and Agriculture Organization of the United Nations, Rome.</li>
-<li><span class="ref-n">[11]</span>Garnett, S. T., Burgess, N. D., Fa, J. E., et al. (2018). A spatial overview of the global importance of Indigenous lands for conservation. <em>Nature Sustainability</em>, 1(7), 369–374.</li>
-<li><span class="ref-n">[12]</span>World Bank. (2021). <em>The Economic Case for Nature: A Global Earth-Economy Model to Assess Development Policy Pathways</em>. World Bank, Washington, DC.</li>
-<li><span class="ref-n">[13]</span>UNEP. (2021). <em>Making Peace with Nature: A Scientific Blueprint to Tackle the Climate, Biodiversity and Pollution Emergencies</em>. United Nations Environment Programme, Nairobi.</li>
-<li><span class="ref-n">[14]</span>Convention on Biological Diversity (CBD). (2022). <em>Kunming-Montreal Global Biodiversity Framework</em>. Decision 15/4, CBD Secretariat, Montreal.</li>
-<li><span class="ref-n">[15]</span>Taskforce on Nature-related Financial Disclosures (TNFD). (2023). <em>The TNFD Nature-Related Risk & Opportunity Management and Disclosure Framework</em>. TNFD, London.</li>
-</ul>
+<h2 id="references">References</h2>
+
+<ol class="references">
+<li id="ref-1"><span class="ref-n">[1]</span><span>IPBES. (2019). <em>Global Assessment Report on Biodiversity and Ecosystem Services of the Intergovernmental Science-Policy Platform on Biodiversity and Ecosystem Services</em>. IPBES Secretariat, Bonn, Germany.</span></li>
+<li id="ref-2"><span class="ref-n">[2]</span><span>WWF &amp; Zoological Society of London. (2024). <em>Living Planet Report 2024: A System in Peril</em>. WWF International, Gland, Switzerland.</span></li>
+<li id="ref-3"><span class="ref-n">[3]</span><span>Richardson, K., Steffen, W., Lucht, W., et al. (2023). Earth beyond six of nine planetary boundaries. <em>Science Advances</em>, 9(37), eadh2458.</span></li>
+<li id="ref-4"><span class="ref-n">[4]</span><span>Dasgupta, P. (2021). <em>The Economics of Biodiversity: The Dasgupta Review</em>. HM Treasury, London.</span></li>
+<li id="ref-5"><span class="ref-n">[5]</span><span>Costanza, R., de Groot, R., Sutton, P., et al. (2014). Changes in the global value of ecosystem services. <em>Global Environmental Change</em>, 26, 152–158.</span></li>
+<li id="ref-6"><span class="ref-n">[6]</span><span>Lenton, T. M., Rockström, J., Gaffney, O., et al. (2019). Climate tipping points — too risky to bet against. <em>Nature</em>, 575(7784), 592–595.</span></li>
+<li id="ref-7"><span class="ref-n">[7]</span><span>Lovejoy, T. E., &amp; Nobre, C. (2018). Amazon tipping point. <em>Science Advances</em>, 4(2), eaat2340.</span></li>
+<li id="ref-8"><span class="ref-n">[8]</span><span>Hughes, T. P., Kerry, J. T., Baird, A. H., et al. (2018). Global warming transforms coral reef assemblages. <em>Nature</em>, 556(7702), 492–496.</span></li>
+<li id="ref-9"><span class="ref-n">[9]</span><span>Potts, S. G., Imperatriz-Fonseca, V., Ngo, H. T., et al. (2016). <em>The Assessment Report on Pollinators, Pollination and Food Production</em>. Secretariat of the IPBES, Bonn.</span></li>
+<li id="ref-10"><span class="ref-n">[10]</span><span>FAO &amp; ITPS. (2015). <em>Status of the World's Soil Resources (SWSR) – Main Report</em>. Food and Agriculture Organization of the United Nations, Rome.</span></li>
+<li id="ref-11"><span class="ref-n">[11]</span><span>Garnett, S. T., Burgess, N. D., Fa, J. E., et al. (2018). A spatial overview of the global importance of Indigenous lands for conservation. <em>Nature Sustainability</em>, 1(7), 369–374.</span></li>
+<li id="ref-12"><span class="ref-n">[12]</span><span>World Bank. (2021). <em>The Economic Case for Nature: A Global Earth-Economy Model to Assess Development Policy Pathways</em>. World Bank, Washington, DC.</span></li>
+<li id="ref-13"><span class="ref-n">[13]</span><span>UNEP. (2021). <em>Making Peace with Nature: A Scientific Blueprint to Tackle the Climate, Biodiversity and Pollution Emergencies</em>. United Nations Environment Programme, Nairobi.</span></li>
+<li id="ref-14"><span class="ref-n">[14]</span><span>Convention on Biological Diversity (CBD). (2022). <em>Kunming-Montreal Global Biodiversity Framework</em>. Decision 15/4, CBD Secretariat, Montreal.</span></li>
+<li id="ref-15"><span class="ref-n">[15]</span><span>Taskforce on Nature-related Financial Disclosures (TNFD). (2023). <em>The TNFD Nature-Related Risk &amp; Opportunity Management and Disclosure Framework</em>. TNFD, London.</span></li>
+</ol>

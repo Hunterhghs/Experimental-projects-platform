@@ -366,9 +366,9 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--paper-2); 
 .takeaway p + p { margin-top: 0.6em; }
 
 .references { list-style: none; padding: 0; margin-top: 1.4em; font-family: var(--sans); font-size: 0.86rem; line-height: 1.55; color: var(--ink-2); }
-.references li { display: grid; grid-template-columns: 44px 1fr; padding: 10px 0; border-bottom: 1px dotted var(--line); }
+.references li { position: relative; padding: 10px 0 10px 48px; border-bottom: 1px dotted var(--line); }
 .references li + li { margin-top: 0; }
-.references .ref-n { font-family: var(--mono); color: var(--signal); font-size: 0.74rem; padding-top: 2px; }
+.references .ref-n { position: absolute; left: 0; top: 10px; font-family: var(--mono); color: var(--signal); font-size: 0.74rem; padding-top: 2px; }
 .references li:target { background: #fff3ef; }
 .references a { word-break: break-word; }
 
