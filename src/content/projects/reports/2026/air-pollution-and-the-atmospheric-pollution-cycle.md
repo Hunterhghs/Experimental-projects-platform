@@ -50,5 +50,4 @@ highlights:
   - "Modern air quality telemetry integrates satellite remote sensing, reference monitors, and dense IoT sensor meshes with AI forecasting. Eliminating regulatory deniability, this multi-tiered architecture provides the transparent empirical foundation required to govern regional airsheds and enforce binding cross-border compacts."
   - "The 2026–2040 Strategic Roadmap aligns clean cooking leapfrogging, industrial kiln retrofits, transport electrification, and blended green-health finance to save 38.2 million lives. Achieving clean air is the foundational investment that restores human capital, protects food systems, and breaks the compounding feedback loops of the polycrisis."
 stats: { words: 9751, readingMinutes: 42, figures: 18, tables: 6, references: 32 }
-featured: true
 ---
