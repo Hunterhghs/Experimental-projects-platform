@@ -106,7 +106,7 @@ export async function parseDocx(docxPath) {
     if (!t && k === 'p' && imgTag(n) === null) continue;
 
     // Chapter heading
-    const ch = isBoldPara(n) && t.match(/^Chapter\s+(\d+)\s*[:.–—-]\s*(.+)$/i);
+    const ch = isBoldPara(n) && (t.match(/^Chapter\s+(\d+)\s*[:.–—-]\s*(.+)$/i) || t.match(/^(\d+)\.\s+(.+)$/));
     if (ch) {
       flushRefs(); inRefs = false;
       const number = ch[1].padStart(2, '0');
