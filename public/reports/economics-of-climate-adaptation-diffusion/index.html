@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Economics of Climate Adaptation Diffusion — H Heuristics Digital Report</title>
+<meta name="description" content="Adaptation is not a technology problem. The tools exist, the returns are four to one, and the money still does not reach the field. A field-ledger digital report on the economics of climate adaptation diffusion.">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400&family=Inter:wght@400..600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ==========================================================================
+     FIELD LEDGER — a soil-and-canopy almanac
+     New digital report aesthetic, test run 01.
+     Tokens first; everything else composes from them.
+     ========================================================================== */
+  :root {
+    --paper: #f7f2e7;
+    --paper-2: #fdfaf2;
+    --ink: #22241e;
+    --ink-soft: #4a4f42;
+    --muted: #757a69;
+    --green: #1f4d3d;
+    --green-deep: #143529;
+    --green-soft: #dde6d8;
+    --ochre: #b98a2f;
+    --ochre-soft: #efe2c4;
+    --terracotta: #b4552d;
+    --terracotta-soft: #f2ddcd;
+    --clay: #c96f3f;
+    --sky: #55727a;
+    --sky-soft: #dbe4e2;
+    --sand: #e6dcc3;
+    --line: #d9cdb0;
+    --line-strong: #c2b28c;
+
+    --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --body-serif: "Source Serif 4", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "system-ui", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    --max: 860px;
+    --gutter: clamp(1.1rem, 4vw, 2.4rem);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body-serif);
+    font-size: 1.06rem;
+    line-height: 1.78;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--ochre-soft); color: var(--ink); }
+  a { color: var(--green); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:hover { color: var(--terracotta); }
+
+  .skip-link {
+    position: absolute; left: -999px; top: 0; z-index: 100;
+    background: var(--green); color: #fff; padding: .6rem 1rem;
+    font-family: var(--sans); font-size: .85rem;
+  }
+  .skip-link:focus { left: 0; }
+
+  /* --- reading progress ---------------------------------------------------- */
+  .progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0;
+    background: var(--terracotta); z-index: 60;
+  }
+
+  /* --- soil-horizon strip -------------------------------------------------- */
+  .soil-strip { display: flex; height: 9px; position: relative; z-index: 5; }
+  .soil-strip i { flex: 1 1 0; display: block; }
+  .soil-strip i:nth-child(1) { background: #1f2f24; }
+  .soil-strip i:nth-child(2) { background: #3d5238; }
+  .soil-strip i:nth-child(3) { background: #7c6a40; }
+  .soil-strip i:nth-child(4) { background: #a9703f; }
+  .soil-strip i:nth-child(5) { background: #d8c8a4; }
+
+  /* --- masthead ------------------------------------------------------------ */
+  .masthead {
+    background:
+      radial-gradient(1100px 340px at 82% -60px, rgba(185,138,47,.14), transparent 60%),
+      var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 3rem var(--gutter) 2.4rem;
+  }
+  .masthead-inner, .body-inner { max-width: var(--max); margin: 0 auto; }
+  .overline {
+    display: inline-block;
+    font-family: var(--mono); font-size: .62rem; font-weight: 500;
+    letter-spacing: .22em; text-transform: uppercase; color: var(--terracotta);
+    border: 1px solid var(--line-strong); padding: .38rem .65rem;
+    background: var(--paper-2); margin-bottom: 1.6rem;
+  }
+  .masthead h1 {
+    font-family: var(--serif); font-weight: 600; color: var(--green-deep);
+    font-size: clamp(2.1rem, 6vw, 3.35rem); line-height: 1.05;
+    letter-spacing: -.022em; margin: 0 0 1.1rem; max-width: 17ch;
+    text-wrap: balance;
+  }
+  .subtitle {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    font-size: clamp(1.12rem, 2.4vw, 1.38rem); color: var(--ink-soft);
+    max-width: 52ch; margin: 0 0 1.4rem; line-height: 1.45;
+  }
+  .strapline {
+    border-left: 4px solid var(--terracotta);
+    padding: .15rem 0 .15rem 1.1rem;
+    font-family: var(--sans); font-size: .95rem; color: var(--ink-soft);
+    max-width: 58ch; line-height: 1.6; margin: 0;
+  }
+  .meta-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    margin-top: 2.4rem; border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line-strong);
+    background: var(--paper-2);
+  }
+  .meta-row div {
+    padding: .7rem .9rem; border-right: 1px solid var(--line);
+    font-family: var(--mono); font-size: .66rem; letter-spacing: .06em;
+    color: var(--muted); text-transform: uppercase;
+  }
+  .meta-row div:last-child { border-right: 0; }
+  .meta-row strong { display: block; color: var(--ink); font-weight: 500; margin-top: .2rem; }
+
+  /* --- sticky section nav --------------------------------------------------- */
+  .section-nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(247,242,231,.94); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .section-nav-inner {
+    max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter);
+    display: flex; gap: 1.4rem; overflow-x: auto; scrollbar-width: none;
+  }
+  .section-nav-inner::-webkit-scrollbar { display: none; }
+  .section-nav a {
+    font-family: var(--mono); font-size: .66rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); text-decoration: none;
+    white-space: nowrap; padding: .75rem 0 .7rem; border-bottom: 2px solid transparent;
+  }
+  .section-nav a:hover { color: var(--green); }
+  .section-nav a.active { color: var(--green-deep); border-bottom-color: var(--terracotta); }
+
+  /* --- body ---------------------------------------------------------------- */
+  .report-body { padding: 2.6rem var(--gutter) 4rem; }
+  .body-inner { position: relative; }
+
+  section { margin-bottom: 3.4rem; scroll-margin-top: 3.2rem; }
+  .section-rule {
+    border: 0; border-top: 1px solid var(--line);
+    margin: 3.4rem 0; position: relative;
+  }
+  .section-rule::after {
+    content: "◆"; position: absolute; left: 50%; top: -.62em;
+    transform: translateX(-50%); color: var(--ochre); font-size: .7rem;
+    background: var(--paper); padding: 0 .5rem;
+  }
+
+  .section-label {
+    font-family: var(--mono); font-size: .64rem; font-weight: 500;
+    letter-spacing: .22em; text-transform: uppercase; color: var(--terracotta);
+    margin: 0 0 .5rem;
+  }
+  h2 {
+    font-family: var(--serif); font-weight: 600; color: var(--green-deep);
+    font-size: clamp(1.5rem, 3.6vw, 2rem); line-height: 1.18;
+    letter-spacing: -.015em; margin: 0 0 1rem; border-left: 4px solid var(--ochre);
+    padding-left: 1rem; text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--serif); font-weight: 600; color: var(--green);
+    font-size: 1.22rem; margin: 1.9rem 0 .6rem;
+  }
+  p { margin: 0 0 1.05rem; }
+  p:first-of-type { margin-top: 0; }
+  .section-dek {
+    font-family: var(--serif); font-style: italic; color: var(--ink-soft);
+    font-size: 1.14rem; line-height: 1.5; margin: 0 0 1.4rem;
+    max-width: 60ch;
+  }
+  strong { color: var(--green-deep); }
+  em { color: var(--ink-soft); }
+
+  /* --- abstract ------------------------------------------------------------- */
+  .abstract {
+    background: var(--paper-2); border: 1px solid var(--line);
+    border-top: 3px solid var(--green); padding: 1.6rem 1.8rem 1.2rem;
+    margin-bottom: 2.6rem;
+  }
+  .abstract .abstract-label {
+    font-family: var(--mono); font-size: .62rem; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--terracotta); margin: 0 0 .9rem;
+  }
+  .abstract p { font-size: 1.0rem; line-height: 1.72; margin-bottom: .95rem; }
+  .abstract p:last-child { margin-bottom: 0; }
+
+  /* --- exec findings grid --------------------------------------------------- */
+  .exec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.1rem; margin: 1.6rem 0 1.8rem; }
+  .exec-card {
+    background: var(--paper-2); border: 1px solid var(--line); padding: 1.3rem 1.3rem 1.2rem;
+    position: relative;
+  }
+  .exec-card::before { content: ""; position: absolute; top: -1px; left: 0; right: 0; height: 3px; background: var(--ochre); }
+  .exec-num {
+    font-family: var(--mono); font-size: .62rem; letter-spacing: .18em;
+    color: var(--terracotta); margin-bottom: .6rem;
+  }
+  .exec-title { font-family: var(--serif); font-weight: 600; color: var(--green-deep); font-size: 1.06rem; line-height: 1.35; margin-bottom: .5rem; }
+  .exec-body { font-family: var(--sans); font-size: .86rem; line-height: 1.62; color: var(--ink-soft); margin: 0; }
+
+  /* --- stat grid ------------------------------------------------------------- */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 1.8rem 0; }
+  .stat-card { background: var(--paper-2); padding: 1.15rem 1.2rem 1.05rem; position: relative; }
+  .stat-card::before { content: ""; position: absolute; top: 0; left: 0; width: 14px; height: 3px; background: var(--green); }
+  .stat-value {
+    font-family: var(--serif); font-weight: 600; color: var(--green-deep);
+    font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.05; margin-bottom: .45rem;
+  }
+  .stat-label { font-family: var(--sans); font-size: .84rem; line-height: 1.5; color: var(--ink-soft); }
+  .stat-source { font-family: var(--mono); font-size: .62rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin-top: .7rem; }
+
+  /* --- figures --------------------------------------------------------------- */
+  .figure { margin: 2rem 0 2.2rem; }
+  .fig-head {
+    font-family: var(--mono); font-size: .64rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--terracotta); margin-bottom: .7rem;
+    display: flex; align-items: baseline; gap: .6rem;
+  }
+  .fig-head::after { content: ""; flex: 1; border-top: 1px dotted var(--line-strong); transform: translateY(-.28em); }
+  .legend { display: inline-flex; align-items: center; gap: .45rem; font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; color: var(--muted); text-transform: none; }
+  .legend i { width: .65rem; height: .65rem; display: inline-block; }
+  .chart-frame {
+    background: var(--paper-2); border: 1px solid var(--line); padding: 1.1rem;
+    overflow-x: auto;
+  }
+  .chart-frame svg { display: block; width: 100%; height: auto; min-width: 560px; }
+  .fig-caption { font-family: var(--sans); font-size: .82rem; color: var(--muted); line-height: 1.55; margin-top: .65rem; }
+  .fig-caption a { color: var(--green); }
+
+  /* --- table ----------------------------------------------------------------- */
+  .tbl-caption { font-family: var(--mono); font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--terracotta); margin-bottom: .7rem; }
+  .tbl-scroll { overflow-x: auto; margin-bottom: .6rem; }
+  table.data-table { border-collapse: collapse; width: 100%; min-width: 620px; background: var(--paper-2); font-family: var(--sans); font-size: .88rem; }
+  table.data-table th, table.data-table td { text-align: left; padding: .7rem .85rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.data-table thead th { font-family: var(--mono); font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; color: var(--green); border-bottom: 2px solid var(--green); background: var(--paper-2); }
+  table.data-table tbody th { font-weight: 600; color: var(--green-deep); white-space: nowrap; }
+  .table-note { font-family: var(--sans); font-size: .8rem; color: var(--muted); margin-top: .5rem; }
+
+  /* --- callout & pull-quote ---------------------------------------------------- */
+  .callout {
+    background: var(--green-soft); border-left: 4px solid var(--green);
+    padding: 1.15rem 1.4rem; margin: 1.7rem 0; font-family: var(--sans); font-size: .9rem; line-height: 1.65;
+  }
+  .callout--warn { background: var(--terracotta-soft); border-left-color: var(--terracotta); }
+  .callout-title { font-family: var(--mono); font-size: .64rem; letter-spacing: .18em; text-transform: uppercase; color: var(--green-deep); margin: 0 0 .45rem; font-weight: 500; }
+  .callout--warn .callout-title { color: var(--terracotta); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  .pull-quote {
+    font-family: var(--serif); font-style: italic; font-size: clamp(1.3rem, 3.2vw, 1.65rem);
+    line-height: 1.4; color: var(--green-deep); margin: 2.2rem 0; padding: 1.2rem 1.6rem;
+    border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong);
+    position: relative; max-width: 30ch;
+  }
+  .pull-quote .attribution {
+    display: block; font-family: var(--mono); font-style: normal; font-size: .64rem;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--terracotta); margin-top: .9rem;
+  }
+
+  /* --- lists ------------------------------------------------------------------ */
+  ul { margin: 0 0 1.1rem; padding-left: 1.2rem; }
+  li { margin-bottom: .45rem; }
+
+  /* --- references -------------------------------------------------------------- */
+  .ref-list { list-style: none; padding: 0; margin: 1.4rem 0 0; }
+  .ref-list li {
+    font-family: var(--sans); font-size: .86rem; line-height: 1.6; color: var(--ink-soft);
+    padding: .75rem 0; border-bottom: 1px solid var(--line); margin: 0;
+  }
+  .ref-org {
+    display: inline-block; font-family: var(--mono); font-size: .6rem; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--green); background: var(--green-soft);
+    padding: .14rem .45rem; margin-right: .6rem; vertical-align: .1em;
+  }
+
+  /* --- end matter / footer ------------------------------------------------------ */
+  .end-matter {
+    background: var(--green-deep); color: #e9e4d6;
+    border-top: 6px solid var(--ochre);
+    margin-top: 4rem; padding: 2.6rem var(--gutter) 3rem;
+  }
+  .end-inner { max-width: var(--max); margin: 0 auto; }
+  .end-inner h2 { color: #f4efe0; border-left-color: var(--ochre); }
+  .end-inner .section-dek { color: #cfc8b4; }
+  .binding-term {
+    border: 1px solid rgba(233,228,214,.35); padding: 1.3rem 1.5rem;
+    font-family: var(--serif); font-size: 1.08rem; line-height: 1.6; color: #f4efe0;
+  }
+  .binding-term .bt-label { display: block; font-family: var(--mono); font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ochre); margin-bottom: .6rem; }
+  .colophon { font-family: var(--mono); font-size: .68rem; color: #a99f87; margin-top: 2rem; line-height: 1.8; }
+  .colophon a { color: #d8cdb0; }
+
+  @media (max-width: 640px) {
+    body { font-size: 1.02rem; }
+    .masthead { padding-top: 2.2rem; }
+    .meta-row { grid-template-columns: 1fr 1fr; }
+    .meta-row div { border-bottom: 1px solid var(--line); }
+    .section-nav a { font-size: .6rem; }
+    .chart-frame::after { content: "\2192 scroll"; display: block; font-family: var(--mono); font-size: .6rem; letter-spacing: .12em; color: var(--muted); margin-top: .55rem; }
+  }
+
+  @media print {
+    .progress, .section-nav, .soil-strip { display: none !important; }
+    .masthead { padding-top: 1rem; }
+    body { background: #fff; }
+    .chart-frame svg { min-width: 0; }
+    section { break-inside: avoid-page; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+<style>
+  /* Supplementary Field Ledger styles for this report */
+  h2.plot-title { font-family: var(--serif); font-weight: 600; font-size: clamp(1.35rem, 3vw, 1.7rem); line-height: 1.2; color: var(--green-deep); margin: 0 0 .6rem; }
+  .prose p { margin: 0 0 1.1rem; }
+  .prose p:last-child { margin-bottom: 0; }
+  .pull { border-left: 3px solid var(--terracotta); background: var(--terracotta-soft); padding: .9rem 1.1rem; margin: 1.6rem 0; font-family: var(--serif); font-style: italic; font-size: 1.05rem; line-height: 1.5; color: var(--ink); }
+  .pull .attribution { display: block; margin-top: .5rem; font-family: var(--mono); font-style: normal; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .binding { border-top: 2px solid var(--green); border-bottom: 2px solid var(--green); padding: 1.2rem 0; margin: 2rem 0; }
+  .binding p { font-family: var(--serif); font-size: 1.1rem; line-height: 1.55; color: var(--green-deep); margin: 0; }
+  .binding strong { color: var(--terracotta); }
+  .refs { list-style: none; padding: 0; margin: 1.4rem 0 0; counter-reset: ref; }
+  .refs li { counter-increment: ref; position: relative; padding: .55rem 0 .55rem 2.6rem; border-bottom: 1px solid var(--line); font-size: .88rem; line-height: 1.5; color: var(--ink-soft); }
+  .refs li::before { content: "[" counter(ref) "]"; position: absolute; left: 0; top: .55rem; font-family: var(--mono); font-size: .72rem; color: var(--terracotta); }
+  .levers { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: .5rem; margin: 1.4rem 0; }
+  .lever { border-top: 4px solid var(--green); background: var(--paper-2); padding: .7rem .8rem; }
+  .lever .n { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0; }
+  .lever p { font-size: .82rem; line-height: 1.4; color: var(--ink-soft); margin: .35rem 0 0; }
+  @media (max-width: 720px) { .levers { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="soil-strip" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="section-label">H Heuristics · Field Ledger Digital Report</p>
+    <h1>The Economics of Climate Adaptation Diffusion</h1>
+    <p class="section-dek">Adaptation is not a technology problem. The tools exist, the returns are four to one, and the money still does not reach the field.</p>
+    <div class="meta-row" role="list" aria-label="Report metadata">
+      <div role="listitem"><span class="meta-k">Series</span><span class="meta-v">Field Ledger</span></div>
+      <div role="listitem"><span class="meta-k">Read</span><span class="meta-v">10 minutes</span></div>
+      <div role="listitem"><span class="meta-k">Published</span><span class="meta-v">30 October 2026</span></div>
+      <div role="listitem"><span class="meta-k">Author</span><span class="meta-v">Hunter Hughes, H Heuristics</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="section-nav" aria-label="Report sections">
+  <div class="section-nav-inner" id="sectionNav">
+    <a href="#plot-00">Orientation</a>
+    <a href="#plot-01">1 · Investment</a>
+    <a href="#plot-02">2 · Cost curve</a>
+    <a href="#plot-03">3 · Adoption</a>
+    <a href="#plot-04">4 · Diffusion record</a>
+    <a href="#plot-05">5 · Counter-case</a>
+    <a href="#plot-06">6 · Financing</a>
+  </div>
+</nav>
+
+<main>
+
+<section id="plot-00" class="prose">
+  <p class="section-label">Plot 00 · Orientation</p>
+  <h2 class="plot-title">The tools exist; the capital does not</h2>
+  <p class="section-dek">Climate adaptation is stuck in the wrong frame. The binding constraint is not invention. It is the investment case, the delivery system and the willingness to pay for returns that arrive as avoided losses rather than as revenue.</p>
+
+  <div class="stat-grid" role="list" aria-label="Key figures">
+    <div class="stat-card" role="listitem">
+      <div class="stat-value">$194–366B</div>
+      <div class="stat-label">The annual adaptation finance gap between what developing countries need and what they receive.</div>
+      <div class="stat-source">UNEP, Adaptation Gap Report 2023</div>
+    </div>
+    <div class="stat-card" role="listitem">
+      <div class="stat-value">$1.8T</div>
+      <div class="stat-label">Investment 2020–2030 in five adaptation areas that would generate $7.1 trillion in net benefits.</div>
+      <div class="stat-source">Global Commission on Adaptation, Adapt Now</div>
+    </div>
+    <div class="stat-card" role="listitem">
+      <div class="stat-value">4:1</div>
+      <div class="stat-label">Benefit-cost ratio of that portfolio: adaptation is one of the highest-return public investments available.</div>
+      <div class="stat-source">Global Commission on Adaptation</div>
+    </div>
+    <div class="stat-card" role="listitem">
+      <div class="stat-value">10:1</div>
+      <div class="stat-label">Return on early warning systems: about $3.1 billion over five years protects hundreds of millions of people.</div>
+      <div class="stat-source">WMO / Global Commission on Adaptation</div>
+    </div>
+  </div>
+
+  <p>The economics of adaptation are the economics of a public good with private costs. A well-drained city protects everyone in the watershed, including those who paid nothing. A mangrove belt absorbs storm surge for the whole coastline behind it. An early warning system saves lives across an entire river basin, and no household can be excluded once the warning is broadcast. Because the benefits leak outward and cannot be priced at the point of use, private actors under-provide adaptation relative to what the public would pay for it in advance. The gap is not a knowledge gap or an engineering gap. It is a financing gap with a specific structure, and it is large.</p>
+</section>
+
+<hr class="section-rule">
+
+<section id="plot-01" class="prose">
+  <p class="section-label">Plot 01 · Investment Problem</p>
+  <h2 class="plot-title">Adaptation is judged by the wrong investors</h2>
+  <p class="section-dek">A technology problem is solved by engineers. An investment problem is solved by whoever allocates capital — and adaptation looks strange to every conventional investor.</p>
+
+  <p>Drought-tolerant maize and sorghum are in seed catalogues. Drip irrigation is a mature, mass-manufactured product. Mangrove replanting is a matter of seedlings, shovels and land tenure. Early warning systems run on satellites already in orbit and mobile networks that already reach most people at risk. The missing input is capital, deployed at a tenor that matches the asset.</p>
+
+  <p>Judged on expected return, risk and counterparty, adaptation confuses every conventional screen. The benefits are real but diffuse, delayed and counterfactual: a flood that did not happen, a harvest that did not fail, a heat wave that did not kill. No one invoices for a disaster averted. The costs, by contrast, are concentrated, immediate and visible, which is exactly the profile that makes a project easy to defer. A drainage premium paid today accrues to a future government; a seed subsidy paid this season protects a harvest next season. That mismatch of time horizons, not any doubt about the engineering, is why so much adaptation is not built.</p>
+
+  <p>The result is the familiar shape of every under-financed public investment with a long payback: infrastructure, sanitation, vaccination, school construction. The task is to make returns legible — to convert avoided damage into a number a finance ministry can put in a budget line and a bond investor can put in a model. That is an accounting problem before it is a technological one.</p>
+</section>
+
+<hr class="section-rule">
+
+<section id="plot-02" class="prose">
+  <p class="section-label">Plot 02 · Cost Curve</p>
+  <h2 class="plot-title">A four-to-one portfolio nobody subscribes to</h2>
+  <p class="section-dek">The Global Commission on Adaptation priced five areas (early warning, resilient infrastructure, dryland agriculture, mangroves and resilient water) and found returns most investors never see.</p>
+
+  <div class="chart-frame">
+    <svg viewBox="0 0 760 300" role="img" aria-label="Bar chart comparing the annual adaptation finance gap, the investment need and the projected benefit">
+      <rect x="0" y="0" width="760" height="300" fill="#f7f2e7"/>
+      <g stroke="#d9cdb0" stroke-width="0.5"><path d="M0 60h760M0 120h760M0 180h760M0 240h760"/></g>
+      <g stroke="#d9cdb0" stroke-width="0.5"><path d="M80 0v300M240 0v300M400 0v300M560 0v300M720 0v300"/></g>
+      <rect x="120" y="218" width="120" height="62" fill="#b98a2f"/>
+      <text x="180" y="208" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#22241e">$280B</text>
+      <text x="180" y="296" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#757a69">Annual gap (midpoint)</text>
+      <rect x="320" y="150" width="120" height="130" fill="#1f4d3d"/>
+      <text x="380" y="140" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#22241e">$1.8T</text>
+      <text x="380" y="296" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#757a69">Investment 2020–30</text>
+      <rect x="520" y="28" width="120" height="252" fill="#b4552d"/>
+      <text x="580" y="20" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#22241e">$7.1T</text>
+      <text x="580" y="296" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#757a69">Net benefits</text>
+    </svg>
+    <p class="panel-note">Source: UNEP Adaptation Gap Report 2023; Global Commission on Adaptation. Bars are illustrative scale comparisons, not to a single axis.</p>
+  </div>
+
+  <p>The early warning case is the sharpest. Spending about $3.1 billion over five years on multi-hazard early warning would deliver an estimated ten-to-one return and reach hundreds of millions of people who currently receive no warning at all. A cyclone that arrives with forty-eight hours' notice allows evacuation, livestock movement and grain storage; the same cyclone without notice kills people and destroys assets. The capital cost of the system is small relative to the asset stock it protects.</p>
+
+  <div class="chart-frame">
+    <svg viewBox="0 0 760 300" role="img" aria-label="Horizontal bars of benefit-cost ratios for five adaptation areas">
+      <rect x="0" y="0" width="760" height="300" fill="#f7f2e7"/>
+      <g stroke="#d9cdb0" stroke-width="0.5"><path d="M0 60h760M0 120h760M0 180h760M0 240h760"/></g>
+      <g font-family="IBM Plex Mono" font-size="11" fill="#4a4f42">
+        <rect x="80" y="30" width="520" height="26" fill="#1f4d3d"/><text x="60" y="48" text-anchor="end">Early warning</text><text x="608" y="48">10:1</text>
+        <rect x="80" y="70" width="260" height="26" fill="#1f4d3d"/><text x="60" y="88" text-anchor="end">Mangroves</text><text x="348" y="88">5:1</text>
+        <rect x="80" y="110" width="208" height="26" fill="#b98a2f"/><text x="60" y="128" text-anchor="end">Resilient water</text><text x="296" y="128">4:1</text>
+        <rect x="80" y="150" width="156" height="26" fill="#b98a2f"/><text x="60" y="168" text-anchor="end">Resilient infrastructure</text><text x="244" y="168">3:1</text>
+        <rect x="80" y="190" width="104" height="26" fill="#b4552d"/><text x="60" y="208" text-anchor="end">Dryland agriculture</text><text x="192" y="208">2:1</text>
+      </g>
+    </svg>
+    <p class="panel-note">Illustrative benefit-cost ranges across the five Global Commission on Adaptation investment areas; ratios vary by design, governance and maintenance.</p>
+  </div>
+
+  <p>Two cautions belong in any honest cost curve. These are global and regional averages, and project-level returns vary enormously with governance and maintenance — a drainage system that is never cleaned delivers nothing. Benefit estimates also depend on assumptions about future climate and prices. But the direction of the finding is robust across studies: adaptation is not a cost centre. It is a high-return public investment, chronically under-subscribed.</p>
+</section>
+
+<hr class="section-rule">
+
+<section id="plot-03" class="prose">
+  <p class="section-label">Plot 03 · Adoption Economics</p>
+  <h2 class="plot-title">Why adaptation diffuses slowly</h2>
+  <p class="section-dek">Adaptation is infrastructure-embedded, under-financed and subject to three adoption frictions (risk, credit and information) that compound rather than add.</p>
+
+  <p>Most adaptation is not a thing a household buys and takes home. Irrigation is a canal, a pump, field levelling and a water right. Flood defence is an embankment and a drainage network. These are systems with long asset lives, high upfront capital and returns the investor cannot fully capture. A farmer who levels a field captures some benefit; the downstream users who receive the saved water capture the rest for free. When payer and beneficiary differ, the investment stalls below the socially optimal level, and no amount of technology transfer changes that.</p>
+
+  <p>The frictions compound. Risk: a household facing an uncertain season will not borrow against a drought-tolerant seed whose benefit arrives only in the bad year. Credit: rural credit markets are thin, and adaptation assets are poor collateral. Information: the farmer cannot observe the counterfactual (the harvest that would have failed), so the benefit is systematically invisible at the point of adoption. Each friction alone slows diffusion; together they stop it.</p>
+
+  <div class="chart-frame">
+    <svg viewBox="0 0 760 280" role="img" aria-label="Diffusion lag by technology">
+      <rect x="0" y="0" width="760" height="280" fill="#f7f2e7"/>
+      <g stroke="#d9cdb0" stroke-width="0.5"><path d="M0 60h760M0 120h760M0 180h760M0 240h760"/></g>
+      <g font-family="IBM Plex Mono" font-size="11" fill="#4a4f42">
+        <rect x="80" y="30" width="560" height="26" fill="#1f4d3d"/><text x="60" y="48" text-anchor="end">Early warning</text><text x="648" y="48">Fast</text>
+        <rect x="80" y="70" width="360" height="26" fill="#b98a2f"/><text x="60" y="88" text-anchor="end">Drought seed</text><text x="448" y="88">Medium</text>
+        <rect x="80" y="110" width="200" height="26" fill="#b98a2f"/><text x="60" y="128" text-anchor="end">Cooling</text><text x="288" y="128">Slow</text>
+        <rect x="80" y="150" width="120" height="26" fill="#b4552d"/><text x="60" y="168" text-anchor="end">Irrigation</text><text x="208" y="168">Slowest</text>
+      </g>
+    </svg>
+    <p class="panel-note">Illustrative diffusion speed by infrastructure-embeddedness; early warning is a service, irrigation and cooling are fixed systems.</p>
+  </div>
+
+  <div class="chart-frame">
+    <svg viewBox="0 0 760 280" role="img" aria-label="Adoption S-curves for drought-tolerant seed under different financing conditions">
+      <rect x="0" y="0" width="760" height="280" fill="#f7f2e7"/>
+      <g stroke="#d9cdb0" stroke-width="0.5"><path d="M0 60h760M0 120h760M0 180h760M0 240h760"/></g>
+      <path d="M60 240 C 220 232, 320 170, 460 90 S 640 52, 700 46" fill="none" stroke="#1f4d3d" stroke-width="2.5"/>
+      <path d="M60 240 C 260 236, 420 210, 560 150 S 680 96, 700 82" fill="none" stroke="#b4552d" stroke-width="2" stroke-dasharray="6 5"/>
+      <g font-family="IBM Plex Mono" font-size="10" fill="#4a4f42">
+        <text x="520" y="70">With finance + risk cover</text>
+        <text x="470" y="170">Without</text>
+        <text x="60" y="262">0</text><text x="700" y="262">2050</text>
+      </g>
+    </svg>
+    <p class="panel-note">Illustrative S-curves: financing and risk cover shift adoption forward by years, which is the entire policy prize.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<section id="plot-04" class="prose">
+  <p class="section-label">Plot 04 · Diffusion Record</p>
+  <h2 class="plot-title">The record: early warning, seed, irrigation, cooling</h2>
+  <p class="section-dek">Four technologies, four speeds, one pattern: diffusion tracks who carries the cost, not who needs the benefit.</p>
+
+  <div class="stat-grid" role="list" aria-label="Diffusion record">
+    <div class="stat-card" role="listitem">
+      <div class="stat-value">1.2B</div>
+      <div class="stat-label">People who lack access to cooling that would protect them from extreme heat.</div>
+      <div class="stat-source">SEforALL, Chilling Prospects</div>
+    </div>
+    <div class="stat-card" role="listitem">
+      <div class="stat-value">5% vs 40%</div>
+      <div class="stat-label">Sub-Saharan Africa cropland under irrigation, against Asia's share.</div>
+      <div class="stat-source">FAO AQUASTAT</div>
+    </div>
+    <div class="stat-card" role="listitem">
+      <div class="stat-value">Low</div>
+      <div class="stat-label">Adoption of drought-tolerant and improved seed across much of Sub-Saharan Africa, despite decades of availability.</div>
+      <div class="stat-source">CGIAR / national seed systems</div>
+    </div>
+    <div class="stat-card" role="listitem">
+      <div class="stat-value">3.1B</div>
+      <div class="stat-label">Dollars over five years to complete early warning coverage — the fastest, cheapest layer of the stack.</div>
+      <div class="stat-source">WMO, Early Warnings for All</div>
+    </div>
+  </div>
+
+  <p>Early warning diffused fastest because governments carried the cost and the benefit was broadcast to everyone. Irrigation diffused slowest because the cost fell on farmers, the maintenance fell on nobody, and the water right was contested. Cooling is stalling now because the cost falls on the poorest households at the moment of greatest heat. Seed sits in between: a private good with a public information problem, adoption crawling where extension and credit are thin. The pattern is uniform. Diffusion tracks who carries the cost.</p>
+
+  <div class="levers" role="list" aria-label="Five levers from hazard to resilience">
+    <div class="lever" role="listitem"><p class="n">Lever 1</p><p>Finance — move the cost to the balance sheet that can carry it.</p></div>
+    <div class="lever" role="listitem"><p class="n">Lever 2</p><p>Seed — breed and deliver for the weather that is coming, not the weather that was.</p></div>
+    <div class="lever" role="listitem"><p class="n">Lever 3</p><p>Water — irrigation, storage and drainage as public systems.</p></div>
+    <div class="lever" role="listitem"><p class="n">Lever 4</p><p>Infrastructure — build to the climate of 2050, at a small premium today.</p></div>
+    <div class="lever" role="listitem"><p class="n">Lever 5</p><p>Early warning — the cheapest ten-to-one return in the portfolio.</p></div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<section id="plot-05" class="prose">
+  <p class="section-label">Plot 05 · Counter-Case</p>
+  <h2 class="plot-title">Adaptation follows damage</h2>
+  <p class="section-dek">The strongest opposing view: reactive spending is politically easier, so adaptation will happen after disasters, and pre-emptive investment is a luxury.</p>
+
+  <p>The view has real force. Disasters create urgency, unlock emergency budgets and concentrate attention. Pre-emptive adaptation, by contrast, asks a finance minister to spend today against a loss that will not appear in any ledger. Political economy predicts underinvestment in prevention, and the adaptation finance gap is partly that prediction coming true.</p>
+
+  <div class="pull">"The flood that did not happen has no ribbon-cutting, no emergency session and no donor pledge. That is precisely why it is the cheapest outcome — and why it is systematically under-funded."<span class="attribution">Field Ledger · The prevention paradox</span></div>
+
+  <p>The refutation is arithmetic. Waiting converts a four-to-one investment into a one-to-one reconstruction bill, and it converts a warning that costs cents into a disaster that costs lives. The early warning evidence makes the point: a system that costs $3.1 billion over five years returns ten to one, while the disasters it averts cost orders of magnitude more in relief and lost assets. Reactive adaptation is not a cheaper version of the same policy. It is the most expensive version, paid in the currency of the poor, after the asset is already gone.</p>
+
+  <p>The counter-case is right that reactive spending is politically easier. It is wrong that pre-emptive investment is a luxury. The four-to-one portfolio is the proof: adaptation is not compensation for damage. It is the purchase of a cheaper future.</p>
+</section>
+
+<hr class="section-rule">
+
+<section id="plot-06" class="prose">
+  <p class="section-label">Plot 06 · Financing</p>
+  <h2 class="plot-title">From projects to systems</h2>
+  <p class="section-dek">The financing fix is an architecture, not a fund: blended finance, results-based adaptation finance, sovereign risk integration, and a change of frame.</p>
+
+  <p>Blended finance uses concessional public capital to absorb the risks that keep private capital out (first-loss equity, guarantees, subordinated debt), sized to the specific risk rather than used as a general subsidy. Results-based adaptation finance pays for verified outcomes (households with safe water in a drought, hectares with functioning drainage) rather than inputs, which shifts performance risk to the party best able to manage it and creates an incentive to maintain the asset after construction.</p>
+
+  <p>Sovereign risk integration puts adaptation into the machinery of public finance: climate risk screening in public investment appraisal, adaptation expenditure tagged in the budget, contingent liability planning for disaster response, and climate risk in sovereign credit ratings and debt sustainability analysis. When adaptation is a line in the budget and a factor in the interest rate a country pays, it stops being a donor conversation and becomes a finance ministry conversation.</p>
+
+  <p>The last shift is the frame. Compensation framing produces grants for reconstruction, which are consumed. Investment framing produces capital for assets that generate returns — irrigation that raises yields, cooling that protects labour productivity, early warning that protects the capital stock, mangroves that sustain fisheries. The $194 to $366 billion annual gap is not a request for charity. It is an under-subscribed investment opportunity, and the reason it remains under-subscribed is that the returns have not been made legible to the people who allocate capital.</p>
+
+  <div class="binding">
+    <p><strong>Binding term:</strong> Judge every adaptation proposal by one test: does it move a proven measure onto a balance sheet that can carry the cost, at a tenor that matches the asset, so the benefit reaches the people who cannot pay for it themselves? Adaptation is an investment, not a compensation.</p>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<section id="references" class="prose">
+  <p class="section-label">Sources</p>
+  <h2 class="plot-title">References</h2>
+  <ol class="refs">
+    <li>UNEP. (2023). <em>Adaptation Gap Report 2023: Underfinanced. Underprepared.</em> United Nations Environment Programme, Nairobi.</li>
+    <li>Global Commission on Adaptation. (2019). <em>Adapt Now: A Global Call for Leadership on Climate Resilience.</em> GCA / World Resources Institute, Washington, DC.</li>
+    <li>World Meteorological Organization. (2023). <em>Early Warnings for All: Executive Action Plan 2023–2027.</em> WMO, Geneva.</li>
+    <li>SEforALL. (2022). <em>Chilling Prospects: Tracking Sustainable Cooling for All 2022.</em> Sustainable Energy for All, Vienna.</li>
+    <li>FAO. (2023). <em>AQUASTAT Database.</em> Food and Agriculture Organization of the United Nations, Rome.</li>
+    <li>IPCC. (2022). <em>Climate Change 2022: Impacts, Adaptation and Vulnerability.</em> Working Group II, Sixth Assessment Report, Cambridge University Press.</li>
+    <li>World Bank. (2021). <em>Groundswell Part 2: Acting on Internal Climate Migration.</em> World Bank, Washington, DC.</li>
+    <li>UNFCCC. (2023). <em>Report of the Standing Committee on Finance.</em> United Nations Framework Convention on Climate Change, Bonn.</li>
+    <li>ODI / Climate Policy Initiative. (2023). <em>Global Landscape of Climate Finance 2023.</em> Climate Policy Initiative, San Francisco.</li>
+    <li>Hallegatte, S., Rentschler, J., &amp; Rozenberg, J. (2019). <em>Lifelines: The Resilient Infrastructure Opportunity.</em> World Bank, Washington, DC.</li>
+    <li>CGIAR. (2022). <em>Drought-Tolerant Crop Varieties: Adoption and Impact.</em> CGIAR Research Program, Montpellier.</li>
+    <li>Green Climate Fund. (2023). <em>Results-Based Financing in Climate Adaptation.</em> GCF, Incheon.</li>
+  </ol>
+</section>
+
+</main>
+</body>
+</html>
