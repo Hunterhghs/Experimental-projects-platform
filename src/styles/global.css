@@ -562,6 +562,10 @@ pre.cite__text { font-family: var(--mono); font-size: 0.74rem; white-space: pre-
 /* ---------- Dashboards ---------- */
 .dash__head { padding-bottom: 28px; }
 .dash__head h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 800; font-stretch: 116%; letter-spacing: -0.03em; margin: 16px 0 12px; }
+
+/* ---------- Embedded digital reports ---------- */
+.report-embed { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); background: var(--ink); margin-top: 40px; }
+.report-embed iframe { display: block; width: 100%; height: min(92vh, 1200px); border: 0; background: #fff; }
 .dash__frame { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); background: var(--ink); }
 .dash__frame iframe { display: block; width: 100%; height: min(86vh, 960px); border: 0; }
 .dash__body { padding-top: 40px; }

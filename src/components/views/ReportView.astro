@@ -34,6 +34,7 @@ const numbered = d.chapters.filter((c) => c.number);
             {d.pdf && <a class="btn btn--signal" href={d.pdf} download>Download PDF{d.pages ? ` · ${d.pages} pp` : ''}</a>}
             {isPdf && <a class="btn" href={d.pdf} target="_blank" rel="noopener">Open in new tab ↗</a>}
             {d.externalUrl && <a class="btn" href={d.externalUrl}>Open project ↗</a>}
+            {d.embed && <a class="btn btn--ink" href={d.embed} target="_blank" rel="noopener">Open full screen ↗</a>}
             <a class="btn" href="#cite">Cite</a>
             <button type="button" class="btn" data-share={shareUrl} data-title={d.title}>Share</button>
           </p>
@@ -139,6 +140,11 @@ const numbered = d.chapters.filter((c) => c.number);
             ))}
           </ol>
         </nav>
+      )}
+      {d.embed && (
+        <div class="report-embed" data-pagefind-ignore>
+          <iframe src={d.embed} title={d.title} loading="lazy" allow="fullscreen"></iframe>
+        </div>
       )}
       <div class="prose">
         <slot />
