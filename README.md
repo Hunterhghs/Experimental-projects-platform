@@ -35,6 +35,27 @@ npm run new -- project "Methane Abatement Cost Model" --topics climate,energy-tr
 
 `--app` copies a static web app (a folder with `index.html`) to `public/dashboards/<slug>/app/`, and the project page embeds it with an "Open full screen" link. Then fill in the TODOs in the generated Markdown file.
 
+### Digital report pipeline (Veles / Fable-5)
+
+Digital-edition reports are produced by the Veles (Fable-5 × DeepSeek) pipeline, with the main agent acting only as assembler and quality gate:
+
+1. **Veles writes the draft** — the pipeline (Architect → Coder → Verifier) writes the full chapter body to a scratch `draft.md` and returns a PASS/FAIL verdict with evidence.
+2. **Veles produces the visuals** — a second pipeline pass writes the matplotlib exhibit scripts, executes them, and verifies the WebP outputs (dimensions, format, cleanup).
+3. **Main agent assembles** — converts the draft into `src/content/projects/reports/<year>/<slug>.md` with full front matter, trims to the requested reading time, and places exhibits/tables.
+4. **Main agent gates** — runs `prose_lint.py --require-binding-term` (must be 0 errors) and validates topics/number/description against `src/content.config.ts` before commit.
+
+Professional body components available to every digital report (styled in `src/styles/global.css`):
+
+- `.stat-grid` / `.stat-card` — key-stat cards (`.stat-card--warn` for risk stats)
+- `.callout` / `.callout--warn` — labelled analytic asides
+- `.pull-quote` — editorial pull quote
+- `.method-box` — method and sources block
+- `figure.exhibit` + `.exhibit__frame` + `figcaption` — framed exhibits with corner brackets
+- `.table` + `.table__cap` + `.table__scroll` — data tables
+- `.takeaway` — dark takeaway band with signal shadow
+
+Report pages get the professional grade automatically: `body.is-report` applies the dark report hero, abstract card, ink stat band, and (on desktop) a sticky chapter sidebar with the prose column beside it.
+
 ### Build and preview
 
 ```bash
