@@ -372,6 +372,31 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--paper-2); 
 .references li:target { background: #fff3ef; }
 .references a { word-break: break-word; }
 
+/* ---------- Professional report components (upgraded digital-report pipeline) ---------- */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 2.2em 0; }
+.stat-card { background: var(--card); border: 1px solid var(--ink); border-top: 4px solid var(--type); box-shadow: 3px 3px 0 var(--ink); padding: 16px 18px 14px; }
+.stat-card--warn { border-top-color: var(--signal); }
+.stat-card .stat-value { font: 800 1.9rem/1.05 var(--display); font-stretch: 120%; color: var(--ink); letter-spacing: -0.02em; }
+.stat-card .stat-label { margin-top: 8px; font-size: 0.82rem; color: var(--ink-2); line-height: 1.45; }
+.stat-card .stat-source { display: block; margin-top: 8px; font-family: var(--mono); font-size: 0.66rem; color: var(--ink-3); }
+
+.callout { background: #fafaf7; border: 1px solid var(--line); border-left: 4px solid var(--type); padding: 18px 20px; margin: 2em 0; font-size: 0.95rem; line-height: 1.6; color: var(--ink-2); }
+.callout p { margin: 0 0 0.7em; }
+.callout p:last-child { margin-bottom: 0; }
+.callout strong { color: var(--ink); }
+.callout .callout-title { display: block; font-family: var(--mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--type); margin-bottom: 8px; }
+.callout--warn { border-left-color: var(--signal); }
+.callout--warn .callout-title { color: var(--signal); }
+
+.pull-quote { font-family: var(--serif); font-size: 1.18rem; font-style: italic; line-height: 1.5; color: var(--ink); border-left: 4px solid var(--type); background: #fafaf7; padding: 18px 22px; margin: 2em 0; }
+.pull-quote .attribution { display: block; margin-top: 10px; font-size: 0.8rem; font-style: normal; font-family: var(--mono); color: var(--ink-3); }
+
+.method-box { background: var(--paper-2); border: 1px solid var(--line); padding: 20px 24px; margin: 2em 0; font-size: 0.9rem; line-height: 1.6; color: var(--ink-2); }
+.method-box h2 { font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink); margin: 0 0 10px; }
+.method-box p { margin: 0 0 0.6em; }
+.method-box p:last-child { margin-bottom: 0; }
+
+
 /* ---------- Report footer ---------- */
 .rfoot { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 48px; padding-top: 40px; padding-bottom: 32px; margin-top: 56px; border-top: 2px solid var(--ink); }
 .rfoot .label { margin-top: 22px; }
