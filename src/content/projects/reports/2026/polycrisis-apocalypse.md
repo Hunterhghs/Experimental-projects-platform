@@ -13,7 +13,7 @@ authors:
   - name: "Hunter Hughes"
     role: "Founder & CEO, H Heuristics"
 regions: ["Global"]
-date: 2026-09-30
+date: 2026-10-31
 pdf: "/reports/polycrisis-apocalypse/polycrisis-apocalypse.pdf"
 pages: 52
 chapters:
