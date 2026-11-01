@@ -15,7 +15,7 @@ const isPdf = d.format === 'pdf' && !!d.pdf;
 const numbered = d.chapters.filter((c) => c.number);
 ---
 
-<article class={`report t-${d.type}`} data-pagefind-body>
+<article class={`report t-${d.type}`} data-pagefind-body style={(d.hero || d.accent) ? `--report-hero:${d.hero ?? '#0c2744'}; --report-accent:${d.accent ?? '#e8662c'}; --report-accent-2:${d.accent2 ?? '#2aa9c9'}` : undefined}>
   <header class="rhead gridpaper">
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb" data-pagefind-ignore>

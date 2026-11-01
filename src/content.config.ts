@@ -20,6 +20,10 @@ const projects = defineCollection({
     title: z.string(),
     subtitle: z.string().optional(),
     series: z.string().optional(),
+    // Per-report theme — unique design per report (hero, accent colors)
+    hero: z.string().optional(),
+    accent: z.string().optional(),
+    accent2: z.string().optional(),
 
     // Indexing metadata
     description: z.string().max(320, 'Keep the meta description under 320 characters'),
