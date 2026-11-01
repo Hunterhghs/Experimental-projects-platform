@@ -7,6 +7,7 @@ subtitle: "Infrastructure Investment, Water Efficiency, and Sustainable Resource
 series: "Polycrisis Resilience Series"
 hero: "#134e4a"
 accent: "#14b8a6"
+layout: "field"
 accent2: "#22d3ee"
 description: "Water is the multiplier every economy takes for granted until it runs dry. This monograph prices security across pipes, aquifers and watersheds."
 abstract: "Water stress is becoming a sovereign risk. This monograph prices the modernization — non-revenue water recovery, wastewater reclamation, desalination, managed aquifer recharge, agricultural water productivity and digital telemetry — and sets a 2026–2036 masterplan that closes the $1.2 trillion infrastructure deficit."

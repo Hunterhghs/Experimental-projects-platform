@@ -7,6 +7,7 @@ subtitle: "Green Infrastructure, Passive Cooling, and Heat-Resilient Urban Devel
 series: "Polycrisis Resilience Series"
 hero: "#0c4a6e"
 accent: "#14b8a6"
+layout: "ledger"
 accent2: "#38bdf8"
 description: "Cities are heating faster than the climate. This monograph prices urban cooling infrastructure and the losses it prevents."
 abstract: "The urban heat island turns growth engines into hazardous microclimates. This monograph stacks the cooling infrastructure — high-albedo surfaces, forest canopies, blue basins, passive architecture, district cooling and heat action plans — and sets a 2035 masterplan that preserves urban output and municipal solvency."

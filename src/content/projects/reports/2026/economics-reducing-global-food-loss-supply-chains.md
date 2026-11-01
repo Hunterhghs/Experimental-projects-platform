@@ -7,6 +7,7 @@ subtitle: "Storage, Refrigeration, Logistics, and Post-Harvest Technology Adopti
 series: "Polycrisis Resilience Series"
 hero: "#4a2c0f"
 accent: "#f59e0b"
+layout: "blueprint"
 accent2: "#fbbf24"
 description: "A third of food never reaches a plate. This monograph prices the storage, cold chain and logistics that stop the loss."
 abstract: "Fourteen percent of the world's harvest is lost before retail, worth a trillion dollars. This monograph prices the post-harvest stack — hermetic storage, solar cold rooms, refrigerated logistics, e-warehouse receipts, mycotoxin control and waste upcycling — and sets a 2026–2036 masterplan that avoids 890 million tons of loss and preserves $1.18 trillion."

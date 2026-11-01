@@ -7,6 +7,7 @@ subtitle: "Technology Adoption, Yield Improvements, and Resource-Efficient Produ
 series: "Polycrisis Resilience Series"
 hero: "#2c4a1e"
 accent: "#a3e635"
+layout: "blueprint"
 accent2: "#eab308"
 description: "Food security is a productivity problem. This monograph maps the agronomic modernization that grows more from less."
 abstract: "Global caloric demand rises while land and water tighten. This monograph traces the productivity path — resilient genetics, precision agronomy, water-smart irrigation, soil regeneration, digital extension and post-harvest abatement — and sets a 2026–2036 masterplan for global agronomic modernization and land sparing."

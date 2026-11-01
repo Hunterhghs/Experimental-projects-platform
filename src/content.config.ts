@@ -24,6 +24,7 @@ const projects = defineCollection({
     hero: z.string().optional(),
     accent: z.string().optional(),
     accent2: z.string().optional(),
+    layout: z.enum(['blueprint', 'ledger', 'dossier', 'field']).optional(),
 
     // Indexing metadata
     description: z.string().max(320, 'Keep the meta description under 320 characters'),

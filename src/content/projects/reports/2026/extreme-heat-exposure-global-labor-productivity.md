@@ -7,6 +7,7 @@ subtitle: "Adaptation Investment, Occupational Vulnerability, and Economic Outpu
 series: "Polycrisis Resilience Series"
 hero: "#4a1c0e"
 accent: "#f97316"
+layout: "field"
 accent2: "#fbbf24"
 description: "Heat is now a labor-market shock. This monograph prices the productivity losses and the adaptation investments that reverse them."
 abstract: "Thermal exposure has become a structural supply shock: it throttles labor, degrades health and strains sovereign solvency. This monograph maps heat's toll across agriculture, construction, manufacturing and the informal economy, and assembles the counter — personal cooling, mechanization, parametric wage insurance and binding OSH standards — into a 2035 workplace heat resilience roadmap."

@@ -7,6 +7,7 @@ subtitle: "Drought Resistance, Irrigation Modernization, and Productivity Stabil
 series: "Polycrisis Resilience Series"
 hero: "#3a4a1f"
 accent: "#84cc16"
+layout: "ledger"
 accent2: "#eab308"
 description: "Smallholders are the frontline of climate change. This monograph prices the rural adaptation stack that stabilizes food and livelihoods at 5:1 to 14:1."
 abstract: "Drought, water stress and capital rationing push smallholders toward poverty traps. This monograph stacks the rural adaptation architecture — resilient seed, micro-drip and solar irrigation, soil restoration, digital advisory, parametric insurance and post-harvest cold chains — into a 2036 masterplan for rural food security."

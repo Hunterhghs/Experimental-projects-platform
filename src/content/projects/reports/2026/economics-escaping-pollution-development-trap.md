@@ -7,6 +7,7 @@ subtitle: "Industrial Modernization, Clean Technologies, and Improvements in Hum
 series: "Polycrisis Resilience Series"
 hero: "#7f1d1d"
 accent: "#fb7185"
+layout: "field"
 accent2: "#f97316"
 description: "Pollute-first is broken: $8.1 trillion in annual losses, and a 3.8x clean modernization return. This monograph maps the escape."
 abstract: "The 'pollute first, clean up later' model has collapsed under health capital destruction and labor productivity losses. This monograph prices the escape — clean industrial electrification, transport and agricultural airshed recovery, circular symbiosis, blended green capital and regulatory state capacity — into a 2026–2050 master roadmap with a double growth dividend."

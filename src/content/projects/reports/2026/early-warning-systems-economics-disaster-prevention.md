@@ -7,6 +7,7 @@ subtitle: "Information Accessibility, Preparedness, and Avoided Economic Damages
 series: "Polycrisis Resilience Series"
 hero: "#1e3a8a"
 accent: "#f59e0b"
+layout: "field"
 accent2: "#38bdf8"
 description: "A warning is the cheapest disaster insurance ever invented. This monograph prices lead time and the systems that deliver it."
 abstract: "Early warning decouples hazard intensity from economic destruction at 9:1 to 28:1 returns. This monograph maps the four pillars, AI forecast skill, last-mile dissemination, anticipatory finance and the false-alarm paradox, and sets a 2036 masterplan for universal protection."

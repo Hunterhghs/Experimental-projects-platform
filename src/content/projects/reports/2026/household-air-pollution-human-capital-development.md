@@ -7,6 +7,7 @@ subtitle: "Clean Cooking, PM2.5 Exposure, and Preventable Health Burdens Across 
 series: "Polycrisis Resilience Series"
 hero: "#44403c"
 accent: "#fb923c"
+layout: "ledger"
 accent2: "#fbbf24"
 description: "The kitchen smoke kills 3.2 million a year and taxes human capital. This monograph prices the clean transition at 5.4x."
 abstract: "Over 2.3 billion people cook with smoke, losing $2.4 trillion a year in welfare. This monograph prices the escape — e-cooking, LPG logistics, carbon finance, PAYG business models and behavioral adoption — into a 2026–2050 roadmap that unlocks the human capital dividend."

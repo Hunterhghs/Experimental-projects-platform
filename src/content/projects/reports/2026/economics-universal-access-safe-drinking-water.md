@@ -7,6 +7,7 @@ subtitle: "Water Treatment, Distribution Infrastructure, and Public Health Impro
 series: "Polycrisis Resilience Series"
 hero: "#0f4c5c"
 accent: "#22d3ee"
+layout: "dossier"
 accent2: "#38bdf8"
 description: "2.2 billion people drink unsafe water and pay $1.08 trillion a year for it. This monograph prices universal access at 4.3x."
 abstract: "Waterborne disease is a macroeconomic drag, not just a health crisis. This monograph prices the fix — treatment, piped distribution with active leakage management, decentralized filtration, tariff reform, digital water grids and blended finance — into a 2050 roadmap for universal safely managed water."

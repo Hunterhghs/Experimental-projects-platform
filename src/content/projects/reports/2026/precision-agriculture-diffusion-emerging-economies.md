@@ -7,6 +7,7 @@ subtitle: "Digital Technologies, Input Optimization, and Agricultural Productivi
 series: "Polycrisis Resilience Series"
 hero: "#1f2a44"
 accent: "#38bdf8"
+layout: "ledger"
 accent2: "#a3e635"
 description: "The next green revolution is digital. This monograph maps the precision agritech stack that transforms smallholder economics."
 abstract: "Smallholder yield gaps persist because inputs are applied blind. This monograph stacks the precision agritech architecture — optical sensing, drone spraying, SAR telemetry, soil spectroscopy, shared mechanization, satellite credit and digital value chains — and sets a 2026–2036 masterplan for precision modernization and land sparing."

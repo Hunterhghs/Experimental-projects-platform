@@ -7,6 +7,7 @@ subtitle: "Building Modernization, Thermal Efficiency, and Protection Against Ex
 series: "Polycrisis Resilience Series"
 hero: "#3f3a2d"
 accent: "#d97706"
+layout: "dossier"
 accent2: "#fbbf24"
 description: "Housing is the first line of climate defense and the last to be upgraded. This monograph prices resilient, affordable housing modernization."
 abstract: "Aging housing stocks and regressive energy burdens turn compound shocks into household catastrophe. This monograph prices the fix — thermal envelopes, storm hardening, floodproofing, distributed power, green financing and code modernization — and sets a ten-year masterplan for national housing resilience."

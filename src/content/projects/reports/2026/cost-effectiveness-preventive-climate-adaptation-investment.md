@@ -7,6 +7,7 @@ subtitle: "Comparing Infrastructure Protection, Household Adaptation, and Post-D
 series: "Polycrisis Resilience Series"
 hero: "#42203a"
 accent: "#d946ef"
+layout: "dossier"
 accent2: "#f472b6"
 description: "Prevention pays $4–12 per dollar; recovery pays once. This monograph compares the two and mainstreams the cheaper one."
 abstract: "Public finance still funds recovery over prevention. This monograph prices the triple dividend of adaptation, compares benefit-cost ratios across hazards, and assembles the financing and governance reforms that close the $400 billion deficit by 2036."
