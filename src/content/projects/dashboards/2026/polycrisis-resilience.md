@@ -13,7 +13,7 @@ authors:
     role: "Founder & CEO, H Heuristics"
 date: 2026-11-01
 embed: "/dashboards/polycrisis-resilience/app/"
-status: live
+status: experimental
 ---
 
 <p>Fixed-position monitoring console for polycrisis resilience: a Leaflet vector map of five resilience metrics with 2025–2100 time-series playback, six KPI cards, three policy scenarios, and nine Chart.js analysis panels.</p>
