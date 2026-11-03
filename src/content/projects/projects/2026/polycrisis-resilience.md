@@ -16,7 +16,7 @@ authors:
     role: "Founder & CEO, H Heuristics"
 regions: ["Global"]
 date: 2026-11-03
-externalUrl: "https://projects.hheuristics.com/projects/polycrisis-resilience/"
+externalUrl: "https://projects.hheuristics.com/sites/polycrisis-resilience/"
 status: published
 ---
 
