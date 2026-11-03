@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polycrisis Resilience · 368 Million Lives This Century</title>
+  <meta name="description" content="An explainer on polycrisis resilience: how coordinated action from 2026 could prevent about 368 million premature deaths by 2100 for roughly 1% of global GDP." />
+  <meta property="og:title" content="Polycrisis Resilience · 368 Million Lives This Century" />
+  <meta property="og:description" content="Seven survival pathways, four futures, and the cost of waiting. An interactive explainer based on H Heuristics report HH-2026-51." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='none' stroke='%23f2b84b' stroke-width='10'/><circle cx='50' cy='50' r='14' fill='%2338d6b0'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="top">
+    <div class="nav__inner">
+      <a href="#top" class="brand"><span class="brand__mark"></span>Polycrisis<b>Resilience</b></a>
+      <nav class="nav__links" aria-label="Sections">
+        <a href="#polycrisis">The Polycrisis</a>
+        <a href="#futures">Four Futures</a>
+        <a href="#pathways">Pathways</a>
+        <a href="#where">Where</a>
+        <a href="#cost">Cost</a>
+        <a href="#delay">Delay</a>
+        <a href="#playbook">Playbook</a>
+      </nav>
+      <button class="nav__toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+    <div class="progress" aria-hidden="true"><span></span></div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero">
+      <canvas id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero__content">
+        <p class="eyebrow">2025 – 2100 · A scenario explainer</p>
+        <h1>Saving lives through <em>polycrisis resilience</em></h1>
+        <p class="hero__lede">Climate shocks, dirty air, hunger, unsafe water, disease and conflict don't strike one at a time. They collide in the same communities. Tackling them <strong>together, starting now</strong>, could prevent about</p>
+        <div class="hero__number"><span class="count" data-target="368">0</span><span class="unit">million</span></div>
+        <p class="hero__sub">premature deaths this century, for roughly <strong>1% of global GDP</strong>.</p>
+        <div class="hero__stats">
+          <div><b>13.6B</b><span>healthy life-years gained</span></div>
+          <div><b>1.9B</b><span>fewer people lacking basic services by 2050</span></div>
+          <div><b>8.3M</b><span>lives forfeited per year of delay</span></div>
+        </div>
+        <a href="#polycrisis" class="hero__scroll">Explore the evidence <span aria-hidden="true">↓</span></a>
+      </div>
+    </section>
+
+    <!-- WHAT IS IT -->
+    <section class="section" id="polycrisis">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">01 · The anatomy of the polycrisis</p>
+          <h2>Crises that multiply, not add up</h2>
+          <p class="lead">A <strong>polycrisis</strong> is what happens when separate global risks become entangled, so that each one amplifies the others. A heatwave overloads a grid. The blackout spoils vaccines and shuts water pumps. Contaminated water spreads disease among children already weakened by hunger. The combined human cost is far greater than the sum of each crisis viewed alone.</p>
+        </header>
+
+        <div class="threats">
+          <div class="threats__graph">
+            <svg id="threatGraph" viewBox="0 0 520 520" role="img" aria-label="Network diagram of eight interconnected threats"></svg>
+            <p class="hint">Hover or tap a threat to see what it cascades into.</p>
+          </div>
+          <div class="threats__detail" id="threatDetail" aria-live="polite">
+            <h3>Eight interconnected threats</h3>
+            <p>Select a node to see how each threat feeds the others. In the real world, they rarely arrive alone.</p>
+            <ul class="facts">
+              <li><b>733M</b> people face chronic hunger today</li>
+              <li><b>2.1B</b> lack safely managed drinking water</li>
+              <li><b>3.4B</b> lack safe sanitation</li>
+              <li><b>3.8B</b> lack adequate social protection</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cascade">
+          <h3 class="cascade__title">One heatwave, many failures</h3>
+          <ol class="cascade__steps">
+            <li><span>🌡️</span>Extreme heat</li>
+            <li><span>⚡</span>Grid overloads &amp; blackouts</li>
+            <li><span>💧</span>Water pumps &amp; treatment fail</li>
+            <li><span>🧊</span>Vaccine cold chains spoil</li>
+            <li><span>🦠</span>Disease spreads</li>
+            <li><span>🏥</span>Clinics overwhelmed</li>
+          </ol>
+          <p class="cascade__note">This is why single-issue projects underperform: fixing one link leaves the chain intact. Coordinated resilience strengthens many links at once.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOUR FUTURES -->
+    <section class="section section--alt" id="futures">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">02 · Four futures</p>
+          <h2>Timing and integration matter as much as ambition</h2>
+          <p class="lead">The report's Polycrisis Resilience Model (HH-PRM v2.0) compares four futures. Under <em>reactive drift</em>, roughly <strong>1.57 billion</strong> preventable risk-linked deaths occur this century. The other three show how much of that toll different strategies avoid.</p>
+        </header>
+
+        <div class="scenarios" role="tablist" aria-label="Scenarios">
+          <button class="scn" role="tab" data-s="0"><i style="--c:var(--grey)"></i><b>S0</b> Reactive Drift</button>
+          <button class="scn" role="tab" data-s="1"><i style="--c:var(--rose)"></i><b>S1</b> Delayed (2040)</button>
+          <button class="scn" role="tab" data-s="2"><i style="--c:var(--amber)"></i><b>S2</b> Siloed (2026)</button>
+          <button class="scn is-active" role="tab" data-s="3"><i style="--c:var(--teal)"></i><b>S3</b> Coordinated (2026)</button>
+        </div>
+
+        <div class="futures">
+          <div class="chart card">
+            <div class="chart__head">
+              <h3>Cumulative net lives saved vs. reactive drift</h3>
+              <span class="tag">millions</span>
+            </div>
+            <svg id="futureChart" viewBox="0 0 640 360" role="img" aria-label="Line chart of cumulative lives saved under each scenario"></svg>
+          </div>
+          <div class="card scn-detail" id="scnDetail"></div>
+        </div>
+
+        <div class="table-wrap card">
+          <table class="ledger">
+            <thead>
+              <tr><th>Outcome (2025–2100)</th><th>S0 Drift</th><th>S1 Delayed</th><th>S2 Siloed</th><th class="hl">S3 Coordinated</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Net premature deaths prevented</td><td>—</td><td>225M</td><td>232M</td><td class="hl">368M</td></tr>
+              <tr><td>Healthy life-years gained</td><td>—</td><td>8.4B</td><td>8.8B</td><td class="hl">13.6B</td></tr>
+              <tr><td>People lacking basic services, 2050</td><td>2.8B</td><td>2.1B</td><td>1.6B</td><td class="hl">0.9B</td></tr>
+              <tr><td>People in high climate vulnerability, 2050</td><td>4.0B</td><td>3.5B</td><td>3.2B</td><td class="hl">2.3B</td></tr>
+              <tr><td>Warming in 2100</td><td>+2.80°C</td><td>+2.20°C</td><td>+2.10°C</td><td class="hl">+1.85°C</td></tr>
+              <tr><td>Peak annual investment (2036–50)</td><td>—</td><td>$1.35T</td><td>$1.15T</td><td class="hl">$1.20T</td></tr>
+            </tbody>
+          </table>
+          <p class="note">Ranges for S3: 265–448M lives (90% interval across 5,000 simulations). Delayed action costs <em>more</em> per year at peak yet saves far fewer lives.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PATHWAYS -->
+    <section class="section" id="pathways">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">03 · Seven survival pathways</p>
+          <h2>Where the 368 million lives come from</h2>
+          <p class="lead">Coordinated resilience works through seven survival pathways. Clean air and healthcare are the two largest lifesavers, together accounting for <strong>63%</strong> of deaths prevented. Water and nutrition save the <em>youngest</em> lives, preserving the most healthy years per death averted.</p>
+        </header>
+
+        <div class="metric-toggle" role="group" aria-label="Metric">
+          <button class="mt is-active" data-m="lives">Net lives saved</button>
+          <button class="mt" data-m="dalys">Healthy life-years</button>
+          <button class="mt" data-m="ypd">Healthy years per death averted</button>
+        </div>
+
+        <div class="pathways" id="pathwayBars"></div>
+
+        <div class="pathway-cards" id="pathwayCards"></div>
+
+        <aside class="callout">
+          <div class="callout__icon">×</div>
+          <div>
+            <h3>The Resilience Multiplier</h3>
+            <p>Some investments unlock others. Electrifying a rural clinic powers vaccine fridges, medical oxygen, lighting for night-time births, water pumps, phone-based early warnings, and cold chains for food, a <strong>six-way</strong> multiplier. That is why coordinated action saves <strong>136 million more lives</strong> than the same ministries acting in silos.</p>
+          </div>
+        </aside>
+
+        <div class="overlap card">
+          <div class="overlap__text">
+            <h3>No life counted twice</h3>
+            <p>Many people face several risks at once: a child exposed to smoky stoves <em>and</em> dirty water <em>and</em> malnutrition can only be saved once. The model removes this overlap with a formal <strong>21.4% discount</strong>.</p>
+          </div>
+          <div class="overlap__viz">
+            <div class="ov-bar"><span style="width:100%">468M gross</span></div>
+            <div class="ov-bar ov-bar--minus"><span style="width:21.4%">−100M</span></div>
+            <div class="ov-bar ov-bar--net"><span style="width:78.6%">368M net</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HSRD -->
+    <section class="section section--dark" id="suffering">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">04 · Beyond mortality</p>
+          <h2>The Human Suffering Reduction Dividend</h2>
+          <p class="lead">Counting deaths misses most of the story. The <strong>HSRD</strong> measures improvements in daily living: years lived with electricity, clean cooking, safe water, sanitation, enough food and primary healthcare, and years lived without extreme climate vulnerability.</p>
+        </header>
+        <div class="hsrd">
+          <div class="hsrd__item">
+            <div class="ring" style="--p:67.9"><span>−1.9B</span></div>
+            <h3>Basic-service deprivation</h3>
+            <p>People lacking basic services in 2050 fall from <b>2.8B</b> under drift to <b>0.9B</b>.</p>
+            <p class="big">103 billion <small>person-years of deprivation avoided</small></p>
+          </div>
+          <div class="hsrd__item">
+            <div class="ring ring--amber" style="--p:40"><span>−1.6B</span></div>
+            <h3>High climate vulnerability</h3>
+            <p>People living in high climate vulnerability in 2050 fall from <b>4.0B</b> to <b>2.3B</b>.</p>
+            <p class="big">118 billion <small>person-years of vulnerability avoided</small></p>
+          </div>
+          <div class="hsrd__explain">
+            <h3>What's a person-year?</h3>
+            <p>One person living in better conditions for one full year. Helping <b>10 million</b> people for <b>20 years</b> = <b>200 million</b> person-years.</p>
+            <p class="muted">The report keeps four ledgers (deaths, healthy life-years, and two HSRD ledgers) and never adds them together.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="section" id="timeline">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">05 · A widening survival wedge</p>
+          <h2>How the benefits build, decade by decade</h2>
+        </header>
+        <div class="eras">
+          <article class="era">
+            <span class="era__years">2025–2034</span>
+            <h3>The First Decade</h3>
+            <p class="era__num">6M <small>net lives</small></p>
+            <p>Infrastructure takes time, so early wins come from fast tools: phone-based early warnings, oral rehydration salts, vaccination catch-up, maternal micronutrients and point-of-use water chlorination.</p>
+          </article>
+          <article class="era">
+            <span class="era__years">2035–2054</span>
+            <h3>The Scale-Up Decades</h3>
+            <p class="era__num">74M <small>net lives</small></p>
+            <p>Universal electrification, clean cooking for 2 billion people, piped urban water and primary clinic networks reach critical mass. Annual lives saved pass 4.8 million by 2050.</p>
+          </article>
+          <article class="era era--peak">
+            <span class="era__years">2055–2100</span>
+            <h3>The Mature Dividend</h3>
+            <p class="era__num">289M <small>net lives</small></p>
+            <p>Built systems operate at scale and warming is held near 1.85°C. Lives saved peak at <b>6.6 million a year around 2071</b>, about 18,000 every day.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHERE -->
+    <section class="section section--alt" id="where">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">06 · The geographical priority</p>
+          <h2>89% of lives saved are in the Global South</h2>
+          <p class="lead">Sub-Saharan Africa and South Asia together account for <strong>62%</strong> of lives saved. Africa's population is projected to grow from 1.3 to 3.5 billion by 2100, so foundations built today protect far more people tomorrow.</p>
+        </header>
+        <div class="regions">
+          <div class="card regions__chart">
+            <div class="region-toggle" role="group" aria-label="Region metric">
+              <button class="rt is-active" data-r="lives">Total lives saved</button>
+              <button class="rt" data-r="per">Per 1,000 residents</button>
+            </div>
+            <div id="regionBars"></div>
+          </div>
+          <div class="card regions__focus">
+            <p class="kicker">Spotlight</p>
+            <h3>Sub-Saharan Africa</h3>
+            <p class="big-num">91 <small>lives saved per 1,000 residents</small></p>
+            <p>Nearly <b>four times</b> the rate for regions outside Africa and South Asia. More than four in five people without electricity live here, so solar mini-grids and clean cooking alone prevent about <b>34 million</b> net deaths.</p>
+            <p class="muted">Lead pathways: healthcare, food, water, clean cooking.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COST -->
+    <section class="section" id="cost">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">07 · Financing &amp; value for money</p>
+          <h2>About 1% of global income</h2>
+          <p class="lead">The whole package peaks at about <strong>US$1.2 trillion a year</strong> (2036–2050) against a global economy of roughly US$115 trillion.</p>
+        </header>
+
+        <div class="compare card">
+          <h3>US$ trillions per year, in perspective</h3>
+          <div id="compareBars"></div>
+        </div>
+
+        <div class="cost-grid">
+          <div class="card stat">
+            <p class="stat__n">$21.8T</p>
+            <p>Present-value net cost (3% discount rate, net of fuel savings)</p>
+          </div>
+          <div class="card stat">
+            <p class="stat__n teal">$21.1T</p>
+            <p>Value of health benefits alone, at a conservative US$5,000 per healthy year</p>
+          </div>
+          <div class="card stat">
+            <p class="stat__n amber">3.8–6.5×</p>
+            <p>Total economic benefit–cost ratio, counting avoided climate damage, fuel bills &amp; productivity</p>
+          </div>
+        </div>
+
+        <div class="table-wrap card">
+          <table class="ledger">
+            <thead><tr><th>Budget pillar</th><th>Peak annual</th><th>PV cost per healthy year</th></tr></thead>
+            <tbody>
+              <tr><td>Clean energy &amp; cooking</td><td>$520B</td><td>$3,544</td></tr>
+              <tr><td>Climate adaptation &amp; infrastructure</td><td>$330B</td><td>Multi-benefit (BCR 4–10×)</td></tr>
+              <tr><td>Healthcare systems &amp; vaccines</td><td>$170B</td><td>$2,615</td></tr>
+              <tr><td>Food security &amp; child nutrition</td><td>—</td><td>$1,597</td></tr>
+              <tr><td>Pandemic &amp; shock buffers</td><td>$31B</td><td>$2,585</td></tr>
+              <tr class="total"><td>Total portfolio</td><td>$1,201B</td><td>$5,150 avg</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- DELAY -->
+    <section class="section section--danger" id="delay">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">08 · The high cost of waiting</p>
+          <h2>Every year of delay forfeits 8.3 million lives</h2>
+          <p class="lead">Waiting until 2040 cuts lives saved from 368 million to 225 million, and from 58 million to just 7 million by 2050. That's about <strong>16 preventable deaths every minute</strong> of inaction.</p>
+        </header>
+
+        <div class="delay">
+          <div class="delay__clock card">
+            <p class="muted">Since you opened this page, delay has cost an estimated</p>
+            <p class="delay__count" id="delayCount">0</p>
+            <p class="muted">preventable deaths</p>
+          </div>
+          <div class="delay__slider card">
+            <label for="startYear">If coordinated action starts in <b id="yearOut">2026</b></label>
+            <input type="range" id="startYear" min="2026" max="2040" value="2026" step="1" />
+            <div class="slider-scale"><span>2026</span><span>2033</span><span>2040</span></div>
+            <div class="delay__result">
+              <div><p class="muted">Lives saved by 2100</p><p class="dr-n" id="livesOut">368M</p></div>
+              <div><p class="muted">Lives forfeited</p><p class="dr-n rose" id="lostOut">0</p></div>
+            </div>
+            <p class="note">Illustrative linear interpolation between the report's 2026 (368M) and 2040 (225M) scenarios.</p>
+          </div>
+        </div>
+
+        <div class="stress card">
+          <h3>Robust under stress</h3>
+          <p>Coordinated action beat delayed and siloed alternatives in <b>all 5,000</b> simulation draws. In a more dangerous world, resilience saves <em>more</em> lives, not fewer.</p>
+          <div id="stressBars"></div>
+          <p class="note">Over 48% of the uncertainty comes from institutional delivery quality and rollout speed, not science. The tools already exist; the challenge is execution.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLAYBOOK -->
+    <section class="section" id="playbook">
+      <div class="wrap">
+        <header class="section__head">
+          <p class="kicker">09 · A practical playbook</p>
+          <h2>Ten moves for leaders</h2>
+          <p class="lead">Concrete, time-bound actions drawn from the report's leader playbook.</p>
+        </header>
+        <ol class="playbook">
+          <li><h3>Universal multi-hazard early warnings by 2032</h3><p>Close the cell-broadcast, radar and community evacuation gap. Cuts disaster mortality sixfold for under US$2B a year.</p></li>
+          <li><h3>A global clean-cooking sprint for 2.05B people</h3><p>Induction stoves and clean LPG with targeted micro-subsidies in Sub-Saharan Africa and South Asia, 2026–2040. ~54M net lives.</p></li>
+          <li><h3>Electrify every clinic &amp; unserved community by 2035</h3><p>Solar-plus-battery micro-grids for 100,000+ rural clinics first, while connecting the 666M people without power.</p></li>
+          <li><h3>Retire unabated coal &amp; scrub urban air</h3><p>Renewable grids, smokestack scrubbers and electric transit, 2026–2045. ~78M additional ambient-air lives.</p></li>
+          <li><h3>Piped chlorinated water &amp; sealed sanitation</h3><p>Prioritise dense urban slums and rural health districts to slash child diarrhoeal mortality by 84% before 2050.</p></li>
+          <li><h3>Primary healthcare &amp; universal vaccination</h3><p>Community health workers, obstetric care, medical oxygen, malaria and childhood vaccines. 98M net lives.</p></li>
+          <li><h3>Digital shock-responsive safety nets by 2040</h3><p>Pre-register vulnerable households on mobile payment rails so cash flows automatically when droughts, floods or price spikes hit.</p></li>
+          <li><h3>Pathogen surveillance &amp; 100-day vaccine hubs by 2035</h3><p>Genomic wastewater monitoring and distributed manufacturing. Halves the risk of a pandemic killing more than 50M (35% → 17%).</p></li>
+          <li><h3>Cool cities &amp; protect outdoor workers</h3><p>Cool roofs, urban tree shade, work–rest heat standards and solar cooling centres across tropical megacities, 2028–2050.</p></li>
+          <li><h3>Climate-smart seeds, cold chains &amp; first-1,000-days nutrition</h3><p>Maternal and infant nutrition plus drought-tolerant crops and solar cold storage. 26M net lives at ~US$1,597 per healthy year.</p></li>
+        </ol>
+        <aside class="callout callout--amber">
+          <div class="callout__icon">6%</div>
+          <div>
+            <h3>Protect delivery capacity</h3>
+            <p>Ring-fencing about 6% of resilience capital budgets for transparent procurement, staff retention and operations &amp; maintenance keeps assets working and countries on the upper half of the survival trajectory.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section class="section section--alt" id="method">
+      <div class="wrap narrow">
+        <header class="section__head">
+          <p class="kicker">10 · How the numbers were built</p>
+          <h2>Method &amp; caveats</h2>
+        </header>
+        <details class="acc" open>
+          <summary>Data sources</summary>
+          <p>The model starts from UN and Global Burden of Disease projections: IHME GBD 2021/2023 and WHO Global Health Estimates (204 countries), UN World Population Prospects 2024, IPCC AR6, the Lancet Countdown 2025, and IEA, World Bank, FAO SOFI and WHO/UNICEF JMP infrastructure data.</p>
+        </details>
+        <details class="acc">
+          <summary>Uncertainty</summary>
+          <p>5,000 Monte Carlo simulations vary 28 uncertain inputs; 90% intervals are the 5th to 95th percentiles. Nine adverse stress tests probe delivery failures and worsening hazards. Present values use a 3% discount rate.</p>
+        </details>
+        <details class="acc">
+          <summary>Evidence grades</summary>
+          <p><b>A</b>: hard data · <b>B</b>: strong peer-reviewed model · <b>C</b>: calibrated synthesis where records are incomplete · <b>D</b>: late-century stress-boundary scenarios (2060–2100).</p>
+        </details>
+        <details class="acc">
+          <summary>Important caveat</summary>
+          <p>All figures are <strong>scenario outputs under stated assumptions, not forecasts</strong>. They show what difference action could make, and what delay and fragmentation would forfeit.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- SOURCE -->
+    <section class="section source" id="source">
+      <div class="wrap narrow">
+        <p class="kicker">Source report</p>
+        <h2>Saving Lives Through Polycrisis Resilience This Century</h2>
+        <p class="muted">Hughes, H. (2026). <em>H Heuristics Research Report No. HH-2026-51.</em> 39 pages · CC BY 4.0</p>
+        <div class="source__actions">
+          <a class="btn" href="https://researchreports.hheuristics.com/reports/saving-lives-polycrisis-resilience-this-century/" target="_blank" rel="noopener">Read the full report ↗</a>
+          <a class="btn btn--ghost" href="https://doi.org/10.5281/zenodo.23889631" target="_blank" rel="noopener">DOI 10.5281/zenodo.23889631</a>
+        </div>
+        <div class="cite">
+          <code id="citeText">Hughes, H. (2026). Saving Lives Through Polycrisis Resilience This Century (H Heuristics Research Report No. HH-2026-51). H Heuristics. https://doi.org/10.5281/zenodo.23889631</code>
+          <button class="btn btn--small" id="copyCite">Copy citation</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>An independent explainer based on H Heuristics report HH-2026-51, licensed CC BY 4.0. Figures are scenario model outputs, not forecasts.</p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
