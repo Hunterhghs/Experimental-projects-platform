@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>21st-Century American Demographic Transformation — Cartographic &amp; Structural Observatory</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="lib/d3.v7.min.js"></script>
+  <script src="lib/topojson-client.min.js"></script>
+</head>
+<body>
+  <header class="top-header">
+    <div class="header-inner">
+      <div>
+        <div class="eyebrow">21st-Century Demographic &amp; Civilizational Observatory · U.S. Census Bureau (2000–2100)</div>
+        <h1>American Demographic Transformation, Nuclear Family Dissolution &amp; Cultural Epicenters</h1>
+        <p class="subtitle">
+          County-level cartography (3,142 counties, 2000–2024 observed &amp; 2025–2100 scenario projections) examining how the decline of the traditional Western nuclear family, sub-replacement fertility, immigration, and ethnic blending produce majority-minority cultural epicenters and long-run Non-Hispanic White population decline.
+        </p>
+      </div>
+      <div class="ref-pills">
+        <a class="ref-pill" href="https://researchreports.hheuristics.com/reports/post-peak-civilization-end-of-western-predominance/" target="_blank" rel="noopener">
+          <span class="tag">HH-2026-49</span> Post-Peak Civilization Thesis
+        </a>
+        <a class="ref-pill" href="https://doi.org/10.5281/zenodo.23596797" target="_blank" rel="noopener">
+          <span class="tag">DOI</span> 10.5281/zenodo.23596797 (Great Transformation?)
+        </a>
+        <a class="ref-pill" href="https://doi.org/10.5281/zenodo.23200964" target="_blank" rel="noopener">
+          <span class="tag">DOI</span> 10.5281/zenodo.23200964 (PACT Framework)
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- KPI Strip -->
+    <section class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-label">U.S. NH White Share (2020 Census / 2024 PEP)</div>
+        <div class="kpi-value" id="kpi-nhw-now">57.8% / 57.5%</div>
+        <div class="kpi-sub">191.7M in 2020 Census (vs. 61.6% White alone incl. Hispanic) · Down from 69.4% in 2000</div>
+      </div>
+      <div class="kpi-card danger">
+        <div class="kpi-label">Majority-Minority Crossover (&lt;50% NHW)</div>
+        <div class="kpi-value" id="kpi-crossover">~2049</div>
+        <div class="kpi-sub">Projected <strong>49.5%</strong> by 2050 &amp; <strong>39.0%</strong> by 2100 (Census Main Scenario, 366M pop.)</div>
+      </div>
+      <div class="kpi-card purple">
+        <div class="kpi-label">Married Nuclear Family w/ Children</div>
+        <div class="kpi-value">17.6%</div>
+        <div class="kpi-sub">Share of U.S. households in 2024 · Down from <strong>44.2%</strong> (1960) &amp; <strong>23.5%</strong> (2000)</div>
+      </div>
+      <div class="kpi-card teal">
+        <div class="kpi-label">NH White Total Fertility Rate (TFR)</div>
+        <div class="kpi-value">1.53</div>
+        <div class="kpi-sub">27% below 2.10 replacement · Negative NH White natural change every year since 2016</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Youth (&lt;15) NH White Share (2024)</div>
+        <div class="kpi-value">47.2%</div>
+        <div class="kpi-sub">Crossed &lt;50% threshold in <strong>2018</strong> · Down from 53.2% in 2010 (cohort replacement lead)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Majority-Minority Counties (&lt;50% NHW)</div>
+        <div class="kpi-value" id="kpi-mm-counties">422 <span style="font-size:13px;font-weight:400;color:var(--text-2)">/ 3,142</span></div>
+        <div class="kpi-sub">Up from <strong>262</strong> in 2000 · Home to <strong>47.1%</strong> of total U.S. population in 2024</div>
+      </div>
+    </section>
+
+    <!-- 4-Step Mechanism Banner -->
+    <section class="thesis-flow">
+      <div class="thesis-step">
+        <div class="thesis-step-num">Stage I · Structural Root</div>
+        <h3>Dissolution of the Nuclear Family</h3>
+        <p>Married-with-children households fell from 44.2% (1960) to 17.6% (2024). Below-replacement fertility (US TFR 1.62; NH White 1.53) and median age 44.5 create sustained natural decrease among European-origin cohorts.</p>
+      </div>
+      <div class="thesis-step">
+        <div class="thesis-step-num">Stage II · Demographic Accelerator</div>
+        <h3>Immigration &amp; Ethnic Blending</h3>
+        <p>Net international migration drives >80% of U.S. population growth through 2100. Simultaneously, 19% of new marriages are interracial and the Census Two-or-More-Races population surged from 2.4% (2000) to 10.2% (2020).</p>
+      </div>
+      <div class="thesis-step">
+        <div class="thesis-step-num">Stage III · Spatial Anchor</div>
+        <h3>Majority-Minority Cultural Epicenters</h3>
+        <p>Gateway metros and inner-ring suburbs anchor the shift: New York City (30.9% NH White), Philadelphia (34.4%), Washington D.C. (38.0%), Los Angeles (25.0%), and Houston/Harris (26.0%) radiate outward across 422 counties.</p>
+      </div>
+      <div class="thesis-step">
+        <div class="thesis-step-num">Stage IV · Civilizational Outcome</div>
+        <h3>NH White Decline &amp; PACT Resilience</h3>
+        <p>National NH White share falls from 69.4% (2000) → 57.8% (2020 Census) → &lt;50% (~2050) → ~39% (2100 Main). Long-term stability depends on the <strong>PACT Continuity Ratio</strong> (Absorption × Civic Core × Trust ÷ Pace).</p>
+      </div>
+    </section>
+
+    <!-- Main Interactive Map + Inspector -->
+    <section class="map-workspace">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">U.S. County &amp; State Demographic Cartography (2000–2100)</div>
+            <div class="panel-subtitle">Observed U.S. Census Bureau Population Estimates (2000–2024) &amp; Cohort/Migration-Calibrated Projections (2025–2100)</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" id="county-search" placeholder="Search county or state (e.g. Harris, Cook, NYC)..." style="width:255px;" />
+            <button id="btn-reset-selection" title="Reset to National U.S. Summary">National View</button>
+          </div>
+        </div>
+
+        <!-- Map Controls -->
+        <div class="map-controls">
+          <div class="control-group">
+            <label for="metric-select">Cartographic Metric</label>
+            <select id="metric-select">
+              <option value="nhw_share">Non-Hispanic White Share (%)</option>
+              <option value="nhw_shift">Shift in NH White Share since 2000 (pp)</option>
+              <option value="kids_nhw">Youth (&lt;15) NH White Share (%) — Generational Lead</option>
+              <option value="plurality">Largest Racial / Ethnic Group (Plurality)</option>
+              <option value="diversity">Ethnic Blending &amp; Diversity Index (1 − Σpᵢ²)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="scenario-select">Census 2025–2100 Scenario</label>
+            <select id="scenario-select">
+              <option value="main">Main Scenario (~950k/yr net migration · 366M in 2100)</option>
+              <option value="high">High Immigration (~1.5M/yr · Faster Blending)</option>
+              <option value="low">Low Immigration (~450k/yr · Slower Shift)</option>
+              <option value="zero">Zero Immigration Benchmark (Aging &amp; Momentum Only)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="state-filter">Filter State</label>
+            <select id="state-filter">
+              <option value="ALL">All 50 States + D.C.</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label>Overlays &amp; Filters</label>
+            <div style="display:flex;gap:6px;">
+              <button id="btn-mm-only" title="Highlight counties below 50% Non-Hispanic White">Highlight &lt;50% NHW Epicenters</button>
+              <button id="btn-pins" class="active" title="Toggle major metropolitan cultural epicenter markers">Metro Pins</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Scrubber -->
+        <div class="timeline-bar">
+          <button id="btn-play" style="min-width:74px;">&#9654; Play</button>
+          <div class="year-badge">
+            <span id="year-display">2024</span>
+            <span class="mode-tag" id="year-mode-tag">Census Observed</span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="year-slider" min="0" max="11" step="1" value="5" />
+            <div class="year-ticks" id="year-ticks"></div>
+          </div>
+        </div>
+
+        <!-- Map Canvas -->
+        <div class="map-canvas-wrap">
+          <svg id="us-map" viewBox="0 0 975 610" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="map-overlay-controls">
+            <button id="zoom-in" title="Zoom in">+</button>
+            <button id="zoom-out" title="Zoom out">&minus;</button>
+            <button id="zoom-reset" title="Reset zoom">Reset</button>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="map-legend-wrap">
+          <div class="legend-scale" id="map-legend"></div>
+          <div style="font-size:11.5px;color:var(--text-2);" id="map-summary-caption"></div>
+        </div>
+      </div>
+
+      <!-- Inspector Sidebar -->
+      <aside class="panel" id="inspector-panel">
+        <div class="inspector-header">
+          <h3 id="insp-title">United States (National Total)</h3>
+          <div class="inspector-meta" id="insp-subtitle">3,142 Counties · Year 2024 (Census Observed)</div>
+        </div>
+
+        <div class="stat-grid-2">
+          <div class="mini-stat">
+            <div class="lbl">Total Population</div>
+            <div class="val" id="insp-pop">340,110,991</div>
+          </div>
+          <div class="mini-stat">
+            <div class="lbl">NH White Share</div>
+            <div class="val" id="insp-nhw">57.5%</div>
+          </div>
+          <div class="mini-stat">
+            <div class="lbl">Shift Since 2000</div>
+            <div class="val" id="insp-shift">&minus;11.9 pp</div>
+          </div>
+          <div class="mini-stat">
+            <div class="lbl">Youth (&lt;15) NHW / Diversity</div>
+            <div class="val" id="insp-kids">47.2% / 0.61</div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:11.5px;font-weight:600;color:var(--text-1);margin-bottom:6px;display:flex;justify-content:space-between;">
+            <span>Racial &amp; Ethnic Composition</span>
+            <span id="insp-status-badge" class="badge badge-maj">Majority NH White</span>
+          </div>
+          <div class="comp-bars" id="insp-bars"></div>
+        </div>
+
+        <div>
+          <div style="font-size:11.5px;font-weight:600;color:var(--text-1);margin-bottom:6px;">
+            Selected Geography Trajectory (2000–2100)
+          </div>
+          <div class="chart-box">
+            <svg id="insp-trend-svg" class="chart-svg" viewBox="0 0 360 175"></svg>
+          </div>
+        </div>
+
+        <div class="callout-box">
+          <strong>2020 Decennial Census Distinction:</strong><br/>
+          &bull; <strong>White alone (incl. Hispanic whites):</strong> 61.6% of U.S.<br/>
+          &bull; <strong>Non-Hispanic White alone:</strong> 57.8% (191.7M people)<br/>
+          &bull; <strong>Northeastern Epicenters:</strong> NYC (30.9% NHW), Philadelphia (34.4% NHW), Washington, D.C. (38.0% NHW).
+        </div>
+      </aside>
+    </section>
+
+    <!-- Row 2: Nuclear Family Dissolution + Century Projection -->
+    <section class="grid-2">
+      <!-- Panel A: Nuclear Family -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">I. Dissolution of the Traditional Western Nuclear Family (1960–2025)</div>
+            <div class="panel-subtitle">U.S. Census CPS Household Composition &amp; CDC NCHS Total Fertility Rate by Group vs. Replacement (2.10)</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="fam-tab active" data-tab="households">Household Structure</button>
+            <button class="fam-tab" data-tab="fertility">Fertility &amp; Natural Change</button>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <svg id="family-chart-svg" class="chart-svg" viewBox="0 0 680 285"></svg>
+        </div>
+
+        <div class="stat-grid-2" style="grid-template-columns:repeat(4,1fr);">
+          <div class="mini-stat">
+            <div class="lbl">Married w/ Children</div>
+            <div class="val" style="color:var(--accent);">44.2% &rarr; 17.6%</div>
+          </div>
+          <div class="mini-stat">
+            <div class="lbl">Single-Person HH</div>
+            <div class="val" style="color:var(--accent-2);">13.1% &rarr; 29.0%</div>
+          </div>
+          <div class="mini-stat">
+            <div class="lbl">Non-Marital Births</div>
+            <div class="val" style="color:var(--danger);">5.3% &rarr; 40.0%</div>
+          </div>
+          <div class="mini-stat">
+            <div class="lbl">1st Marriage Age (M/F)</div>
+            <div class="val" style="color:var(--teal);">30.2 / 28.6 yrs</div>
+          </div>
+        </div>
+
+        <p style="font-size:12.5px;color:var(--text-1);">
+          <strong>Empirical Synthesis (<a href="https://doi.org/10.5281/zenodo.23596797" target="_blank">Hughes 2026, Zenodo 23596797</a>):</strong>
+          Sub-replacement fertility is structural across Western nations. Critically, minority fertility converges rapidly toward native norms across generations (2024 US TFR: Total 1.62, NH White 1.53, Hispanic 1.88, NH Black 1.60, NH Asian 1.42). Thus, the decline in NH White population share is driven not by anomalously high minority birth rates, but by <strong>NH White nuclear-family contraction and older age structure</strong> (median age 44.5 vs. 31.2 for Hispanics) combined with sustained immigration and intermarriage.
+        </p>
+      </div>
+
+      <!-- Panel B: Century Projections & Ethnic Blending -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">II. Century Demographic Projections (2000–2100) &amp; Ethnic Blending</div>
+            <div class="panel-subtitle">U.S. Census Bureau Scenarios (Main, High, Low, Zero Immigration) &amp; Intermarriage / Multiracial Surge</div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="proj-tab active" data-tab="scenarios">NHW Share by Scenario</button>
+            <button class="proj-tab" data-tab="composition">Full 2000–2100 Stack</button>
+            <button class="proj-tab" data-tab="blending">Ethnic Blending &amp; Intermarriage</button>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <svg id="proj-chart-svg" class="chart-svg" viewBox="0 0 680 285"></svg>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Benchmark Year</th>
+                <th>U.S. Pop (Main)</th>
+                <th>NH White (Main)</th>
+                <th>Hispanic</th>
+                <th>NH Black</th>
+                <th>NH Asian/PI</th>
+                <th>Multiracial / Other</th>
+                <th>High / Zero Immig. NHW</th>
+              </tr>
+            </thead>
+            <tbody id="century-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Row 3: Cultural Epicenters Table + PACT & Post-Peak Simulator -->
+    <section class="grid-2">
+      <!-- Panel C: Cultural Epicenters -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">III. Majority-Minority Cultural Epicenters (Urban &amp; Regional Anchors)</div>
+            <div class="panel-subtitle">Click any metropolitan epicenter to inspect its county trajectory on the map</div>
+          </div>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table" id="epicenters-table">
+            <thead>
+              <tr>
+                <th>Cultural Epicenter / Metro Core</th>
+                <th>2000 NHW</th>
+                <th>2020 Census / PEP</th>
+                <th>2024 NHW</th>
+                <th>2050 Proj</th>
+                <th>Youth (&lt;15) NHW</th>
+                <th>Largest Group (2024)</th>
+              </tr>
+            </thead>
+            <tbody id="epicenters-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="callout-box">
+          <strong>Spatial Diffusion Mechanism:</strong> In 2000, <strong>262</strong> counties were majority-minority (&lt;50% NH White), concentrated in major coastal gateways, the Southwest borderlands, and the Southern Black Belt. By 2024, that number expanded by 61% to <strong>422 counties</strong> (holding 160.2M residents, or 47.1% of the nation), while <strong>8 states/jurisdictions</strong> are now majority-minority statewide: Hawaii (21.3% NHW), California (33.6%), New Mexico (36.1%), D.C. (37.4% PEP / 38.0% 2020 Census), Texas (38.7%), Nevada (44.2%), Maryland (46.4%), and Georgia (48.8%).
+        </div>
+      </div>
+
+      <!-- Panel D: PACT Framework & Post-Peak Thesis -->
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">IV. PACT Continuity Ratio Simulator &amp; Post-Peak Civilization Thesis</div>
+            <div class="panel-subtitle">Interactive model from Hughes (2026) · <em>The Collapse of Traditional Western World Society</em> &amp; <em>HH-2026-49</em></div>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="theory-tab active" data-tab="pact">PACT Simulator</button>
+            <button class="theory-tab" data-tab="postpeak">Global Post-Peak Weight (1820–2100)</button>
+          </div>
+        </div>
+
+        <div id="pact-view">
+          <p style="font-size:12.5px;color:var(--text-1);margin-bottom:10px;">
+            <strong>PACT Framework (<a href="https://doi.org/10.5281/zenodo.23200964" target="_blank">doi:10.5281/zenodo.23200964</a>):</strong>
+            Demographic change alone does not predetermine collapse; long-term societal continuity depends on whether institutional absorption, civic identity, and social trust outpace the rate of demographic transformation:
+            <code style="color:var(--accent);font-family:var(--font-mono);">Continuity Ratio (CR) = (Absorption &times; Civic Core &times; Trust) / Pace</code>
+          </p>
+
+          <div class="pact-controls">
+            <div class="pact-slider">
+              <div class="pact-slider-top">
+                <span>P · Pace of Demographic Shift</span>
+                <span id="val-p" style="font-family:var(--font-mono);color:var(--accent);">0.68</span>
+              </div>
+              <input type="range" id="sl-p" min="0.20" max="1.00" step="0.01" value="0.68" />
+              <div style="font-size:11px;color:var(--text-2);">Speed of cohort turnover, immigration inflow &amp; cultural change</div>
+            </div>
+            <div class="pact-slider">
+              <div class="pact-slider-top">
+                <span>A · Institutional Absorption</span>
+                <span id="val-a" style="font-family:var(--font-mono);color:var(--accent);">0.72</span>
+              </div>
+              <input type="range" id="sl-a" min="0.20" max="1.00" step="0.01" value="0.72" />
+              <div style="font-size:11px;color:var(--text-2);">2nd-generation upward mobility, intermarriage &amp; labor market integration</div>
+            </div>
+            <div class="pact-slider">
+              <div class="pact-slider-top">
+                <span>C · Civic Core Strength</span>
+                <span id="val-c" style="font-family:var(--font-mono);color:var(--accent);">0.64</span>
+              </div>
+              <input type="range" id="sl-c" min="0.20" max="1.00" step="0.01" value="0.64" />
+              <div style="font-size:11px;color:var(--text-2);">Shared constitutional norms, linguistic unity &amp; post-ancestry civic identity</div>
+            </div>
+            <div class="pact-slider">
+              <div class="pact-slider-top">
+                <span>T · Institutional &amp; Social Trust</span>
+                <span id="val-t" style="font-family:var(--font-mono);color:var(--accent);">0.54</span>
+              </div>
+              <input type="range" id="sl-t" min="0.20" max="1.00" step="0.01" value="0.54" />
+              <div style="font-size:11px;color:var(--text-2);">Cross-group generalized trust, low segregation &amp; low polarization</div>
+            </div>
+          </div>
+
+          <div class="pact-readout" style="margin-top:12px;">
+            <div>
+              <div style="font-size:11px;text-transform:uppercase;color:var(--text-2);font-family:var(--font-mono);">Normalized Continuity Ratio (CR)</div>
+              <div id="pact-cr-value" style="font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--accent);">0.92</div>
+            </div>
+            <div style="flex:1;">
+              <div id="pact-regime-title" style="font-size:14.5px;font-weight:600;color:var(--text-0);">2050 Baseline Verdict: Managed Transformation Under Strain</div>
+              <div id="pact-regime-desc" style="font-size:12px;color:var(--text-1);margin-top:3px;">
+                Western institutions remain intact and recognizable through 2050–2100 while becoming substantially more diverse, but face persistent polarization, fiscal aging pressures, and localized cohesion friction.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="postpeak-view" style="display:none;">
+          <div class="chart-box">
+            <svg id="postpeak-chart-svg" class="chart-svg" viewBox="0 0 680 230"></svg>
+          </div>
+          <p style="font-size:12.5px;color:var(--text-1);margin-top:10px;">
+            <strong>The Post-Peak Civilization Thesis (<a href="https://researchreports.hheuristics.com/reports/post-peak-civilization-end-of-western-predominance/" target="_blank">Hughes 2026, HH-2026-49</a>):</strong>
+            Western Europe and Western Offshoots rose from <strong>28%</strong> of world GDP in 1820 to a historic peak of <strong>57%</strong> in 1950, falling to <strong>31%</strong> by 2022 as Asia industrialized; Western share of world population fell from <strong>28.8% (1950)</strong> to <strong>13.8% (2024)</strong> and is projected to reach <strong>10.5% in 2100</strong>. The evidence confirms the <em>weak (relative multipolar) thesis</em> while refuting biological/racial degradation claims: human genetic variation lies overwhelmingly within populations, and long-term outcomes are governed by institutional, demographic, and civic adaptation.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;">
+      <div>
+        <strong>Data Sources:</strong> U.S. Census Bureau Population Estimates Program (2000–2010 Intercensal, Vintage 2020 &amp; Vintage 2024 County Characteristics), 2020 Decennial Census PL 94-171, Current Population Survey (CPS) Historical Household Tables (1960–2024), CDC NCHS National Vital Statistics System, Pew Research Center Intermarriage Studies, Maddison Project Database, and UN World Population Prospects 2024.
+      </div>
+      <div>
+        <strong>Primary Research Citations:</strong>
+        Hughes, H. (2026). <em>The Post-Peak Civilization Thesis: The End of Western Predominance</em> (HH-2026-49) &bull;
+        Hughes, H. (2026). <em>The Great Transformation?</em> (<a href="https://doi.org/10.5281/zenodo.23596797" target="_blank">10.5281/zenodo.23596797</a>) &bull;
+        Hughes, H. (2026). <em>The Collapse of Traditional Western World Society</em> (<a href="https://doi.org/10.5281/zenodo.23200964" target="_blank">10.5281/zenodo.23200964</a>).
+      </div>
+    </div>
+  </footer>
+
+  <div class="map-tooltip" id="map-tooltip"></div>
+  <script src="app.js"></script>
+</body>
+</html>
