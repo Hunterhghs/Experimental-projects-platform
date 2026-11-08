@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>21st Century Observatory | Global Convergence, DOI & Green Transition vs. Polycrisis</title>
+  <meta name="description" content="Interactive analytical observatory examining the 21st-century tug-of-war between Global Economic Convergence, Diffusion of Innovations & the Green Transition against compounding Polycrisis Human Exposure (2000–2050)." />
+
+  <!-- Google Fonts: Inter, Space Grotesk, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js 4 + D3.js v7 + TopoJSON Client CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ========================================================================
+       STICKY TOP COMMAND BAR
+       ======================================================================== -->
+  <header class="top-command-bar">
+    <div class="command-bar-inner">
+      <div class="brand-cluster">
+        <div class="brand-emblem">21C</div>
+        <div class="brand-titles">
+          <h1>
+            DOI·GEC vs. Polycrisis Observatory
+            <span class="live-badge">2000–2050 Macro-System</span>
+          </h1>
+          <p>Global Economic Convergence, Diffusion of Innovations &amp; Green Transition vs. Human Polycrisis Exposure</p>
+        </div>
+      </div>
+
+      <!-- Interactive Global Time Scrubber (2000-2025) -->
+      <div class="scrubber-cluster">
+        <span class="scrubber-label">Historical Year</span>
+        <span id="selectedYearPill" class="year-display-pill">2025</span>
+        <input
+          id="globalYearSlider"
+          class="year-slider"
+          type="range"
+          min="0"
+          max="25"
+          step="1"
+          value="25"
+          aria-label="Select Year from 2000 to 2025"
+        />
+        <button id="playTimelineBtn" class="btn-play-timeline" type="button">
+          ▶ Play 2000–2025
+        </button>
+      </div>
+
+      <!-- Utility Actions -->
+      <div class="actions-cluster">
+        <button id="exportCsvBtn" class="cmd-btn" type="button" title="Download 52-Nation Dataset as CSV">
+          ⬇ Export CSV
+        </button>
+        <button id="methodologyBtn" class="cmd-btn" type="button">
+          ⓘ Methodology &amp; Sources
+        </button>
+        <button id="themeToggleBtn" class="cmd-btn" type="button">
+          ☀ Light Mode
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MODULE NAVIGATION TABS (NOW WITH INTERACTIVE WORLD MAP & OVERVIEW OF NATIONS)
+       ======================================================================== -->
+  <nav class="nav-tabs-bar" aria-label="Dashboard Modules">
+    <div class="nav-tabs-inner">
+      <ul class="nav-tabs-list">
+        <li>
+          <button class="nav-tab-btn active" data-tab="all" type="button">
+            <span class="tab-dot dual"></span> Full Observatory
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="overview" type="button">
+            <span class="tab-dot dual"></span> 1. Executive Tug-of-War
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="worldmap" type="button">
+            <span class="tab-dot map"></span> 2. Interactive World Map
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="nations" type="button">
+            <span class="tab-dot nations"></span> 3. Overview of Nations
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="convergence" type="button">
+            <span class="tab-dot conv"></span> 4. Economic Convergence (GEC)
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="doi" type="button">
+            <span class="tab-dot doi"></span> 5. Innovation Diffusion &amp; Green
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="polycrisis" type="button">
+            <span class="tab-dot poly"></span> 6. Polycrisis &amp; Exposure
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="matrix" type="button">
+            <span class="tab-dot matrix"></span> 7. Quadrant Matrix
+          </button>
+        </li>
+        <li>
+          <button class="nav-tab-btn" data-tab="simulator" type="button">
+            <span class="tab-dot sim"></span> 8. 2050 Simulator
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ========================================================================
+       MAIN DASHBOARD CONTENT
+       ======================================================================== -->
+  <main class="dashboard-main">
+
+    <!-- ======================================================================
+         MODULE 1: HERO TUG-OF-WAR BALANCE BANNER & 8 DYNAMIC KPI SCORECARDS
+         ====================================================================== -->
+    <section class="dashboard-section" data-section="overview">
+      <div class="tug-of-war-banner">
+        <div class="tug-header">
+          <div class="force-side">
+            <span class="force-tag conv">Force I • Prosperity &amp; Adaptation Engine</span>
+            <div class="force-title">Convergence, DOI &amp; Green Transition Index</div>
+            <div class="force-score-row">
+              <span id="heroConvScore" class="force-score conv">328.4</span>
+              <span id="heroConvDelta" class="force-delta">+228.4% vs 2000 (Base=100)</span>
+            </div>
+          </div>
+
+          <div class="tug-center-status">
+            <div class="tug-center-label">The Defining Race of the 21st Century</div>
+            <div id="heroNetBadge" class="tug-net-badge">
+              2025 Net Balance: +70.2 pts (56.0% Convergence vs 44.0% Polycrisis)
+            </div>
+          </div>
+
+          <div class="force-side right">
+            <span class="force-tag poly">Force II • Compounding Risk Engine</span>
+            <div class="force-title">Polycrisis Human Exposure Index</div>
+            <div class="force-score-row">
+              <span id="heroPolyDelta" class="force-delta">+158.2% vs 2000 (Base=100)</span>
+              <span id="heroPolyScore" class="force-score poly">258.2</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tug-bar-track" title="Proportional balance between Force I (Convergence/DOI/Green) and Force II (Polycrisis Exposure)">
+          <div id="tugBarConv" class="tug-bar-conv" style="width: 56%;"></div>
+          <div class="tug-bar-poly"></div>
+          <div class="tug-midpoint-marker" title="50/50 Equilibrium Threshold"></div>
+        </div>
+
+        <div class="tug-caption-row">
+          <span>← Faster Global South Catch-Up, Wright's Law Clean Tech &amp; Digital Leapfrogging</span>
+          <span>Compounding Lethal Heat, Armed Conflict, Displacement &amp; Debt Distress →</span>
+        </div>
+      </div>
+
+      <!-- 8 Dynamic KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card conv-card">
+          <div class="kpi-top">
+            <span class="kpi-title">Global South Share of World GDP (PPP)</span>
+            <span class="kpi-pillar-pill conv">GEC</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpiEmdeShare" class="kpi-value">61.1%</span>
+            <span id="kpiEmdeDelta" class="kpi-change good">+17.9 pp since 2000</span>
+          </div>
+          <div class="kpi-subtext">
+            <span>EMDEs vs Advanced OECD Economies</span>
+            <span>IMF WEO</span>
+          </div>
+          <div class="kpi-mini-bar">
+            <div id="kpiBarEmde" class="kpi-mini-fill" style="width: 61.1%; background: var(--conv-emerald);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card conv-card">
+          <div class="kpi-top">
+            <span class="kpi-title">Global Extreme Poverty Rate (&lt;$2.15/day)</span>
+            <span class="kpi-pillar-pill conv">GEC</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpiPoverty" class="kpi-value">8.3%</span>
+            <span id="kpiPovertyDelta" class="kpi-change good">-20.9 pp since 2000</span>
+          </div>
+          <div class="kpi-subtext">
+            <span>Global Middle Class: 4.50B people</span>
+            <span>World Bank</span>
+          </div>
+          <div class="kpi-mini-bar">
+            <div id="kpiBarPoverty" class="kpi-mini-fill" style="width: 24%; background: var(--conv-emerald);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card doi-card">
+          <div class="kpi-top">
+            <span class="kpi-title">Solar PV Module Cost (Wright's Law)</span>
+            <span class="kpi-pillar-pill doi">Green Tech</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpiSolarCost" class="kpi-value">$0.11/W</span>
+            <span id="kpiSolarDelta" class="kpi-change good">-98% vs 2000 ($4.88/W)</span>
+          </div>
+          <div class="kpi-subtext">
+            <span>Li-Ion Battery Pack: $99/kWh (-95%)</span>
+            <span>IRENA / BNEF</span>
+          </div>
+          <div class="kpi-mini-bar">
+            <div id="kpiBarSolar" class="kpi-mini-fill" style="width: 96%; background: var(--conv-cyan);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card doi-card">
+          <div class="kpi-top">
+            <span class="kpi-title">Global Internet &amp; Clean Energy Scale</span>
+            <span class="kpi-pillar-pill doi">DOI</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpiDigital" class="kpi-value">71.0%</span>
+            <span id="kpiDigitalDelta" class="kpi-change good">4,110 GW Solar+Wind</span>
+          </div>
+          <div class="kpi-subtext">
+            <span>23.6% EV share of new car sales</span>
+            <span>ITU / IEA</span>
+          </div>
+          <div class="kpi-mini-bar">
+            <div id="kpiBarDigital" class="kpi-mini-fill" style="width: 71%; background: var(--conv-cyan);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card poly-card">
+          <div class="kpi-top">
+            <span class="kpi-title">Global Surface Warming Anomaly</span>
+            <span class="kpi-pillar-pill poly">Climate</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpiTemp" class="kpi-value">+1.52°C</span>
+            <span id="kpiTempDelta" class="kpi-change bad">+0.90°C vs 2000</span>
+          </div>
+          <div class="kpi-subtext">
+            <span>6 of 9 Planetary Boundaries Breached</span>
+            <span>Copernicus / WMO</span>
+          </div>
+          <div class="kpi-mini-bar">
+            <div id="kpiBarTemp" class="kpi-mini-fill" style="width: 76%; background: var(--poly-crimson);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card poly-warn-card">
+          <div class="kpi-top">
+            <span class="kpi-title">Extreme Heat Stress Exposed Population</span>
+            <span class="kpi-pillar-pill warn">Human Niche</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpiHeatPop" class="kpi-value">2.52B</span>
+            <span id="kpiHeatDelta" class="kpi-change bad">+1.34B people vs 2000</span>
+          </div>
+          <div class="kpi-subtext">
+            <span>&gt;20 days/yr above wet-bulb/lethal threshold</span>
+            <span>IPCC / Lancet</span>
+          </div>
+          <div class="kpi-mini-bar">
+            <div id="kpiBarHeat" class="kpi-mini-fill" style="width: 79%; background: var(--poly-orange);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card poly-card">
+          <div class="kpi-top">
+            <span class="kpi-title">Forcibly Displaced People Worldwide</span>
+            <span class="kpi-pillar-pill poly">Displacement</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpiDisplaced" class="kpi-value">125.4M</span>
+            <span id="kpiDisplacedDelta" class="kpi-change bad">+87.4M vs 2000</span>
+          </div>
+          <div class="kpi-subtext">
+            <span>Refugees, IDPs &amp; climate-conflict cascades</span>
+            <span>UNHCR</span>
+          </div>
+          <div class="kpi-mini-bar">
+            <div id="kpiBarDisplaced" class="kpi-mini-fill" style="width: 89%; background: var(--poly-crimson);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card poly-warn-card">
+          <div class="kpi-top">
+            <span class="kpi-title">Active State-Based Armed Conflicts</span>
+            <span class="kpi-pillar-pill warn">Geopolitics</span>
+          </div>
+          <div class="kpi-value-row">
+            <span id="kpiConflicts" class="kpi-value">60 Wars</span>
+            <span id="kpiConflictsDelta" class="kpi-change bad">298M in Acute Food Crisis</span>
+          </div>
+          <div class="kpi-subtext">
+            <span>Highest state conflict count since 1946</span>
+            <span>UCDP / PRIO</span>
+          </div>
+          <div class="kpi-mini-bar">
+            <div id="kpiBarConflicts" class="kpi-mini-fill" style="width: 85%; background: var(--poly-orange);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Twin Force Trajectory Chart + Regional Balance Chart -->
+      <div class="grid-60-40">
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>The 21st-Century Macro Divergence: Twin Force Trajectory (2000–2025)</h3>
+              <p>Tracking the exponential climb of Economic Convergence, Tech Diffusion &amp; Clean Energy against Polycrisis Human Exposure</p>
+            </div>
+            <div class="panel-controls">
+              <button class="chip-btn active" data-twin-mode="index" type="button">Dual Index (2000=100)</button>
+              <button class="chip-btn" data-twin-mode="velocity" type="button">Net Resilience Buffer</button>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="twinForceChart"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span>Note: Post-2019 pandemic, conflict surge, and +1.5°C warming narrowed the net resilience buffer in fragile states.</span>
+            <span class="source-tag">Composite: WB, IMF, IEA, ITU, UNHCR, UCDP, IPCC</span>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>Regional Tug-of-War: Convergence Velocity vs. Human Exposure</h3>
+              <p>Comparing regional leapfrog momentum against multi-hazard climate, water, and displacement stress</p>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="regionalBalanceChart"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span>East &amp; SE Asia lead in net buffer; Sub-Saharan Africa &amp; MENA face acute exposure deficits.</span>
+            <span class="source-tag">2025 Regional Synthesis</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         NEW MODULE 2: INTERACTIVE WORLD MAP (GEOSPATIAL OBSERVATORY)
+         ====================================================================== -->
+    <section class="dashboard-section" data-section="worldmap">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow doi">Module 02 • Geospatial Observatory (52 Nations Covering 92% of Humanity)</span>
+          <h2 class="section-title">Interactive World Map: Global Convergence, Clean Tech &amp; Polycrisis Geography</h2>
+          <p class="section-desc">
+            Switch between 7 geospatial layers to visualize where economic catch-up, solar/digital leapfrogging, and lethal heat or conflict exposure intersect. Pan and zoom the map, or click any nation to inspect its live dossier.
+          </p>
+        </div>
+      </div>
+
+      <!-- 7 Map Layer Switcher Bar -->
+      <div class="matrix-toolbar">
+        <div class="region-pills">
+          <span style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-secondary); align-self:center; margin-right:4px;">MAP LAYER:</span>
+          <button class="chip-btn active" data-map-layer="netBalance" type="button">1. Net Resilience Balance</button>
+          <button class="chip-btn" data-map-layer="convergenceScore" type="button">2. Convergence &amp; DOI Score</button>
+          <button class="chip-btn" data-map-layer="polycrisisExposure" type="button">3. Polycrisis Exposure Index</button>
+          <button class="chip-btn" data-map-layer="gdpMultiple" type="button">4. GDP/cap Growth Multiple (2000–25)</button>
+          <button class="chip-btn" data-map-layer="cleanElecShare2025" type="button">5. Clean Electricity Share %</button>
+          <button class="chip-btn" data-map-layer="digitalAdoption2025" type="button">6. Digital Leapfrog %</button>
+          <button class="chip-btn" data-map-layer="heatDays2025" type="button">7. Lethal Heat Days/Yr</button>
+        </div>
+      </div>
+
+      <!-- World Map Viewport + Live Geospatial Dossier Side Panel -->
+      <div class="worldmap-layout">
+        <!-- Left: Interactive SVG Map Canvas -->
+        <div class="panel-card" style="padding: 1rem;">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3 id="mapActiveLayerTitle">Net Resilience Balance (Convergence Score minus Polycrisis Exposure)</h3>
+              <p>Click any nation polygon or population bubble to inspect its trajectory • Scroll or use buttons to zoom</p>
+            </div>
+          </div>
+
+          <div id="mapViewportWrap" class="map-viewport-wrap">
+            <!-- Zoom Buttons -->
+            <div class="map-zoom-controls">
+              <button id="mapZoomInBtn" class="map-zoom-btn" type="button" title="Zoom In">+</button>
+              <button id="mapZoomOutBtn" class="map-zoom-btn" type="button" title="Zoom Out">−</button>
+              <button id="mapZoomResetBtn" class="map-zoom-btn" type="button" title="Reset Map View" style="font-size:0.7rem;">⟲</button>
+            </div>
+
+            <!-- Overlay Mode Switcher -->
+            <div class="map-overlay-pills">
+              <button class="chip-btn active" data-map-overlay="both" type="button">Choropleth + Pop Bubbles</button>
+              <button class="chip-btn" data-map-overlay="choropleth" type="button">Polygons Only</button>
+              <button class="chip-btn" data-map-overlay="hotspots" type="button">Polycrisis Hotspots</button>
+            </div>
+
+            <!-- D3 SVG Map -->
+            <svg id="worldMapSvg" aria-label="Interactive World Map of Convergence vs Polycrisis"></svg>
+
+            <!-- Floating Tooltip -->
+            <div id="mapFloatingTooltip" class="map-floating-tooltip"></div>
+
+            <!-- Bottom Color Scale Legend -->
+            <div class="map-legend-overlay">
+              <div class="map-gradient-wrap">
+                <span id="mapLegendMin" style="font-family:var(--font-mono); font-size:0.69rem; color:var(--text-secondary);">-75 (Trap)</span>
+                <div id="mapLegendGradient" class="map-gradient-bar" style="background: linear-gradient(90deg, #be123c 0%, #f43f5e 25%, #f59e0b 48%, #38bdf8 72%, #10b981 100%);"></div>
+                <span id="mapLegendMax" style="font-family:var(--font-mono); font-size:0.69rem; color:var(--text-secondary);">+74 (Resilient)</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted);">
+                Circle Radius = Population Scale • Natural Earth Projection
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Selected Country Geospatial Dossier & Layer Leaderboards -->
+        <div class="map-side-stack">
+          <div class="panel-card" style="padding: 1.1rem;">
+            <div class="map-dossier-card">
+              <div class="map-dossier-header">
+                <div>
+                  <span style="font-family:var(--font-mono); font-size:0.68rem; color:var(--conv-cyan); text-transform:uppercase;">Selected Geospatial Dossier</span>
+                  <h3 id="mapDossierName" style="font-family:var(--font-display); font-size:1.22rem; margin-top:0.15rem;">🇮🇳 India (IND)</h3>
+                  <p id="mapDossierMeta" style="font-size:0.76rem; color:var(--text-secondary); margin-top:0.1rem;">South Asia • Pop: 1442M • High-Exposure Leapfrogger</p>
+                </div>
+                <button id="mapDossierModalBtn" class="chip-btn active" type="button">◎ Full 7-Axis Radar</button>
+              </div>
+
+              <div class="map-dossier-metrics">
+                <div class="map-mini-stat">
+                  <div class="map-mini-stat-label">Convergence &amp; DOI Score</div>
+                  <div id="mapDossierConv" class="map-mini-stat-val" style="color:var(--conv-emerald);">84/100</div>
+                </div>
+                <div class="map-mini-stat">
+                  <div class="map-mini-stat-label">Polycrisis Exposure</div>
+                  <div id="mapDossierPoly" class="map-mini-stat-val" style="color:var(--poly-crimson);">77/100</div>
+                </div>
+                <div class="map-mini-stat">
+                  <div class="map-mini-stat-label">Net Resilience Balance</div>
+                  <div id="mapDossierNet" class="map-mini-stat-val" style="color:var(--conv-cyan);">+7 pts</div>
+                </div>
+                <div class="map-mini-stat">
+                  <div class="map-mini-stat-label">2025 GDP/cap PPP (vs 2000)</div>
+                  <div id="mapDossierGdp" class="map-mini-stat-val">$11,150 (4.4x)</div>
+                </div>
+                <div class="map-mini-stat">
+                  <div class="map-mini-stat-label">Clean Electricity Share</div>
+                  <div id="mapDossierClean" class="map-mini-stat-val" style="color:var(--conv-emerald);">26.8%</div>
+                </div>
+                <div class="map-mini-stat">
+                  <div class="map-mini-stat-label">Dangerous Heat Stress</div>
+                  <div id="mapDossierHeat" class="map-mini-stat-val" style="color:var(--poly-orange);">108 days/yr</div>
+                </div>
+              </div>
+
+              <p id="mapDossierSummary" class="nation-summary-text" style="margin-top:0.2rem;">
+                World-leading Digital Public Infrastructure (Aadhaar/UPI), 4.4x GDP/cap catch-up, and &gt;200 GW clean power race against acute groundwater depletion and 108 lethal heat days/yr.
+              </p>
+            </div>
+
+            <!-- Top 5 / Bottom 5 for Active Map Layer -->
+            <div style="margin-top:0.25rem;">
+              <h4 style="font-size:0.78rem; color:var(--text-secondary); margin-bottom:0.5rem; font-family:var(--font-mono); text-transform:uppercase;">
+                Active Layer Rankings (Click to Focus on Map)
+              </h4>
+              <div class="map-ranking-columns">
+                <div>
+                  <div style="font-size:0.7rem; color:var(--conv-emerald); font-weight:700; margin-bottom:0.3rem;">▲ Top 5 Highest</div>
+                  <div id="mapTop5List" class="map-rank-list"></div>
+                </div>
+                <div>
+                  <div style="font-size:0.7rem; color:var(--poly-crimson); font-weight:700; margin-bottom:0.3rem;">▼ Bottom 5 Lowest</div>
+                  <div id="mapBottom5List" class="map-rank-list"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         NEW MODULE 3: OVERVIEW OF NATIONS (COMPARATIVE ATLAS & PROFILES)
+         ====================================================================== -->
+    <section class="dashboard-section" data-section="nations">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow conv">Module 03 • National Profiles &amp; Head-to-Head Comparator</span>
+          <h2 class="section-title">Overview of Nations: 52-Country Strategic Atlas &amp; Multi-Nation Comparator</h2>
+          <p class="section-desc">
+            Explore how individual nations navigate the 21st-century race between economic convergence, clean/digital leapfrogging, and polycrisis exposure. Filter by archetype below, compare any 3 nations head-to-head, or browse all 52 national dossiers.
+          </p>
+        </div>
+      </div>
+
+      <!-- 5 Archetype Overview Filter Cards -->
+      <div id="archetypeOverviewGrid" class="archetype-overview-grid"></div>
+
+      <!-- Head-to-Head 3-Nation Comparator -->
+      <div id="nationComparatorBox" class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h3>Head-to-Head 3-Nation Strategic Comparator</h3>
+            <p>Select any 3 countries or click a preset below to compare their 7-axis radar footprints and structural transition metrics</p>
+          </div>
+          <div class="panel-controls">
+            <button class="chip-btn active" data-comp-preset="CHN,IND,NGA" type="button">Demographic Giants (CHN · IND · NGA)</button>
+            <button class="chip-btn" data-comp-preset="BRA,IND,VNM" type="button">Global South Leapfroggers (BRA · IND · VNM)</button>
+            <button class="chip-btn" data-comp-preset="KEN,ETH,SDN" type="button">East Africa vs. Fragility (KEN · ETH · SDN)</button>
+            <button class="chip-btn" data-comp-preset="USA,DEU,NOR" type="button">OECD Transitions (USA · DEU · NOR)</button>
+          </div>
+        </div>
+
+        <div class="comparator-controls-bar">
+          <div class="comparator-select-group">
+            <label style="font-size:0.75rem; color:var(--conv-emerald); font-weight:700;">Nation A:</label>
+            <select id="compSelect1" class="nation-select" aria-label="Select First Nation"></select>
+
+            <label style="font-size:0.75rem; color:var(--conv-cyan); font-weight:700; margin-left:0.4rem;">Nation B:</label>
+            <select id="compSelect2" class="nation-select" aria-label="Select Second Nation"></select>
+
+            <label style="font-size:0.75rem; color:var(--poly-crimson); font-weight:700; margin-left:0.4rem;">Nation C:</label>
+            <select id="compSelect3" class="nation-select" aria-label="Select Third Nation"></select>
+          </div>
+          <span style="font-size:0.74rem; color:var(--text-secondary);">
+            Tip: Click <strong>"⚖ Pin to 3-Nation Compare"</strong> on any nation card below to load it here.
+          </span>
+        </div>
+
+        <div class="grid-2col">
+          <div class="chart-canvas-wrap">
+            <canvas id="nationCompareRadarChart"></canvas>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="nationCompareBarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nation Dossier Cards Filter & Sort Toolbar -->
+      <div class="matrix-toolbar">
+        <div class="region-pills">
+          <button class="chip-btn active" data-nation-region="ALL" type="button">All Regions (52)</button>
+          <button class="chip-btn" data-nation-region="East & SE Asia" type="button">East &amp; SE Asia</button>
+          <button class="chip-btn" data-nation-region="South Asia" type="button">South Asia</button>
+          <button class="chip-btn" data-nation-region="Sub-Saharan Africa" type="button">Sub-Saharan Africa</button>
+          <button class="chip-btn" data-nation-region="MENA" type="button">MENA</button>
+          <button class="chip-btn" data-nation-region="Latin America" type="button">Latin America</button>
+          <button class="chip-btn" data-nation-region="OECD / High Income" type="button">OECD / High Income</button>
+        </div>
+
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:0.6rem;">
+          <span id="nationsShownCount" style="font-family:var(--font-mono); font-size:0.74rem; color:var(--text-secondary);">Showing 52 of 52 Nations</span>
+          <select id="nationsSortSelect" class="nation-select" aria-label="Sort Nations By">
+            <option value="netBalance">Sort: Net Resilience Balance (High → Low)</option>
+            <option value="convergenceScore">Sort: Convergence &amp; DOI Score (High → Low)</option>
+            <option value="polycrisisExposure">Sort: Polycrisis Exposure (High → Low)</option>
+            <option value="gdpMultiple">Sort: 2000–2025 GDP/cap Growth Multiple</option>
+            <option value="cleanElecShare2025">Sort: Clean Electricity Share %</option>
+            <option value="popM">Sort: Population Size</option>
+          </select>
+          <input
+            id="nationsSearchInput"
+            class="search-input"
+            type="search"
+            placeholder="Search nation, keyword, or tech (e.g. PIX, solar, cobalt)..."
+          />
+        </div>
+      </div>
+
+      <!-- 52-Nation Dossier Cards Grid -->
+      <div id="nationsCardsGrid" class="nations-cards-grid"></div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 4: GLOBAL ECONOMIC CONVERGENCE (GEC)
+         ====================================================================== -->
+    <section class="dashboard-section" data-section="convergence">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow conv">Module 04 • Force I — Macro-Economic Catch-Up</span>
+          <h2 class="section-title">Global Economic Convergence &amp; The Inequality Paradox</h2>
+          <p class="section-desc">
+            Since 2000, the developing world shifted from producing 43% to over 61% of global output (PPP), lifting 1.5 billion people out of extreme poverty and transforming the global income distribution from "twin peaks" into a single middle-income bulge — even as within-country inequality and sovereign debt distress in the poorest 40 states worsened.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>The Great Catch-Up vs. The Inequality Paradox (2000–2025)</h3>
+              <p>Toggle between Global South GDP/Poverty convergence and Between- vs. Within-Country Inequality</p>
+            </div>
+            <div class="panel-controls">
+              <button class="chip-btn active" data-conv-mode="macro" type="button">GDP Share &amp; Poverty</button>
+              <button class="chip-btn" data-conv-mode="inequality" type="button">Between vs. Within Inequality</button>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="convergenceChart"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span>Between-country Gini fell from 0.574 to 0.415, while average top-10% national income share rose to 52.2%.</span>
+            <span class="source-tag">IMF WEO • World Bank PIP • World Inequality Database</span>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>End of the "Twin Peaks" World: Global Income Distribution Shift</h3>
+              <p>Share of world population by daily per-capita income/consumption (2017 PPP USD, log scale)</p>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="incomeDistChart"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span>In 2000, humanity was split into a poor developing mode ($2/day) and rich OECD mode ($50/day). By 2025, the global median converged to ~$12–$15/day.</span>
+            <span class="source-tag">Lakner-Milanovic / World Data Lab Methodology</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-strip">
+        <div class="insight-box">
+          <h4 style="color: var(--conv-emerald);">● Unprecedented Between-Country Convergence</h4>
+          <p>Average GDP per capita (PPP) in Emerging &amp; Developing Economies rose from 14.8% of the OECD average in 2000 to 33.6% in 2025, driven by industrialization and service leapfrogging across East, South, and Southeast Asia.</p>
+        </div>
+        <div class="insight-box">
+          <h4 style="color: var(--conv-cyan);">● 4.5 Billion in the Global Consumer Class</h4>
+          <p>Nearly 3 billion people joined the global middle and consumer class (&gt;$12/day PPP) over the past quarter-century, creating massive domestic demand for electrification, cooling, mobility, and digital services.</p>
+        </div>
+        <div class="insight-box">
+          <h4 style="color: var(--poly-orange);">● The "Bottom Billion" Fragility Divergence</h4>
+          <p>While middle-income economies converged rapidly, ~40 conflict-affected and debt-distressed low-income states (paying 17.9% of public revenue on external debt service in 2025) face stagnation and acute climate exposure.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 5: DIFFUSION OF INNOVATIONS (DOI) & GREEN TRANSITION
+         ====================================================================== -->
+    <section class="dashboard-section" data-section="doi">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow doi">Module 05 • Force I — Rogers S-Curves &amp; Wright's Law</span>
+          <h2 class="section-title">Diffusion of Innovations (DOI) &amp; The Exponential Green Transition</h2>
+          <p class="section-desc">
+            In the 19th and 20th centuries, foundational technologies took 50–80 years to diffuse globally, reaching developing nations half a century late. In the 21st century, modular digital and clean-energy technologies follow steep Wright's Law learning curves, compressing global adoption lags to near zero and enabling Global South leapfrogging.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>21st-Century Rogers S-Curves: Digital &amp; Clean-Tech Diffusion (2000–2025)</h3>
+              <p>Penetration trajectories of mobile, internet, digital payments (UPI/PIX/M-Pesa), solar/wind &amp; EVs</p>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="doiSCurveChart"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span>Digital payments and off-grid solar diffused faster in Kenya, India, Brazil, and Vietnam than in many legacy OECD markets.</span>
+            <span class="source-tag">ITU • World Bank Findex • Ember • IEA</span>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>Wright's Law in Action: Cost Collapse vs. Exponential Deployment</h3>
+              <p>Every doubling of cumulative global manufacturing capacity drives a 20–24% cost drop</p>
+            </div>
+            <div class="panel-controls">
+              <button class="chip-btn active" data-wright-mode="solar" type="button">Solar PV ($/W vs GW)</button>
+              <button class="chip-btn" data-wright-mode="batteries" type="button">Batteries ($/kWh vs EV %)</button>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="wrightsLawChart"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span>Clean energy investment ($2.0T+) now exceeds global fossil fuel supply investment by 2.15x.</span>
+            <span class="source-tag">IRENA • BloombergNEF • IEA World Energy Investment</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h3>The Collapse of the North–South Technology Lag (1840s vs. 2020s)</h3>
+            <p>Comparing years required to reach 50% adoption globally (cyan bar) vs. decades of delay before reaching Emerging &amp; Developing Economies (bottom bar)</p>
+          </div>
+        </div>
+        <div id="compressionListContainer" class="compression-list"></div>
+        <div class="panel-footer">
+          <span>Modular, mass-manufactured technologies (smartphones, solar PV cells, Li-ion batteries, open-weights AI, digital public infrastructure) bypass heavy legacy grid/landline bottlenecks.</span>
+          <span class="source-tag">Comin &amp; Hobijn Cross-Country Historical Adoption of Technology (CHAT) + 2025 Updates</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 6: POLYCRISIS & HUMAN EXPOSURE OBSERVATORY
+         ====================================================================== -->
+    <section class="dashboard-section" data-section="polycrisis">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow poly">Module 06 • Force II — Compounding Systemic Risks</span>
+          <h2 class="section-title">The Polycrisis Observatory: Human Exposure &amp; Planetary Boundaries</h2>
+          <p class="section-desc">
+            A polycrisis occurs when disparate crises—biosphere destabilization, extreme heat, armed conflict, forced displacement, food/water shocks, and sovereign debt distress—interact so that the overall human impact far exceeds the sum of each part.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-60-40">
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>Human Exposure Surge: Lethal Heat, Forced Displacement &amp; Food Crisis (2000–2025)</h3>
+              <p>Tracking populations directly exposed to compounding physical and geopolitical shocks</p>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap tall">
+            <canvas id="polycrisisTrendChart"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span>Forcibly displaced populations more than tripled since 2000 (38M → 125.4M), while acute food insecurity nearly tripled since 2015.</span>
+            <span class="source-tag">UNHCR • FAO/WFP IPC Phase 3+ • IPCC Human Climate Niche</span>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>Planetary Boundaries Transgression (2000 vs. 2025)</h3>
+              <p>6 of 9 Earth system processes now exceed the safe operating space for humanity (Threshold = 100)</p>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap tall">
+            <canvas id="planetaryRadarChart"></canvas>
+          </div>
+          <div class="panel-footer">
+            <span>Stratospheric ozone is the sole boundary that recovered—proving coordinated global treaties and tech substitution work.</span>
+            <span class="source-tag">Stockholm Resilience Centre (Richardson et al.)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h3>Interactive Systems Map: Polycrisis Feedback Loops vs. Innovation Dampeners</h3>
+            <p>Hover over any node to inspect how climate, conflict, and fiscal shocks amplify one another—and where clean energy &amp; digital diffusion break the chain</p>
+          </div>
+        </div>
+        <div class="cascade-svg-container">
+          <svg id="cascadeSvg" class="cascade-svg" viewBox="0 0 760 440" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="cascade-legend">
+            <span id="cascadeHoverStatus">Hover over any systemic node to inspect amplifying polycrisis loops vs. mitigating green/digital feedbacks.</span>
+            <span>
+              <strong style="color: var(--poly-crimson);">━━► Amplifying Crisis Loop (+)</strong> &nbsp;|&nbsp;
+              <strong style="color: var(--conv-emerald);">╌╌► Mitigating / Adaptive Feedback (-)</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 7: 52-COUNTRY QUADRANT MATRIX & TABLE EXPLORER
+         ====================================================================== -->
+    <section class="dashboard-section" data-section="matrix">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow matrix">Module 07 • Cross-National Quadrant Matrix</span>
+          <h2 class="section-title">52-Country Quadrant Matrix: Convergence Velocity vs. Polycrisis Exposure</h2>
+          <p class="section-desc">
+            Explore how 52 nations representing 92% of humanity map across four distinct 21st-century quadrants. Click any bubble on the chart or any row in the table to open a detailed country diagnostic profile.
+          </p>
+        </div>
+      </div>
+
+      <div class="matrix-toolbar">
+        <div class="region-pills">
+          <button class="chip-btn active" data-region-filter="ALL" type="button">All Regions (52)</button>
+          <button class="chip-btn" data-region-filter="East & SE Asia" type="button">East &amp; SE Asia</button>
+          <button class="chip-btn" data-region-filter="South Asia" type="button">South Asia</button>
+          <button class="chip-btn" data-region-filter="Sub-Saharan Africa" type="button">Sub-Saharan Africa</button>
+          <button class="chip-btn" data-region-filter="MENA" type="button">MENA</button>
+          <button class="chip-btn" data-region-filter="Latin America" type="button">Latin America</button>
+          <button class="chip-btn" data-region-filter="OECD / High Income" type="button">OECD / High Income</button>
+        </div>
+        <div>
+          <input
+            id="countrySearchInput"
+            class="search-input"
+            type="search"
+            placeholder="Search country or archetype (e.g. India, Trap, Leapfrogger)..."
+          />
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h3>Four Quadrants of the 21st Century (Bubble Size = Population)</h3>
+            <p>X-Axis: Economic Convergence, Digital &amp; Clean Energy Transition Score • Y-Axis: Multi-Hazard Polycrisis Human Exposure</p>
+          </div>
+        </div>
+        <div class="chart-canvas-wrap tall">
+          <canvas id="countryMatrixChart"></canvas>
+        </div>
+        <div class="panel-footer">
+          <span>Tip: Click any country bubble to inspect its 7-axis radar profile and 2000–2025 trajectory.</span>
+          <span class="source-tag">52-Country Composite Observatory Dataset</span>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <h3>Country-Level Indicators Table (Click column headers to sort • Click any row to drill down)</h3>
+          </div>
+        </div>
+        <div class="table-scroll-wrap">
+          <table class="country-table">
+            <thead>
+              <tr>
+                <th data-sort="name">Country ↕</th>
+                <th data-sort="region">Region ↕</th>
+                <th data-sort="archetype">21st-Century Archetype ↕</th>
+                <th data-sort="convergenceScore">Convergence &amp; DOI ↕</th>
+                <th data-sort="polycrisisExposure">Polycrisis Exposure ↕</th>
+                <th data-sort="gdpPpp2025">Net Balance</th>
+                <th data-sort="gdpPpp2025">GDP/cap PPP (2025 vs 2000) ↕</th>
+                <th data-sort="cleanElecShare2025">Clean Elec % ↕</th>
+                <th data-sort="digitalAdoption2025">Digital % ↕</th>
+                <th data-sort="heatDays2025">Lethal Heat Days ↕</th>
+              </tr>
+            </thead>
+            <tbody id="countryTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 8: 2025–2050 SCENARIO SIMULATOR & POLICY LAB
+         ====================================================================== -->
+    <section class="dashboard-section" data-section="simulator">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="section-eyebrow sim">Module 08 • Forward Horizon (2025–2050)</span>
+          <h2 class="section-title">Interactive 2050 Scenario Simulator: Who Wins the Race?</h2>
+          <p class="section-desc">
+            Test how policy choices, technological learning rates, climate finance, and geopolitical cooperation shape humanity's trajectory between 2025 and 2050. Select a preset scenario or adjust the four structural levers below.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-40-60">
+        <div class="panel-card sim-controls-card">
+          <div class="panel-title-wrap">
+            <h3>1. Choose a 2050 Macro-Scenario Preset</h3>
+            <p id="simPresetDescription" style="margin-top:0.35rem;">
+              Solar, EVs, and digital infrastructure continue rapid diffusion, lifting most middle-income economies, but +2.4°C warming, sovereign debt squeezes, and regional conflicts trap ~1.4B people in high polycrisis exposure.
+            </p>
+          </div>
+
+          <div class="preset-grid">
+            <button class="preset-btn active" data-preset="baseline" type="button">
+              <span class="preset-btn-title">The Uneven Race</span>
+              <span class="preset-btn-sub">Baseline Current Trajectory</span>
+            </button>
+            <button class="preset-btn" data-preset="greenConvergence" type="button">
+              <span class="preset-btn-title">Solar-Digital Convergence</span>
+              <span class="preset-btn-sub">Fast DOI + Debt/Climate Compact</span>
+            </button>
+            <button class="preset-btn" data-preset="fragmentedFortress" type="button">
+              <span class="preset-btn-title">Fragmented Fortress World</span>
+              <span class="preset-btn-sub">Tariff Blocs &amp; Slow Tech Transfer</span>
+            </button>
+            <button class="preset-btn" data-preset="runawayPolycrisis" type="button">
+              <span class="preset-btn-title">Compounding Polycrisis</span>
+              <span class="preset-btn-sub">Tipping Points &amp; Conflict Trap</span>
+            </button>
+          </div>
+
+          <h3 style="font-size:0.92rem; margin-top:0.25rem;">2. Fine-Tune Structural Policy Levers (0–100)</h3>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>Innovation &amp; Clean-Tech Diffusion Speed (DOI)</span>
+              <span id="simValDoi" class="slider-val-badge">68/100</span>
+            </div>
+            <input id="simSliderDoi" class="sim-slider" type="range" min="10" max="100" value="68" />
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>Global South Convergence, Trade &amp; Debt Relief</span>
+              <span id="simValConv" class="slider-val-badge">55/100</span>
+            </div>
+            <input id="simSliderConv" class="sim-slider" type="range" min="10" max="100" value="55" />
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>Climate Mitigation &amp; Adaptation Infrastructure</span>
+              <span id="simValClimate" class="slider-val-badge">52/100</span>
+            </div>
+            <input id="simSliderClimate" class="sim-slider" type="range" min="10" max="100" value="52" />
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>Geopolitical De-escalation &amp; Supply Chain Openness</span>
+              <span id="simValGeo" class="slider-val-badge">42/100</span>
+            </div>
+            <input id="simSliderGeo" class="sim-slider" type="range" min="10" max="100" value="42" />
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <h3>Projected 2050 Global Outcomes &amp; Trajectory (2025–2050)</h3>
+              <p>Real-time systems model response to your selected policy &amp; diffusion parameters</p>
+            </div>
+          </div>
+
+          <div class="sim-outcomes-grid">
+            <div class="sim-outcome-box">
+              <div class="sim-outcome-label">2050 Warming Anomaly</div>
+              <div id="simOutWarming" class="sim-outcome-val" style="color: var(--poly-orange);">+2.10°C</div>
+            </div>
+            <div class="sim-outcome-box">
+              <div class="sim-outcome-label">2050 Clean Electricity Share</div>
+              <div id="simOutClean" class="sim-outcome-val" style="color: var(--conv-emerald);">75%</div>
+            </div>
+            <div class="sim-outcome-box">
+              <div class="sim-outcome-label">High Polycrisis Exposed Pop</div>
+              <div id="simOutExposed" class="sim-outcome-val" style="color: var(--poly-crimson);">2.48B</div>
+            </div>
+            <div class="sim-outcome-box">
+              <div class="sim-outcome-label">2050 Extreme Poverty Rate</div>
+              <div id="simOutPoverty" class="sim-outcome-val" style="color: var(--conv-cyan);">4.8%</div>
+            </div>
+          </div>
+
+          <div class="chart-canvas-wrap">
+            <canvas id="scenarioProjectionChart"></canvas>
+          </div>
+
+          <div class="panel-footer">
+            <span>Accelerating South-South clean technology diffusion + sovereign debt relief produces the highest reduction in human polycrisis exposure per dollar invested.</span>
+            <span class="source-tag">Integrated Systems Dynamics Model (2025–2050)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="dashboard-footer">
+    <div>
+      <strong>21st Century Observatory</strong> • Global Economic Convergence, Diffusion of Innovations &amp; Green Transition vs. Polycrisis (Human Exposure)
+    </div>
+    <div>
+      Empirical synthesis: World Bank WDI • IMF WEO • Our World in Data • IEA • IRENA • ITU • UNHCR • UCDP/PRIO • IPCC AR6 • Stockholm Resilience Centre
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MODAL 1: COUNTRY DRILL-DOWN DIAGNOSTIC PROFILE
+       ======================================================================== -->
+  <div id="countryModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 id="modalCountryTitle" style="font-family: var(--font-display); font-size: 1.35rem;">Country Profile</h2>
+          <p id="modalCountrySubtitle" style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;"></p>
+        </div>
+        <button class="modal-close-btn" type="button" aria-label="Close Modal">✕</button>
+      </div>
+
+      <p id="modalCountrySummary" class="nation-summary-text" style="font-size:0.84rem;"></p>
+
+      <div class="grid-2col" style="align-items: center;">
+        <div class="chart-canvas-wrap short">
+          <canvas id="countryModalRadar"></canvas>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.82rem;">
+          <div class="insight-box">
+            <div style="display:flex; justify-content:space-between;">
+              <span>Convergence &amp; DOI Score:</span>
+              <strong id="modalConvScore" style="color:var(--conv-emerald); font-family:var(--font-mono);"></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Polycrisis Human Exposure:</span>
+              <strong id="modalPolyScore" style="color:var(--poly-crimson); font-family:var(--font-mono);"></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Net Resilience Balance:</span>
+              <strong id="modalNetScore" style="color:var(--conv-cyan); font-family:var(--font-mono);"></strong>
+            </div>
+          </div>
+
+          <div class="insight-box">
+            <div style="display:flex; justify-content:space-between;">
+              <span>GDP/cap PPP Trajectory:</span>
+              <strong id="modalGdpTrajectory" style="font-family:var(--font-mono);"></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Clean Electricity Share (2025):</span>
+              <strong id="modalCleanElec" style="color:var(--conv-emerald); font-family:var(--font-mono);"></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Digital Adoption Index (2025):</span>
+              <strong id="modalDigital" style="color:var(--conv-cyan); font-family:var(--font-mono);"></strong>
+            </div>
+          </div>
+
+          <div class="insight-box">
+            <div style="display:flex; justify-content:space-between;">
+              <span>Dangerous Heat Stress Days/Yr:</span>
+              <strong id="modalHeatDays" style="color:var(--poly-orange); font-family:var(--font-mono);"></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Baseline Water Stress Score:</span>
+              <strong id="modalWaterStress" style="font-family:var(--font-mono);"></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Sovereign Debt Vulnerability:</span>
+              <strong id="modalDebt" style="font-family:var(--font-mono);"></strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Conflict &amp; Fragility Risk:</span>
+              <strong id="modalConflict" style="font-family:var(--font-mono);"></strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: METHODOLOGY & DATA SOURCES
+       ======================================================================== -->
+  <div id="methodologyModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2 style="font-family: var(--font-display); font-size: 1.3rem;">Analytical Framework, Methodology &amp; Primary Sources</h2>
+          <p style="font-size: 0.8rem; color: var(--text-secondary);">How the 21st Century Observatory synthesizes Convergence, DOI, Green Transition &amp; Polycrisis Exposure</p>
+        </div>
+        <button class="modal-close-btn" type="button" aria-label="Close Modal">✕</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.9rem; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55;">
+        <div class="insight-box">
+          <h4 style="color: var(--conv-emerald);">1. Force I: Convergence, DOI &amp; Green Transition Index (2000 = 100)</h4>
+          <p>
+            Combines four equally weighted empirical sub-indices normalized to Year 2000 = 100:
+            (a) <strong>Global Economic Convergence</strong> (EMDE share of world GDP PPP from IMF WEO, extreme poverty reduction at $2.15/day 2017 PPP from World Bank PIP, and population-weighted between-country Gini decline);
+            (b) <strong>Diffusion of Innovations (DOI)</strong> (ITU internet penetration, mobile broadband, and World Bank Global Findex digital payment adoption in developing economies, modeled via Rogers S-curves &amp; Comin-Hobijn CHAT lag metrics);
+            (c) <strong>Wright's Law Clean Tech Cost Reduction</strong> (IRENA &amp; BNEF solar PV module $/W and Li-ion battery pack $/kWh learning curves);
+            (d) <strong>Green Deployment Scale</strong> (Ember &amp; IEA solar/wind share of electricity generation and EV share of passenger vehicle sales).
+          </p>
+        </div>
+
+        <div class="insight-box">
+          <h4 style="color: var(--poly-crimson);">2. Force II: Polycrisis Human Exposure Index (2000 = 100)</h4>
+          <p>
+            Operationalizes the <em>Polycrisis</em> framework (Adam Tooze, Homer-Dixon, WEF Global Risks, Stockholm Resilience Centre) by tracking direct human exposure across five interacting domains normalized to Year 2000 = 100:
+            (a) <strong>Climate &amp; Lethal Heat Exposure</strong> (Copernicus/WMO surface warming anomaly and population exposed to &gt;20 days/yr of dangerous wet-bulb/heat-index thresholds per Lenton et al. "Human Climate Niche");
+            (b) <strong>Biosphere &amp; Planetary Boundaries</strong> (Richardson et al. 9 planetary boundaries transgression);
+            (c) <strong>Armed Conflict &amp; Geopolitical Fragmentation</strong> (UCDP/PRIO state-based armed conflicts and Global Trade Alert restrictive trade interventions);
+            (d) <strong>Forced Displacement</strong> (UNHCR refugees, asylum-seekers, and internally displaced persons);
+            (e) <strong>Food &amp; Fiscal Stress</strong> (FAO/WFP IPC Phase 3+ acute food insecurity and World Bank IDS low-income external debt service as % of government revenue).
+          </p>
+        </div>
+
+        <div class="insight-box">
+          <h4 style="color: var(--conv-cyan);">3. Interactive World Map &amp; 52-Nation Overview Atlas</h4>
+          <p>
+            The Geospatial World Map uses a Natural Earth projection with TopoJSON country polygons matched via ISO 3166-1 numeric codes (`isoNum`) and population-scaled centroid markers across 52 countries representing &gt;92% of global population and GDP.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
