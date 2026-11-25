@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sustainable Convergence Monitor</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="data.js"></script>
+<style>
+:root{
+  color-scheme: light;
+  --page:#f4f4f1; --surface:#fcfcfb; --surface-2:#f4f3ef; --ocean:#eef1f4;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10); --border-strong:rgba(11,11,11,.18);
+  --nodata:#e4e3dd; --land-stroke:#fcfcfb;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+  --accent:#2a78d6; --accent-ink:#1c5cab; --accent-wash:rgba(42,120,214,.10);
+  --good:#006300; --bad:#d03b3b;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.06);
+  --mid:#f0efec;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:#0d0d0d; --surface:#1a1a19; --surface-2:#222220; --ocean:#121314;
+    --ink:#f0efec; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10); --border-strong:rgba(255,255,255,.18);
+    --nodata:#2a2a28; --land-stroke:#121314;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+    --accent:#3987e5; --accent-ink:#86b6ef; --accent-wash:rgba(57,135,229,.16);
+    --good:#0ca30c; --bad:#e66767;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+    --mid:#383835;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#0d0d0d; --surface:#1a1a19; --surface-2:#222220; --ocean:#121314;
+  --ink:#f0efec; --ink-2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10); --border-strong:rgba(255,255,255,.18);
+  --nodata:#2a2a28; --land-stroke:#121314;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+  --accent:#3987e5; --accent-ink:#86b6ef; --accent-wash:rgba(57,135,229,.16);
+  --good:#0ca30c; --bad:#e66767;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.35);
+  --mid:#383835;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--page);color:var(--ink);font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- shell ---------- */
+.app{height:100vh;display:grid;grid-template-rows:56px 1fr;grid-template-columns:276px 1fr 392px;grid-template-areas:"hdr hdr hdr" "left main right"}
+header{grid-area:hdr;display:flex;align-items:center;gap:20px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.brand{display:flex;align-items:center;gap:10px;min-width:250px}
+.mark{width:28px;height:28px;border-radius:7px;background:var(--ink);color:var(--surface);display:grid;place-items:center;font-weight:700;font-size:13px;letter-spacing:-.5px}
+.brand h1{font-size:14px;margin:0;font-weight:650;letter-spacing:-.1px}
+.brand p{margin:0;font-size:11px;color:var(--muted)}
+.kpis{display:flex;gap:0;flex:1;min-width:0;overflow:hidden}
+.kpi{padding:0 16px;border-left:1px solid var(--border);white-space:nowrap}
+.kpi .l{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.kpi .v{font-size:15px;font-weight:600}
+.kpi .d{font-size:11px;color:var(--ink-2);margin-left:4px;font-weight:400}
+.hdr-actions{display:flex;gap:8px;align-items:center}
+.btn{height:30px;padding:0 10px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:12px}
+.btn:hover{background:var(--surface-2)}
+.btn.icon{width:30px;padding:0;justify-content:center}
+.search{position:relative}
+.search input{height:30px;width:200px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);padding:0 10px 0 28px;font-size:12px}
+.search svg{position:absolute;left:9px;top:9px;color:var(--muted)}
+.search-results{position:absolute;top:34px;left:0;right:0;background:var(--surface);border:1px solid var(--border-strong);border-radius:8px;box-shadow:var(--shadow);max-height:300px;overflow:auto;z-index:50;display:none}
+.search-results div{padding:6px 10px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+.search-results div span{color:var(--muted);font-size:11px}
+.search-results div:hover,.search-results div.on{background:var(--accent-wash)}
+
+/* ---------- left rail ---------- */
+aside.left{grid-area:left;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.rail-scroll{overflow:auto;flex:1;padding:12px 12px 16px}
+.sec-title{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 6px 6px;font-weight:600}
+.sec-title:first-child{margin-top:2px}
+.ind{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:7px 8px;border-radius:7px;border:0;background:none;cursor:pointer;color:var(--ink-2)}
+.ind:hover{background:var(--surface-2);color:var(--ink)}
+.ind.on{background:var(--accent-wash);color:var(--ink);font-weight:600}
+.ind .u{font-size:10.5px;color:var(--muted);font-weight:400}
+.ind .tag{font-size:9.5px;border:1px solid var(--border-strong);border-radius:4px;padding:0 4px;color:var(--muted);font-weight:500}
+.time{border-top:1px solid var(--border);padding:12px 14px 14px}
+.time-row{display:flex;align-items:center;gap:10px}
+.yr{font-size:22px;font-weight:650;letter-spacing:-.5px;min-width:56px}
+input[type=range]{flex:1;accent-color:var(--accent)}
+.time .hint{font-size:11px;color:var(--muted);margin-top:4px}
+.rank{margin:0 6px}
+.rank-row{display:grid;grid-template-columns:18px 1fr auto;gap:6px;padding:3px 0;cursor:pointer;font-size:12px}
+.rank-row:hover .nm{color:var(--accent-ink);text-decoration:underline}
+.rank-row .i{color:var(--muted)}
+.rank-row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- main ---------- */
+main{grid-area:main;display:flex;flex-direction:column;min-width:0;min-height:0;position:relative}
+.map-wrap{position:relative;flex:1;min-height:0;background:var(--ocean);overflow:hidden}
+#map{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#map:active{cursor:grabbing}
+.country{fill:var(--nodata);stroke:var(--land-stroke);stroke-width:.5;vector-effect:non-scaling-stroke;transition:fill .25s}
+.country:hover{stroke:var(--ink);stroke-width:1.2}
+.country.sel{stroke:var(--ink);stroke-width:2}
+.graticule{fill:none;stroke:var(--grid);stroke-width:.5;vector-effect:non-scaling-stroke}
+.sphere{fill:var(--surface);stroke:var(--axis);stroke-width:.6;vector-effect:non-scaling-stroke}
+.map-title{position:absolute;left:16px;top:14px;pointer-events:none;max-width:60%}
+.map-title h2{margin:0;font-size:17px;font-weight:650;letter-spacing:-.2px}
+.map-title p{margin:2px 0 0;font-size:12px;color:var(--ink-2)}
+.legend{position:absolute;left:16px;bottom:14px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:9px 11px 8px;box-shadow:var(--shadow)}
+.legend .t{font-size:11px;color:var(--ink-2);margin-bottom:6px}
+.legend .sw{display:flex;gap:2px}
+.legend .sw i{display:block;width:30px;height:9px}
+.legend .sw i:first-child{border-radius:3px 0 0 3px}.legend .sw i:last-child{border-radius:0 3px 3px 0}
+.legend .lb{display:flex;font-size:10px;color:var(--muted);margin-top:3px;position:relative;height:13px}
+.legend .lb span{position:absolute;transform:translateX(-50%)}
+.legend .nd{display:flex;gap:6px;align-items:center;font-size:10.5px;color:var(--muted);margin-top:4px}
+.legend .nd i{width:12px;height:9px;background:var(--nodata);border-radius:2px}
+.zoom{position:absolute;right:14px;top:14px;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);overflow:hidden}
+.zoom button{width:30px;height:30px;border:0;background:none;cursor:pointer;font-size:15px}
+.zoom button+button{border-top:1px solid var(--border)}
+.zoom button:hover{background:var(--surface-2)}
+
+.strip{height:272px;flex:none;background:var(--surface);border-top:1px solid var(--border);display:flex;flex-direction:column;transition:height .2s}
+.strip.collapsed{height:38px}
+.strip-hd{display:flex;align-items:center;gap:4px;padding:0 10px;height:38px;flex:none;border-bottom:1px solid var(--border)}
+.tab{white-space:nowrap;border:0;background:none;padding:6px 10px;border-radius:6px;cursor:pointer;color:var(--ink-2);font-size:12px}
+.tab:hover{background:var(--surface-2)}
+.tab.on{color:var(--ink);font-weight:600;background:var(--surface-2)}
+.strip-hd .sp{flex:1}
+.strip-hd .note{font-size:11px;color:var(--muted);margin-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.strip-hd .sp{flex:1 1 0}
+.strip-bd{flex:1;min-height:0;position:relative}
+.pane{position:absolute;inset:0;display:none;padding:8px 14px 8px}
+.pane.on{display:block}
+#tablePane{overflow:auto;padding:0}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th{position:sticky;top:0;background:var(--surface);text-align:left;font-weight:600;color:var(--ink-2);font-size:11px;padding:7px 12px;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap}
+th.r,td.r{text-align:right}
+td{padding:5px 12px;border-bottom:1px solid var(--border)}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr.sel{background:var(--accent-wash)}
+
+/* ---------- right panel ---------- */
+aside.right{grid-area:right;background:var(--surface);border-left:1px solid var(--border);overflow:auto;min-height:0}
+.p-hd{padding:16px 18px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:2}
+.p-hd .eyebrow{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.p-hd h3{margin:2px 0 0;font-size:19px;letter-spacing:-.3px;font-weight:650;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.p-hd .sub{color:var(--ink-2);font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+.chip{font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid var(--border-strong);background:none;cursor:pointer;color:var(--ink-2)}
+.chip:hover{background:var(--surface-2)}
+.chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.p-sec{padding:14px 18px;border-bottom:1px solid var(--border)}
+.p-sec h4{margin:0 0 2px;font-size:12.5px;font-weight:650}
+.p-sec .cap{font-size:11px;color:var(--muted);margin:0 0 8px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{border:1px solid var(--border);border-radius:9px;padding:9px 11px;background:var(--surface)}
+.tile .l{font-size:11px;color:var(--ink-2)}
+.tile .v{font-size:20px;font-weight:650;letter-spacing:-.4px;margin-top:1px}
+.tile .v small{font-size:12px;font-weight:500;color:var(--ink-2);letter-spacing:0}
+.tile .d{font-size:11px;color:var(--muted)}
+.tile .d .up{color:var(--good)} .tile .d .dn{color:var(--bad)}
+.tile.hero{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between}
+.tile.hero .v{font-size:30px}
+.scen{font-size:9.5px;border:1px solid var(--border-strong);border-radius:4px;padding:0 4px;color:var(--muted);margin-left:4px;vertical-align:1px}
+.bars .row{display:grid;grid-template-columns:86px 1fr 34px;gap:8px;align-items:center;margin:5px 0;font-size:12px}
+.bars .track{height:8px;background:var(--surface-2);border-radius:4px;position:relative}
+.bars .fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--s1)}
+.bars .tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);border-radius:1px}
+.bars .v{text-align:right;font-weight:600}
+.legend-inline{display:flex;gap:12px;font-size:11px;color:var(--ink-2);margin:2px 0 6px;flex-wrap:wrap}
+.legend-inline span{display:inline-flex;align-items:center;gap:5px}
+.legend-inline i{display:inline-block;width:14px;height:2px;border-radius:1px}
+.legend-inline i.dash{background:none!important;border-top:2px dashed}
+.smalls{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.small .h{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--ink-2)}
+.small .h b{font-size:13px;color:var(--ink);font-weight:650}
+.gap-row{display:grid;grid-template-columns:96px 1fr 66px;gap:8px;align-items:center;font-size:12px;margin:5px 0}
+.gap-row .track{height:8px;background:var(--surface-2);border-radius:4px;position:relative;overflow:hidden}
+.gap-row .fill{position:absolute;inset:0 auto 0 0;background:var(--s2);border-radius:4px}
+.gap-row .v{text-align:right;font-weight:600}
+.lens{font-size:12px;color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:10px 12px;margin-top:10px}
+.lens b{color:var(--ink)}
+.foot{padding:14px 18px 22px;font-size:11px;color:var(--muted)}
+.foot a{color:var(--accent-ink)}
+
+/* charts */
+svg text{fill:var(--muted);font-size:10px}
+.axis line,.axis path{stroke:var(--axis)}
+.gridl{stroke:var(--grid);stroke-width:1}
+.xhair{stroke:var(--ink-2);stroke-width:1;stroke-dasharray:2 2}
+
+/* tooltip */
+.tip{position:fixed;pointer-events:none;z-index:100;background:var(--surface);border:1px solid var(--border-strong);border-radius:8px;box-shadow:var(--shadow);padding:8px 10px;font-size:12px;min-width:140px;max-width:280px;opacity:0;transition:opacity .08s}
+.tip .t{font-weight:650;margin-bottom:3px}
+.tip .r{display:flex;justify-content:space-between;gap:14px;color:var(--ink-2)}
+.tip .r b{color:var(--ink);font-weight:600}
+.tip .k{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:0}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:200;align-items:center;justify-content:center;padding:16px}
+.modal-bg.on{display:flex}
+.modal{background:var(--surface);border-radius:12px;max-width:720px;width:100%;max-height:86vh;overflow:auto;padding:22px 26px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.modal h2{margin:0 0 4px;font-size:18px}
+.modal h3{font-size:13px;margin:18px 0 4px}
+.modal p,.modal li{color:var(--ink-2);font-size:12.5px}
+.modal code{background:var(--surface-2);padding:1px 4px;border-radius:4px;font-size:11.5px}
+.pill{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:4px;background:var(--surface-2);color:var(--ink-2);margin-right:4px}
+
+/* responsive */
+@media (max-width:1280px){ .app{grid-template-columns:240px 1fr 360px} .kpi:nth-child(n+4){display:none} }
+@media (max-width:1020px){
+  body{overflow:auto}
+  .app{height:auto;grid-template-columns:1fr;grid-template-rows:auto;grid-template-areas:"hdr" "main" "right" "left"}
+  header{flex-wrap:wrap;height:auto;padding:10px 16px;gap:10px}
+  .kpis{order:3;flex-basis:100%;overflow-x:auto}
+  .kpi:first-child{border-left:0;padding-left:0}
+  main{height:auto}.map-wrap{height:56vh;flex:none}
+  .strip{height:300px}
+  aside.right,aside.left{border:0;border-top:1px solid var(--border)}
+  .rail-scroll{max-height:none}
+  .search input{width:150px}
+  .brand{min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="mark">HH</div>
+      <div><h1>Sustainable Convergence Monitor</h1><p>H Heuristics · 21st-century outlook</p></div>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="hdr-actions">
+      <div class="search">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg>
+        <input id="q" placeholder="Search economies…" autocomplete="off" aria-label="Search economies">
+        <div class="search-results" id="qres"></div>
+      </div>
+      <button class="btn" id="methodsBtn">Methods</button>
+      <button class="btn icon" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 12.5v-11a5.5 5.5 0 0 1 0 11z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <aside class="left">
+    <div class="rail-scroll">
+      <div id="indList"></div>
+      <div class="sec-title" id="rankTitle">Leaders</div>
+      <div class="rank" id="rankTop"></div>
+      <div class="sec-title">Furthest behind</div>
+      <div class="rank" id="rankBot"></div>
+    </div>
+    <div class="time">
+      <div class="time-row">
+        <button class="btn icon" id="play" aria-label="Play timeline">
+          <svg id="playIcon" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2l10 6-10 6z"/></svg>
+        </button>
+        <div class="yr num" id="yrLabel">2024</div>
+        <input type="range" id="yr" min="2000" max="2024" step="1" value="2024" aria-label="Year">
+      </div>
+      <div class="hint">Latest value within 4 years of the selected year is shown.</div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="map-wrap">
+      <svg id="map" role="img" aria-label="World choropleth map"></svg>
+      <div class="map-title"><h2 id="mapTitle"></h2><p id="mapSub"></p></div>
+      <div class="legend" id="legend"></div>
+      <div class="zoom">
+        <button id="zin" aria-label="Zoom in">+</button>
+        <button id="zout" aria-label="Zoom out">−</button>
+        <button id="zreset" aria-label="Reset view" style="font-size:12px">⟲</button>
+      </div>
+    </div>
+    <div class="strip" id="strip">
+      <div class="strip-hd">
+        <button class="tab on" data-pane="scatterPane">Convergence test</button>
+        <button class="tab" data-pane="trendPane">Regional catch-up</button>
+        <button class="tab" data-pane="tablePane">Data table</button>
+        <div class="sp"></div>
+        <span class="note" id="stripNote"></span>
+        <button class="btn icon" id="collapse" aria-label="Collapse panel" style="height:26px;width:26px">▾</button>
+      </div>
+      <div class="strip-bd">
+        <div class="pane on" id="scatterPane"></div>
+        <div class="pane" id="trendPane"></div>
+        <div class="pane" id="tablePane"></div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="right" id="panel"></aside>
+</div>
+
+<div class="tip" id="tip"></div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal" role="dialog" aria-label="Methods">
+    <div style="display:flex;justify-content:space-between;align-items:start"><h2>Methods &amp; sources</h2><button class="btn icon" id="closeModal" aria-label="Close">✕</button></div>
+    <p><b>Sustainable Convergence</b> is one of the six H Heuristics concepts: closing the income and living-standards gap between developing and high-income economies without repeating the environmental damage of past growth. Within the H Heuristics signature framework (working name; provisional), it is the <i>destination</i> the Development Multiplier aims at. This monitor is a proposed measurement approach, open to testing.</p>
+    <h3>Evidence labels</h3>
+    <p><span class="pill">Observed</span> World Bank WDI data. <span class="pill">Composite</span> H Heuristics illustrative index built from observed data. <span class="pill">Scenario</span> mechanical extrapolations, not forecasts.</p>
+    <h3>Sustainable Convergence Index (SCI) <span class="pill">Composite</span></h3>
+    <ul>
+      <li><b>Development level (45%)</b>: mean of GDP per capita (log scale, $1k–$75k), life expectancy (45–85), under-5 mortality (log, 200–2 per 1,000), and access to electricity, clean cooking, basic water, basic sanitation and the internet (0–100%). At least five of eight required.</li>
+      <li><b>Convergence momentum (30%)</b>: 10-year annualized GDP-per-capita growth minus that of the high-income group. 50 = keeping pace; each 1 pp/yr of catch-up adds 10 points (capped 0–100).</li>
+      <li><b>Footprint (25%)</b>: mean of carbon intensity score (CO₂ t per $1,000 GDP, 0–0.5) and PM2.5 exposure score (5–65 µg/m³).</li>
+    </ul>
+    <p>Weights are judgemental and meant to be challenged. Known distortions: GDP-based scores overstate economies where multinational profit accounting inflates GDP (e.g. Ireland, Luxembourg), and resource exporters can show volatile momentum. Aggregates (World, regions, income groups) use World Bank values where published; otherwise population-weighted means of members with ≥80% population coverage.</p>
+    <h3>Convergence scenarios <span class="pill">Scenario</span></h3>
+    <p><b>Current trend</b> extends each economy's 10-year growth differential against the high-income group. <b>Peer pace</b> applies the 80th-percentile differential achieved by low- and middle-income economies over the same window, the "proven peer pace" logic used in Century Pathways (HH-2026-61). "Years to 50%" is when GDP per capita would reach half the high-income level under the current-trend scenario.</p>
+    <h3>Convergence test</h3>
+    <p>Unconditional β-convergence: each dot is an economy; x = GDP per capita (PPP) at the start of the window, y = annualized growth since. A negative slope means poorer economies are growing faster (convergence). Dot area ∝ population.</p>
+    <h3>Source</h3>
+    <p>World Bank, World Development Indicators (API, last updated 11 Nov 2026): <code>NY.GDP.PCAP.PP.KD</code>, <code>EG.ELC.ACCS.ZS</code>, <code>EG.CFT.ACCS.ZS</code>, <code>SH.H2O.BASW.ZS</code>, <code>SH.STA.BASS.ZS</code>, <code>IT.NET.USER.ZS</code>, <code>SP.DYN.LE00.IN</code>, <code>SH.DYN.MORT</code>, <code>EN.GHG.CO2.PC.CE.AR5</code>, <code>EN.ATM.PM25.MC.M3</code>, <code>EG.FEC.RNEW.ZS</code>, <code>SP.POP.TOTL</code>. Boundaries: Natural Earth 1:110m via world-atlas; small states are not drawn but can be searched. Boundaries do not imply any judgement on territorial status. Licence CC BY 4.0.</p>
+  </div>
+</div>
+
+<script>
+(() => {
+const D = window.SC_DATA, TOPO = window.SC_TOPO;
+const META = D.meta, SER = D.series;
+const AGGS = ["WLD","HIC","LMY","LIC","LMC","UMC","SSF","SAS","EAS","LCN","MEA","ECS","NAC"];
+const isAgg = k => META[k] && META[k].r === "Aggregate";
+const COUNTRIES = Object.keys(META).filter(k => !isAgg(k));
+const LOOKBACK = 4;
+
+/* ---------- colour ramps (validated reference palette) ---------- */
+const BLUE = ["#cde2fb","#9ec5f4","#6da7ec","#3987e5","#256abf","#184f95","#0d366b"];
+const ORANGE = ["#fbe0d3","#f6bfa6","#f19873","#eb6834","#c4501f","#933a15","#62260c"];
+const DIV = ["#a52a2a","#d03b3b","#e66767","#f2a3a3","MID","#9ec5f4","#5598e7","#256abf","#104281"];
+
+/* ---------- formatters ---------- */
+const f0 = d3.format(",.0f"), f1 = d3.format(",.1f"), f2 = d3.format(",.2f");
+const fMoney = v => v >= 10000 ? "$" + d3.format(",.0f")(Math.round(v/100)*100) : "$" + f0(v);
+const fPeople = v => v >= 1e9 ? f2(v/1e9) + "B" : v >= 1e6 ? (v >= 1e8 ? f0(v/1e6) : f1(v/1e6)) + "M" : v >= 1e3 ? f0(v/1e3) + "K" : f0(v);
+const fSigned = v => (v > 0 ? "+" : v < 0 ? "−" : "") + f1(Math.abs(v));
+
+/* ---------- indicators ---------- */
+const IND = [
+  {g:"Sustainable convergence"},
+  {k:"sci", label:"Sustainable Convergence Index", short:"SCI", unit:"0–100", tag:"Composite", ramp:BLUE, th:[35,45,52,58,64,72], fmt:f0,
+   desc:"Development level, catch-up momentum and footprint combined (illustrative H Heuristics composite)"},
+  {k:"rel", label:"Income relative to high-income", short:"% of HIC", unit:"%", ramp:BLUE, th:[5,10,20,35,50,75], fmt:v=>f0(v)+"%",
+   desc:"GDP per capita (PPP) as a share of the high-income group average"},
+  {k:"mom", label:"Convergence momentum", short:"Catch-up", unit:"pp/yr", ramp:DIV, th:[-3,-2,-1,-0.25,0.25,1,2,3], fmt:v=>fSigned(v)+" pp", diverging:true,
+   desc:"10-yr annual GDP-per-capita growth minus the high-income group's. Blue = catching up, red = falling behind"},
+  {k:"gdp", label:"GDP per capita, PPP", short:"GDP pc", unit:"const. 2021 $", ramp:BLUE, th:[2000,4000,8000,15000,25000,40000], fmt:fMoney,
+   desc:"GDP per capita, purchasing-power parity, constant 2021 international $"},
+  {g:"Basic services"},
+  {k:"elec", label:"Access to electricity", short:"Electricity", unit:"% pop.", ramp:BLUE, th:[25,50,70,85,95,99], fmt:v=>f0(v)+"%", svc:true},
+  {k:"cook", label:"Clean cooking", short:"Clean cooking", unit:"% pop.", ramp:BLUE, th:[10,25,50,75,90,97], fmt:v=>f0(v)+"%", svc:true},
+  {k:"water", label:"Basic drinking water", short:"Water", unit:"% pop.", ramp:BLUE, th:[50,65,80,90,95,99], fmt:v=>f0(v)+"%", svc:true},
+  {k:"sanit", label:"Basic sanitation", short:"Sanitation", unit:"% pop.", ramp:BLUE, th:[25,45,65,80,90,98], fmt:v=>f0(v)+"%", svc:true},
+  {k:"net", label:"Internet use", short:"Internet", unit:"% pop.", ramp:BLUE, th:[15,30,50,70,85,95], fmt:v=>f0(v)+"%"},
+  {g:"Human capital"},
+  {k:"life", label:"Life expectancy", short:"Life exp.", unit:"years", ramp:BLUE, th:[58,63,68,72,76,80], fmt:v=>f1(v)+" yrs"},
+  {k:"u5", label:"Under-5 mortality", short:"Under-5 mort.", unit:"per 1,000", ramp:ORANGE, th:[5,10,20,40,60,90], fmt:v=>f1(v), lowerBetter:true},
+  {g:"Environment"},
+  {k:"co2", label:"CO₂ emissions per capita", short:"CO₂ pc", unit:"t / person", ramp:ORANGE, th:[0.5,1,2,4,7,12], fmt:v=>f1(v)+" t", lowerBetter:true},
+  {k:"cint", label:"Carbon intensity of GDP", short:"CO₂ / GDP", unit:"kg / $", ramp:ORANGE, th:[0.08,0.12,0.18,0.25,0.35,0.5], fmt:v=>f2(v)+" kg", lowerBetter:true,
+   desc:"CO₂ per $ of GDP (PPP). Lower = growth with less carbon"},
+  {k:"pm25", label:"PM2.5 exposure", short:"PM2.5", unit:"µg/m³", ramp:ORANGE, th:[5,10,15,25,35,50], fmt:v=>f1(v), lowerBetter:true},
+  {k:"ren", label:"Renewable energy share", short:"Renewables", unit:"% final energy", ramp:BLUE, th:[10,20,35,50,70,85], fmt:v=>f0(v)+"%",
+   desc:"Includes traditional biomass, so high values in low-income economies can reflect energy poverty"},
+];
+const IK = Object.fromEntries(IND.filter(d=>d.k).map(d=>[d.k,d]));
+
+/* ---------- raw value lookup ---------- */
+function raw(iso, k, y, lb = LOOKBACK){
+  const s = SER[iso] && SER[iso][k]; if (!s) return null;
+  for (let t = y; t >= y - lb; t--){ const v = s[t]; if (v != null) return {v, y:t}; }
+  return null;
+}
+function rawExact(iso,k,y){ const s = SER[iso] && SER[iso][k]; return s && s[y] != null ? s[y] : null; }
+function series(iso,k,y0=1990,y1=2025){ const s=SER[iso]&&SER[iso][k]; if(!s) return []; const out=[]; for(let y=y0;y<=y1;y++) if(s[y]!=null) out.push([y,s[y]]); return out; }
+
+/* derived */
+const memo = new Map();
+function growth(iso, y, n=10){
+  const a = rawExact(iso,"gdp",y), b = rawExact(iso,"gdp",y-n);
+  if (a == null || b == null || b <= 0) return null;
+  return (Math.pow(a/b, 1/n) - 1) * 100;
+}
+function gdpYear(iso,y){ // latest GDP year available ≤ y
+  for (let t=y; t>=y-2; t--) if (rawExact(iso,"gdp",t)!=null && rawExact("HIC","gdp",t)!=null) return t;
+  return null;
+}
+const clamp01 = v => Math.max(0, Math.min(1, v));
+function components(iso, y){
+  const key = iso+"|"+y; if (memo.has(key)) return memo.get(key);
+  const r = k => { const o = raw(iso,k,y); return o ? o.v : null; };
+  const gy = gdpYear(iso,y);
+  const g = gy ? rawExact(iso,"gdp",gy) : null;
+  const parts = [];
+  if (g) parts.push(clamp01((Math.log(g)-Math.log(1000))/(Math.log(75000)-Math.log(1000))));
+  const le = r("life"); if (le!=null) parts.push(clamp01((le-45)/40));
+  const u5 = r("u5"); if (u5!=null) parts.push(clamp01((Math.log(200)-Math.log(Math.max(u5,2)))/(Math.log(200)-Math.log(2))));
+  for (const k of ["elec","cook","water","sanit","net"]){ const v=r(k); if(v!=null) parts.push(v/100); }
+  const level = parts.length >= 5 ? d3.mean(parts)*100 : null;
+  let mom = null, momScore = null;
+  if (gy){ const gc = growth(iso,gy), gh = growth("HIC",gy); if (gc!=null && gh!=null){ mom = gc-gh; momScore = Math.max(0,Math.min(100,50+mom*10)); } }
+  const co2 = r("co2"); const cint = (co2!=null && g) ? co2/g*1000 : null; // kg per $
+  const fp = [];
+  if (cint!=null) fp.push(clamp01(1 - cint/0.5));
+  const pm = r("pm25"); if (pm!=null) fp.push(clamp01(1-(pm-5)/60));
+  const foot = fp.length ? d3.mean(fp)*100 : null;
+  const sci = (level!=null && momScore!=null && foot!=null) ? 0.45*level + 0.30*momScore + 0.25*foot : null;
+  const hic = gy ? rawExact("HIC","gdp",gy) : null;
+  const rel = (g && hic) ? g/hic*100 : null;
+  const out = {level, mom, momScore, foot, sci, cint, rel, g, gy};
+  memo.set(key,out); return out;
+}
+function value(iso, k, y){
+  if (["sci","mom","rel","cint"].includes(k)) { const c = components(iso,y); return c[k]==null?null:{v:c[k], y:c.gy}; }
+  if (k==="gdp"){ const gy = gdpYear(iso,y) ?? (raw(iso,"gdp",y)||{}).y; return gy ? {v:rawExact(iso,"gdp",gy), y:gy} : null; }
+  return raw(iso,k,y);
+}
+const DIV_DARK = ["#f7c4c4","#e66767","#c13d3d","#842a2a","MID","#1c5cab","#3987e5","#6da7ec","#b7d3f6"];
+const isDark = () => getComputedStyle(document.documentElement).colorScheme.trim() === "dark";
+function rampFor(ind){
+  const r = !isDark() ? ind.ramp : ind.diverging ? DIV_DARK : [...ind.ramp].reverse();
+  return r.map(c => c==="MID" ? getVar("--mid") : c);
+}
+function scale(ind){
+  const colors = rampFor(ind);
+  return d3.scaleThreshold().domain(ind.th).range(colors);
+}
+function getVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* peer pace: 80th percentile differential among LMY economies */
+function peerPace(y){
+  const v = COUNTRIES.filter(k => ["Low income","Lower middle income","Upper middle income"].includes(META[k].i))
+    .map(k => components(k,y).mom).filter(x => x!=null).sort(d3.ascending);
+  return d3.quantileSorted(v, .8);
+}
+
+/* ---------- state ---------- */
+const state = { ind:"sci", year:2024, sel:"WLD", pane:"scatterPane", sortKey:"v", sortDir:-1 };
+const maxYear = 2024;
+
+/* ---------- tooltip ---------- */
+const tip = document.getElementById("tip");
+function showTip(html, ev){
+  tip.innerHTML = html; tip.style.opacity = 1;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - 14;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+const hideTip = () => tip.style.opacity = 0;
+
+/* ---------- left rail ---------- */
+function renderIndList(){
+  const el = document.getElementById("indList"); el.innerHTML = "";
+  for (const d of IND){
+    if (d.g){ const t = document.createElement("div"); t.className="sec-title"; t.textContent=d.g; el.appendChild(t); continue; }
+    const b = document.createElement("button");
+    b.className = "ind" + (state.ind===d.k?" on":"");
+    b.innerHTML = `<span>${d.label}${d.tag?` <span class="tag">${d.tag}</span>`:""}</span><span class="u">${d.unit}</span>`;
+    b.onclick = () => { state.ind = d.k; update(); };
+    el.appendChild(b);
+  }
+}
+function rankedList(){
+  const ind = IK[state.ind];
+  return COUNTRIES.map(k => ({k, o:value(k,state.ind,state.year), pop:(raw(k,"pop",state.year)||{}).v||0}))
+    .filter(d => d.o && d.pop >= 1e6)
+    .sort((a,b) => ind.lowerBetter ? a.o.v-b.o.v : b.o.v-a.o.v);
+}
+function renderRanks(){
+  const ind = IK[state.ind], list = rankedList();
+  const row = (d,i) => `<div class="rank-row" data-k="${d.k}"><span class="i num">${i}</span><span class="nm">${META[d.k].n}</span><span class="num">${ind.fmt(d.o.v)}</span></div>`;
+  document.getElementById("rankTitle").textContent = state.ind==="mom" ? "Fastest catch-up" : "Leaders";
+  document.getElementById("rankTop").innerHTML = list.slice(0,5).map((d,i)=>row(d,i+1)).join("");
+  const n = list.length;
+  document.getElementById("rankBot").innerHTML = list.slice(-5).map((d,i)=>row(d,n-4+i)).join("");
+  document.querySelectorAll(".rank-row").forEach(r => r.onclick = () => select(r.dataset.k));
+}
+
+/* ---------- header KPIs ---------- */
+function renderKPIs(){
+  const y = state.year;
+  const wpop = (raw("WLD","pop",y)||{}).v;
+  const lack = k => { const o = raw("WLD",k,y); return o && wpop ? (100-o.v)/100*wpop : null; };
+  const lmy = components("LMY",y);
+  const prev = components("LMY", y-10);
+  const co2 = raw("WLD","co2",y), co2p = raw("WLD","co2",y-10);
+  const items = [
+    {l:"LMY income vs HIC", v: lmy.rel!=null ? f1(lmy.rel)+"%" : "–", d: prev.rel!=null&&lmy.rel!=null ? `${fSigned(lmy.rel-prev.rel)} pts / 10y` : ""},
+    {l:"Without electricity", v: lack("elec")!=null ? fPeople(lack("elec")) : "–", d:"people"},
+    {l:"Without clean cooking", v: lack("cook")!=null ? fPeople(lack("cook")) : "–", d:"people"},
+    {l:"Without basic sanitation", v: lack("sanit")!=null ? fPeople(lack("sanit")) : "–", d:"people"},
+    {l:"World CO₂ per capita", v: co2 ? f2(co2.v)+" t" : "–", d: co2&&co2p ? `${fSigned((co2.v/co2p.v-1)*100)}% / 10y` : ""},
+  ];
+  document.getElementById("kpis").innerHTML = items.map(i => `<div class="kpi"><div class="l">${i.l}</div><div class="v num">${i.v}<span class="d">${i.d}</span></div></div>`).join("");
+}
+
+/* ---------- map ---------- */
+const svg = d3.select("#map");
+const gRoot = svg.append("g");
+const projection = d3.geoEqualEarth();
+const path = d3.geoPath(projection);
+const features = topojson.feature(TOPO, TOPO.objects.countries).features.filter(f => f.properties.n !== "Antarctica");
+const sphere = gRoot.append("path").attr("class","sphere");
+const grat = gRoot.append("path").attr("class","graticule");
+const gC = gRoot.append("g");
+const paths = gC.selectAll("path").data(features).join("path").attr("class","country")
+  .on("mousemove", (ev,f) => {
+    const k = f.properties.a, ind = IK[state.ind];
+    if (!META[k]) { showTip(`<div class="t">${f.properties.n}</div><div class="r">No data</div>`, ev); return; }
+    const o = value(k, state.ind, state.year), c = components(k, state.year);
+    let h = `<div class="t">${META[k].n}</div><div class="r"><span>${ind.short}${o&&o.y!==state.year?` (${o.y})`:""}</span><b class="num">${o?ind.fmt(o.v):"No data"}</b></div>`;
+    if (state.ind!=="sci" && c.sci!=null) h += `<div class="r"><span>SCI</span><b class="num">${f0(c.sci)}</b></div>`;
+    if (state.ind!=="rel" && c.rel!=null) h += `<div class="r"><span>% of HIC income</span><b class="num">${f0(c.rel)}%</b></div>`;
+    h += `<div class="r" style="margin-top:3px;font-size:11px"><span>${META[k].i||""}</span></div>`;
+    showTip(h, ev);
+  })
+  .on("mouseleave", hideTip)
+  .on("click", (ev,f) => { if (META[f.properties.a]) select(f.properties.a); });
+
+const zoom = d3.zoom().scaleExtent([1,10]).on("zoom", ev => gRoot.attr("transform", ev.transform));
+svg.call(zoom).on("dblclick.zoom", null);
+document.getElementById("zin").onclick = () => svg.transition().duration(250).call(zoom.scaleBy, 1.6);
+document.getElementById("zout").onclick = () => svg.transition().duration(250).call(zoom.scaleBy, 1/1.6);
+document.getElementById("zreset").onclick = () => svg.transition().duration(350).call(zoom.transform, d3.zoomIdentity);
+
+function layoutMap(){
+  const el = document.getElementById("map"), w = el.clientWidth, h = el.clientHeight;
+  if (!w || !h) return;
+  const strip = 0;
+  projection.fitExtent([[16, 56], [w-56, h-70-strip]], {type:"Sphere"});
+  sphere.attr("d", path({type:"Sphere"}));
+  grat.attr("d", path(d3.geoGraticule10()));
+  paths.attr("d", path);
+  zoom.translateExtent([[-w*0.5,-h*0.5],[w*1.5,h*1.5]]);
+}
+function colorMap(){
+  const ind = IK[state.ind], sc = scale(ind), nd = getVar("--nodata");
+  paths.style("fill", f => { const o = META[f.properties.a] ? value(f.properties.a, state.ind, state.year) : null; return o ? sc(o.v) : nd; })
+       .classed("sel", f => f.properties.a === state.sel);
+  paths.filter(f => f.properties.a === state.sel).raise();
+  document.getElementById("mapTitle").textContent = ind.label + (ind.tag ? " · " + ind.tag.toLowerCase() : "");
+  document.getElementById("mapSub").textContent = (ind.desc || ind.unit) + " · " + state.year;
+  // legend
+  const cols = rampFor(ind);
+  const n = cols.length, wSw = ind.diverging ? 24 : 30, gap = 2;
+  const lab = ind.th.map((t,i) => {
+    const x = (i+1)*(wSw+gap) - gap/2;
+    const s = ind.diverging ? fSigned(t) : (state.ind==="gdp" ? "$"+(t>=1000?t/1000+"k":t) : (Math.abs(t)<1 ? t : d3.format("~g")(t)));
+    return `<span style="left:${x}px">${s}</span>`;
+  }).join("");
+  document.getElementById("legend").innerHTML =
+    `<div class="t">${ind.short} (${ind.unit})${ind.lowerBetter?" · lower is better":""}</div>
+     <div class="sw">${cols.map(c=>`<i style="background:${c};width:${wSw}px"></i>`).join("")}</div>
+     <div class="lb" style="width:${n*(wSw+gap)}px">${lab}</div>
+     <div class="nd"><i></i>No data${ind.diverging?' &nbsp;·&nbsp; <span style="color:var(--bad)">◀ falling behind</span> &nbsp; <span style="color:var(--accent-ink)">catching up ▶</span>':""}</div>`;
+}
+
+/* ---------- generic line chart ---------- */
+function lineChart(el, opt){
+  el.innerHTML = "";
+  const W = el.clientWidth || 300, H = opt.height || 120;
+  const m = Object.assign({t:8,r:10,b:20,l:34}, opt.margin||{});
+  const all = opt.series.flatMap(s => s.pts);
+  if (!all.length){ el.innerHTML = `<div style="height:${H}px;display:grid;place-items:center;color:var(--muted);font-size:11px">No data</div>`; return; }
+  const x = d3.scaleLinear().domain(opt.x || d3.extent(all, d=>d[0])).range([m.l, W-m.r]);
+  const auto = [Math.min(0, d3.min(all,d=>d[1])), d3.max(all,d=>d[1])];
+  let yd = opt.y ? [opt.y[0] ?? auto[0], opt.y[1] ?? auto[1]] : auto;
+  if (yd[1] <= yd[0]) yd[1] = yd[0] + 1;
+  const y = d3.scaleLinear().domain(yd).nice(opt.yTicks||4).range([H-m.b, m.t]);
+  const s = d3.select(el).append("svg").attr("width",W).attr("height",H).style("display","block");
+  s.append("g").selectAll("line").data(y.ticks(opt.yTicks||4)).join("line").attr("class","gridl")
+    .attr("x1",m.l).attr("x2",W-m.r).attr("y1",d=>y(d)).attr("y2",d=>y(d));
+  s.append("g").selectAll("text").data(y.ticks(opt.yTicks||4)).join("text").attr("x",m.l-6).attr("y",d=>y(d)+3).attr("text-anchor","end").text(opt.yfmt || d3.format("~s"));
+  const xt = opt.xTicks || x.ticks(5);
+  s.append("g").selectAll("text").data(xt).join("text").attr("x",d=>x(d)).attr("y",H-5).attr("text-anchor","middle").text(d=>d);
+  s.append("line").attr("x1",m.l).attr("x2",W-m.r).attr("y1",y(yd[0]<0?0:y.domain()[0])).attr("y2",y(yd[0]<0?0:y.domain()[0])).attr("stroke","var(--axis)");
+  if (opt.band) s.append("rect").attr("x",x(opt.band[0])).attr("width",x(opt.band[1])-x(opt.band[0])).attr("y",m.t).attr("height",H-m.b-m.t).attr("fill","var(--surface-2)");
+  if (opt.refY!=null) { s.append("line").attr("x1",m.l).attr("x2",W-m.r).attr("y1",y(opt.refY)).attr("y2",y(opt.refY)).attr("stroke","var(--ink-2)").attr("stroke-dasharray","1 3");
+    s.append("text").attr("x",W-m.r).attr("y",y(opt.refY)-4).attr("text-anchor","end").text(opt.refLabel||""); }
+  const ln = d3.line().x(d=>x(d[0])).y(d=>y(d[1])).defined(d=>d[1]!=null);
+  for (const se of opt.series){
+    s.append("path").attr("d", ln(se.pts)).attr("fill","none").attr("stroke",se.color).attr("stroke-width",se.width||2)
+      .attr("stroke-dasharray", se.dash||null).attr("stroke-linecap","round").attr("stroke-linejoin","round").attr("opacity",se.opacity||1);
+    if (se.endDot && se.pts.length){ const p = se.pts[se.pts.length-1]; s.append("circle").attr("cx",x(p[0])).attr("cy",y(p[1])).attr("r",3).attr("fill",se.color).attr("stroke","var(--surface)").attr("stroke-width",2); }
+    if (se.label && se.pts.length){ const p = se.pts[se.pts.length-1]; s.append("text").attr("x",x(p[0])-2).attr("y",y(p[1])-6).attr("text-anchor","end").style("fill","var(--ink-2)").text(se.label); }
+  }
+  // hover layer
+  const xh = s.append("line").attr("class","xhair").attr("y1",m.t).attr("y2",H-m.b).style("opacity",0);
+  const dots = s.append("g");
+  s.append("rect").attr("x",m.l).attr("y",0).attr("width",W-m.l-m.r).attr("height",H).attr("fill","transparent")
+    .on("mousemove", ev => {
+      const [mx] = d3.pointer(ev); const yr = Math.round(x.invert(mx));
+      xh.attr("x1",x(yr)).attr("x2",x(yr)).style("opacity",1);
+      const rows = opt.series.map(se => ({se, p: se.pts.find(p=>p[0]===yr)})).filter(r=>r.p && !r.se.noTip);
+      dots.selectAll("circle").data(rows).join("circle").attr("cx",x(yr)).attr("cy",r=>y(r.p[1])).attr("r",3.5).attr("fill",r=>r.se.color).attr("stroke","var(--surface)").attr("stroke-width",2);
+      if (!rows.length) { hideTip(); return; }
+      showTip(`<div class="t">${yr}</div>` + rows.map(r=>`<div class="r"><span><i class="k" style="background:${r.se.color}"></i>${r.se.name}</span><b class="num">${(opt.tipfmt||opt.yfmt||f1)(r.p[1])}</b></div>`).join(""), ev);
+    })
+    .on("mouseleave", () => { xh.style("opacity",0); dots.selectAll("*").remove(); hideTip(); });
+}
+
+/* ---------- right panel ---------- */
+function select(k){ state.sel = k; update(); }
+function renderPanel(){
+  const k = state.sel, m = META[k], y = state.year, c = components(k,y);
+  const name = m.n;
+  const isA = isAgg(k);
+  const rk = isA ? null : (() => { const l = COUNTRIES.map(x=>({x,v:components(x,y).sci})).filter(d=>d.v!=null).sort((a,b)=>b.v-a.v); const i = l.findIndex(d=>d.x===k); return i<0?null:{i:i+1,n:l.length}; })();
+  const pp = peerPace(y);
+  const gh = c.gy ? growth("HIC", c.gy) : null;
+  // years to 50% (current trend)
+  let ytc = "–", ytcNote = "";
+  if (c.rel != null && c.mom != null){
+    if (c.rel >= 50) { ytc = "Reached"; ytcNote = "already ≥ 50% of HIC"; }
+    else if (c.mom <= 0) { ytc = "Not on trend"; ytcNote = "gap widening"; }
+    else { const yrs = Math.log(50/c.rel)/Math.log(1+c.mom/100); const yy = Math.round(c.gy + yrs); ytc = yy > 2100 ? "After 2100" : String(yy); ytcNote = `at ${fSigned(c.mom)} pp/yr`; }
+  }
+  const co2 = raw(k,"co2",y), co2p = raw(k,"co2",y-10);
+  const g10 = c.gy ? growth(k,c.gy) : null;
+  const chipKeys = ["WLD","HIC","LMY","SSF","SAS","EAS","LCN","MEA"];
+  const p = document.getElementById("panel");
+  p.innerHTML = `
+  <div class="p-hd">
+    <div class="eyebrow">${isA ? "Aggregate" : (m.r||"").trim()}</div>
+    <h3>${name}${k!=="WLD"?`<button class="btn" id="toWorld" style="height:24px;font-size:11px">World</button>`:""}</h3>
+    <div class="sub">${isA ? "Population-weighted where WDI does not publish the group" : (m.i||"")}${rk?` · SCI rank ${rk.i} of ${rk.n}`:""}</div>
+    <div class="chips">${chipKeys.map(a=>`<button class="chip${a===k?" on":""}" data-k="${a}">${META[a].n.replace("Latin America & Caribbean","Latin America").replace("Low & middle income","Low & middle inc.").replace(/Middle East.*/,"MENA")}</button>`).join("")}</div>
+  </div>
+  <div class="p-sec">
+    <div class="tiles">
+      <div class="tile hero"><div><div class="l">Sustainable Convergence Index <span class="scen">Composite</span></div><div class="v num">${c.sci!=null?f0(c.sci):"–"}<small> / 100</small></div></div>
+        <div style="text-align:right" class="d">${(()=>{const p=components(k,y-10).sci; return p!=null&&c.sci!=null?`<div class="tile d" style="border:0;padding:0"><span class="${c.sci>=p?"up":"dn"}">${c.sci>=p?"▲":"▼"} ${f1(Math.abs(c.sci-p))}</span> vs ${y-10}</div>`:""})()}</div></div>
+      <div class="tile"><div class="l">GDP per capita, PPP</div><div class="v num">${c.g?fMoney(c.g):"–"}</div><div class="d">${g10!=null?`${fSigned(g10)}%/yr, 10-yr avg`:""}</div></div>
+      <div class="tile"><div class="l">Share of HIC income</div><div class="v num">${c.rel!=null?f0(c.rel)+"%":"–"}</div><div class="d">${c.gy||""}</div></div>
+      <div class="tile"><div class="l">Convergence momentum</div><div class="v num">${c.mom!=null?fSigned(c.mom):"–"}<small> pp/yr</small></div><div class="d">${c.mom==null?"":c.mom>0?'<span class="up">▲ catching up</span>':'<span class="dn">▼ falling behind</span>'}</div></div>
+      <div class="tile"><div class="l">Reach 50% of HIC <span class="scen">Scenario</span></div><div class="v num" style="font-size:${ytc.length>6?16:20}px">${ytc}</div><div class="d">${ytcNote}</div></div>
+      <div class="tile"><div class="l">CO₂ per capita</div><div class="v num">${co2?f1(co2.v):"–"}<small> t</small></div><div class="d">${co2&&co2p?`${fSigned((co2.v/co2p.v-1)*100)}% vs ${co2p.y}`:""}</div></div>
+      <div class="tile"><div class="l">Carbon intensity</div><div class="v num">${c.cint!=null?f2(c.cint):"–"}<small> kg/$</small></div><div class="d">CO₂ per $ GDP (PPP)</div></div>
+    </div>
+  </div>
+  <div class="p-sec">
+    <h4>Convergence trajectory, 1990–2100</h4>
+    <p class="cap">GDP per capita as % of the high-income average. Dashed lines are mechanical scenarios, not forecasts.</p>
+    <div class="legend-inline"><span><i style="background:var(--s1)"></i>Observed</span><span><i class="dash" style="border-color:var(--s1)"></i>Current trend</span><span><i class="dash" style="border-color:var(--s3)"></i>Peer pace (${pp!=null?fSigned(pp):"–"} pp/yr)</span></div>
+    <div id="trajChart"></div>
+  </div>
+  <div class="p-sec">
+    <h4>Index components</h4>
+    <p class="cap">0–100 scores. Tick = World.</p>
+    <div class="bars" id="compBars"></div>
+  </div>
+  <div class="p-sec">
+    <h4>Basic-service gaps</h4>
+    <p class="cap">People without access, latest within ${LOOKBACK} years of ${y}. These gaps drive the Century Pathways benchmark (HH-2026-61).</p>
+    <div id="gaps"></div>
+    <div id="lens"></div>
+  </div>
+  <div class="p-sec">
+    <h4>Development pathways since 2000</h4>
+    <div class="legend-inline"><span><i style="background:var(--s1)"></i>${name}</span>${k!=="WLD"?`<span><i style="background:var(--muted)"></i>World</span>`:""}</div>
+    <div class="smalls" id="smalls"></div>
+  </div>
+  <div class="foot">Source: World Bank WDI (updated 11 Nov 2026); H Heuristics calculations. SCI is a proposed composite, open to testing. <a href="#" id="methodsLink">Methods</a></div>`;
+
+  p.querySelectorAll(".chip").forEach(b => b.onclick = () => select(b.dataset.k));
+  const tw = document.getElementById("toWorld"); if (tw) tw.onclick = () => select("WLD");
+  document.getElementById("methodsLink").onclick = e => { e.preventDefault(); openModal(); };
+
+  // trajectory
+  const s1 = getVar("--s1"), s3 = getVar("--s3"), mut = getVar("--muted");
+  const hic = series("HIC","gdp"); const hm = Object.fromEntries(hic);
+  const obs = series(k,"gdp").filter(d=>hm[d[0]]).map(d=>[d[0], d[1]/hm[d[0]]*100]);
+  const proj = (d) => { if (c.rel==null || d==null) return []; const out=[]; for(let t=c.gy;t<=2100;t+=1){ out.push([t, Math.min(c.rel*Math.pow(1+d/100,t-c.gy), 400)]); } return out; };
+  const tr = c.mom!=null ? proj(c.mom) : [];
+  const pk = (c.rel!=null && c.rel<100 && pp!=null) ? proj(Math.max(pp, c.mom||0)) : [];
+  const ymax = Math.min(Math.max(110, d3.max([...obs,...tr,...pk], d=>d[1])||100), 400);
+  lineChart(document.getElementById("trajChart"), {
+    height:170, x:[1990,2100], y:[0,ymax], xTicks:[1990,2025,2050,2075,2100], yfmt:v=>v+"%", tipfmt:v=>f1(v)+"%",
+    refY:50, refLabel:"50% of HIC", band:[c.gy||2024, 2100],
+    series:[
+      {name:"Peer pace", pts:pk.filter((d,i)=>i%1===0), color:s3, dash:"5 4"},
+      {name:"Current trend", pts:tr, color:s1, dash:"5 4"},
+      {name:"Observed", pts:obs, color:s1, endDot:true},
+    ]});
+
+  // components
+  const w = components("WLD",y);
+  const comp = [["Development",c.level,w.level],["Momentum",c.momScore,w.momScore],["Footprint",c.foot,w.foot]];
+  document.getElementById("compBars").innerHTML = comp.map(([l,v,wv]) =>
+    `<div class="row"><span>${l}</span><div class="track">${v!=null?`<div class="fill" style="width:${v}%"></div>`:""}${wv!=null&&k!=="WLD"?`<div class="tick" style="left:calc(${wv}% - 1px)" title="World ${f0(wv)}"></div>`:""}</div><span class="v num">${v!=null?f0(v):"–"}</span></div>`).join("");
+
+  // gaps
+  const pop = (raw(k,"pop",y)||{}).v;
+  const gaps = ["elec","cook","water","sanit","net"].map(i => { const o = raw(k,i,y); return {i, o, n: o&&pop ? (100-o.v)/100*pop : null}; }).filter(d=>d.n!=null);
+  const gmax = d3.max(gaps, d=>d.n) || 1;
+  document.getElementById("gaps").innerHTML = gaps.length ? gaps.map(d =>
+    `<div class="gap-row"><span>${IK[d.i].short}</span><div class="track"><div class="fill" style="width:${Math.max(0.5,d.n/gmax*100)}%"></div></div><span class="v num">${fPeople(d.n)}</span></div>`).join("") : `<div class="cap">No service data.</div>`;
+  const svc = gaps.filter(d=>d.i!=="net").sort((a,b)=>a.o.v-b.o.v)[0];
+  if (svc && svc.o.v < 97){
+    const chains = {
+      cook:"clean cooking → less household air pollution → fewer child respiratory deaths and hours freed for school and paid work, with lower biomass pressure on forests",
+      elec:"electrification → productive-use enterprises, refrigerated health supply chains and evening study → higher incomes and human capital",
+      water:"safe water → less diarrhoeal disease and time spent fetching → better child growth, school attendance and female labour participation",
+      sanit:"sanitation → lower enteric infection and stunting → long-run gains in cognitive development and productivity"};
+    document.getElementById("lens").innerHTML = `<div class="lens"><b>Development Multiplier lens.</b> The weakest basic service here is <b>${IK[svc.i].label.toLowerCase()}</b> (${f0(svc.o.v)}%, ${fPeople(svc.n)} people without). Likely chain: ${chains[svc.i]}. <span style="color:var(--muted)">Hypothesis to test, not an estimate.</span></div>`;
+  }
+
+  // small multiples
+  const sm = document.getElementById("smalls");
+  const smInds = ["rel","elec","cook","water","sanit","net","life","u5","co2","pm25"];
+  sm.innerHTML = smInds.map(i => `<div class="small"><div class="h"><span>${IK[i].short}</span><b class="num" id="smv-${i}"></b></div><div id="sm-${i}"></div></div>`).join("");
+  for (const i of smInds){
+    const get = iso => i==="rel" ? series(iso,"gdp",2000).filter(d=>hm[d[0]]).map(d=>[d[0],d[1]/hm[d[0]]*100]) : series(iso,i,2000);
+    const a = get(k), b = k!=="WLD" ? get("WLD") : [];
+    const last = a[a.length-1];
+    document.getElementById("smv-"+i).textContent = last ? IK[i].fmt(last[1]) : "–";
+    const pct = ["elec","cook","water","sanit","net"].includes(i);
+    lineChart(document.getElementById("sm-"+i), {height:64, margin:{t:4,r:4,b:14,l:26}, x:[2000,2025], xTicks:[2000,2024], yTicks:2,
+      y: pct ? [0,100] : undefined, yfmt: i==="rel"?v=>v+"%":d3.format("~s"), tipfmt: IK[i].fmt,
+      series:[{name:"World", pts:b, color:mut, width:1.5}, {name, pts:a, color:s1, endDot:true}]});
+  }
+}
+
+/* ---------- bottom strip: scatter ---------- */
+function renderScatter(){
+  const el = document.getElementById("scatterPane"); el.innerHTML = "";
+  const W = el.clientWidth - 28, H = el.clientHeight - 16; if (W < 100 || H < 60) return;
+  const y1 = Math.min(state.year, 2024), y0 = Math.max(1990, y1 - 20);
+  const pts = COUNTRIES.map(k => {
+    const a = rawExact(k,"gdp",y0), b = rawExact(k,"gdp",y1), pop = rawExact(k,"pop",y1);
+    if (a==null || b==null || !pop) return null;
+    return {k, x:a, y:(Math.pow(b/a,1/(y1-y0))-1)*100, pop};
+  }).filter(Boolean).filter(d => d.y > -8 && d.y < 14);
+  const m = {t:10,r:16,b:28,l:40};
+  const x = d3.scaleLog().domain([500, 150000]).range([m.l, W-m.r]);
+  const y = d3.scaleLinear().domain(d3.extent(pts,d=>d.y)).nice().range([H-m.b, m.t]);
+  const r = d3.scaleSqrt().domain([0, 1.45e9]).range([1.5, 22]);
+  // OLS on log x
+  const lx = pts.map(d=>Math.log10(d.x)), mxv = d3.mean(lx), myv = d3.mean(pts,d=>d.y);
+  const beta = d3.sum(pts,(d,i)=>(lx[i]-mxv)*(d.y-myv)) / d3.sum(lx, v=>(v-mxv)**2);
+  const a0 = myv - beta*mxv;
+  const s = d3.select(el).append("svg").attr("width",W).attr("height",H);
+  s.append("g").selectAll("line").data(y.ticks(5)).join("line").attr("class","gridl").attr("x1",m.l).attr("x2",W-m.r).attr("y1",d=>y(d)).attr("y2",d=>y(d));
+  s.append("g").selectAll("text").data(y.ticks(5)).join("text").attr("x",m.l-6).attr("y",d=>y(d)+3).attr("text-anchor","end").text(d=>d+"%");
+  const xt = [1000,2000,5000,10000,20000,50000,100000];
+  s.append("g").selectAll("text").data(xt).join("text").attr("x",d=>x(d)).attr("y",H-m.b+14).attr("text-anchor","middle").text(d=>"$"+d3.format("~s")(d));
+  s.append("line").attr("x1",m.l).attr("x2",W-m.r).attr("y1",y(0)).attr("y2",y(0)).attr("stroke","var(--axis)");
+  s.append("text").attr("x",W-m.r).attr("y",H-2).attr("text-anchor","end").text(`GDP per capita, PPP, ${y0} (log scale) →`);
+  s.append("text").attr("x",m.l).attr("y",m.t+2).attr("dx",6).style("fill","var(--ink-2)").text(`↑ Annual growth ${y0}–${y1}`);
+  const s1 = getVar("--s1"), s2 = getVar("--s2");
+  const dots = s.append("g").selectAll("circle").data(pts.sort((a,b)=>b.pop-a.pop)).join("circle")
+    .attr("cx",d=>x(d.x)).attr("cy",d=>y(d.y)).attr("r",d=>Math.max(4, r(d.pop)))
+    .attr("fill", d => d.k===state.sel ? s2 : s1).attr("fill-opacity", d => d.k===state.sel ? 1 : .45)
+    .attr("stroke","var(--surface)").attr("stroke-width",1.5).style("cursor","pointer")
+    .on("mousemove",(ev,d)=>showTip(`<div class="t">${META[d.k].n}</div><div class="r"><span>GDP pc ${y0}</span><b class="num">${fMoney(d.x)}</b></div><div class="r"><span>Growth ${y0}–${y1}</span><b class="num">${fSigned(d.y)}%/yr</b></div><div class="r"><span>Population</span><b class="num">${fPeople(d.pop)}</b></div>`,ev))
+    .on("mouseleave",hideTip).on("click",(ev,d)=>select(d.k));
+  dots.filter(d=>d.k===state.sel).raise();
+  const fx = v => a0 + beta*Math.log10(v);
+  s.append("line").attr("x1",x(600)).attr("x2",x(130000)).attr("y1",y(fx(600))).attr("y2",y(fx(130000))).attr("stroke","var(--ink)").attr("stroke-width",1.5).attr("stroke-dasharray","4 3").style("pointer-events","none");
+  // labels for largest
+  const lab = new Set(["CHN","IND","USA","NGA","IDN","ETH","VNM","BGD", state.sel]);
+  s.append("g").selectAll("text").data(pts.filter(d=>lab.has(d.k))).join("text").attr("x",d=>x(d.x)+Math.max(4,r(d.pop))+3).attr("y",d=>y(d.y)+3)
+    .style("fill","var(--ink-2)").style("pointer-events","none").style("font-weight",d=>d.k===state.sel?650:400).text(d=>META[d.k].n.replace("United States","USA").replace("Viet Nam","Viet Nam"));
+  const verdict = beta < -0.2 ? "poorer economies grew faster (convergence)" : beta > 0.2 ? "richer economies grew faster (divergence)" : "no clear relationship";
+  document.getElementById("stripNote").textContent = state.pane==="scatterPane" ? `β = ${f2(beta)} pp per 10× income · ${verdict} · n = ${pts.length}` : "";
+}
+
+/* ---------- bottom strip: regional trend ---------- */
+function renderTrend(){
+  const el = document.getElementById("trendPane"); el.innerHTML = "";
+  const hm = Object.fromEntries(series("HIC","gdp"));
+  const rel = iso => series(iso,"gdp").filter(d=>hm[d[0]]).map(d=>[d[0], d[1]/hm[d[0]]*100]);
+  const groups = [["LMY","--s1"],["EAS","--s2"],["SAS","--s3"],["SSF","--s4"]];
+  const legend = document.createElement("div"); legend.className = "legend-inline"; legend.style.margin = "0 0 2px 34px";
+  legend.innerHTML = groups.map(([g,c])=>`<span><i style="background:${getVar(c)}"></i>${META[g].n}</span>`).join("") + `<span style="color:var(--muted)">GDP per capita (PPP) as % of high-income average</span>`;
+  el.appendChild(legend);
+  const box = document.createElement("div"); el.appendChild(box);
+  lineChart(box, {height: el.clientHeight - 36, x:[1990,2025], yfmt:v=>v+"%", tipfmt:v=>f1(v)+"%", y:[0,undefined],
+    series: groups.map(([g,c]) => ({name:META[g].n, pts:rel(g), color:getVar(c), endDot:true}))});
+  // fix undefined y domain
+  if (state.pane==="trendPane") document.getElementById("stripNote").textContent = "Regional aggregates from WDI or population-weighted members";
+}
+
+/* ---------- bottom strip: table ---------- */
+function renderTable(){
+  const el = document.getElementById("tablePane"), ind = IK[state.ind], y = state.year;
+  const rows = COUNTRIES.map(k => { const c = components(k,y), o = value(k,state.ind,y); return {k, n:META[k].n, r:(META[k].r||"").trim(), i:META[k].i, v:o?o.v:null, sci:c.sci, rel:c.rel, mom:c.mom, pop:(raw(k,"pop",y)||{}).v}; });
+  const sk = state.sortKey, dir = state.sortDir;
+  rows.sort((a,b) => { const A=a[sk], B=b[sk]; if (A==null) return 1; if (B==null) return -1; return (typeof A==="string" ? A.localeCompare(B) : A-B) * dir; });
+  const cols = [["n","Economy"],["r","Region"],["i","Income group"],["v",ind.short+" ("+ind.unit+")",true],["sci","SCI",true],["rel","% of HIC",true],["mom","Momentum",true],["pop","Population",true]];
+  el.innerHTML = `<table><thead><tr>${cols.map(([k,l,r])=>`<th class="${r?"r":""}" data-k="${k}">${l}${sk===k?(dir<0?" ↓":" ↑"):""}</th>`).join("")}</tr></thead><tbody>${
+    rows.map(d=>`<tr data-k="${d.k}" class="${d.k===state.sel?"sel":""}"><td>${d.n}</td><td style="color:var(--ink-2)">${d.r}</td><td style="color:var(--ink-2)">${d.i}</td><td class="r num">${d.v!=null?ind.fmt(d.v):"–"}</td><td class="r num">${d.sci!=null?f0(d.sci):"–"}</td><td class="r num">${d.rel!=null?f0(d.rel)+"%":"–"}</td><td class="r num">${d.mom!=null?fSigned(d.mom):"–"}</td><td class="r num">${d.pop?fPeople(d.pop):"–"}</td></tr>`).join("")}</tbody></table>`;
+  el.querySelectorAll("th").forEach(th => th.onclick = () => { const k = th.dataset.k; if (state.sortKey===k) state.sortDir*=-1; else { state.sortKey=k; state.sortDir = ["n","r","i"].includes(k)?1:-1; } renderTable(); });
+  el.querySelectorAll("tbody tr").forEach(tr => tr.onclick = () => select(tr.dataset.k));
+  if (state.pane==="tablePane") document.getElementById("stripNote").textContent = `${rows.length} economies · ${y}`;
+}
+function renderStrip(){
+  if (document.getElementById("strip").classList.contains("collapsed")) return;
+  if (state.pane==="scatterPane") renderScatter();
+  if (state.pane==="trendPane") renderTrend();
+  if (state.pane==="tablePane") renderTable();
+}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  state.pane = t.dataset.pane;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("on", x===t));
+  document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("on", p.id===state.pane));
+  document.getElementById("strip").classList.remove("collapsed");
+  renderStrip();
+});
+document.getElementById("collapse").onclick = () => {
+  const s = document.getElementById("strip"); s.classList.toggle("collapsed");
+  document.getElementById("collapse").textContent = s.classList.contains("collapsed") ? "▴" : "▾";
+  setTimeout(() => { layoutMap(); renderStrip(); }, 220);
+};
+
+/* ---------- time ---------- */
+const yrIn = document.getElementById("yr");
+yrIn.oninput = () => { state.year = +yrIn.value; update(true); };
+let timer = null;
+document.getElementById("play").onclick = () => {
+  const icon = document.getElementById("playIcon");
+  if (timer){ clearInterval(timer); timer = null; icon.innerHTML = '<path d="M4 2l10 6-10 6z"/>'; return; }
+  if (state.year >= maxYear) state.year = 2000;
+  icon.innerHTML = '<path d="M3 2h4v12H3zM9 2h4v12H9z"/>';
+  timer = setInterval(() => {
+    if (state.year >= maxYear){ clearInterval(timer); timer=null; icon.innerHTML='<path d="M4 2l10 6-10 6z"/>'; update(); return; }
+    state.year++; update(true);
+  }, 650);
+  update(true);
+};
+
+/* ---------- search ---------- */
+const q = document.getElementById("q"), qres = document.getElementById("qres");
+let qi = 0, qlist = [];
+q.oninput = () => {
+  const s = q.value.trim().toLowerCase();
+  if (!s){ qres.style.display="none"; return; }
+  qlist = Object.keys(META).filter(k => META[k].n.toLowerCase().includes(s) || k.toLowerCase()===s).slice(0,10);
+  qi = 0; drawQ();
+};
+function drawQ(){
+  qres.innerHTML = qlist.map((k,i)=>`<div data-k="${k}" class="${i===qi?"on":""}">${META[k].n}<span>${isAgg(k)?"Aggregate":k}</span></div>`).join("") || `<div style="color:var(--muted)">No match</div>`;
+  qres.style.display = "block";
+  qres.querySelectorAll("[data-k]").forEach(d => d.onmousedown = () => { select(d.dataset.k); q.value=""; qres.style.display="none"; });
+}
+q.onkeydown = e => {
+  if (e.key==="ArrowDown"){ qi=Math.min(qi+1,qlist.length-1); drawQ(); e.preventDefault(); }
+  else if (e.key==="ArrowUp"){ qi=Math.max(qi-1,0); drawQ(); e.preventDefault(); }
+  else if (e.key==="Enter" && qlist[qi]){ select(qlist[qi]); q.value=""; qres.style.display="none"; q.blur(); }
+  else if (e.key==="Escape"){ qres.style.display="none"; q.blur(); }
+};
+q.onblur = () => setTimeout(()=>qres.style.display="none",120);
+document.addEventListener("keydown", e => { if (e.key==="/" && document.activeElement!==q){ e.preventDefault(); q.focus(); } if (e.key==="Escape") closeModal(); });
+
+/* ---------- modal & theme ---------- */
+const modal = document.getElementById("modal");
+function openModal(){ modal.classList.add("on"); }
+function closeModal(){ modal.classList.remove("on"); }
+document.getElementById("methodsBtn").onclick = openModal;
+document.getElementById("closeModal").onclick = closeModal;
+modal.onclick = e => { if (e.target===modal) closeModal(); };
+document.getElementById("themeBtn").onclick = () => {
+  const cur = document.documentElement.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const nx = cur==="dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", nx);
+  try { localStorage.setItem("scm-theme", nx); } catch(e){}
+  update();
+};
+try { const t = localStorage.getItem("scm-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch(e){}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => update());
+
+/* ---------- update ---------- */
+function update(fast){
+  document.getElementById("yrLabel").textContent = state.year;
+  yrIn.value = state.year;
+  renderIndList(); renderKPIs(); colorMap(); renderRanks();
+  renderPanel(); renderStrip();
+}
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { layoutMap(); renderPanel(); renderStrip(); }, 120); });
+layoutMap(); update();
+})();
+</script>
+</body>
+</html>
