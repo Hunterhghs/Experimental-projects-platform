@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Human Exposure to Polycrisis (2000–2100) — Global Interactive Atlas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="./assets/index-sR-GU4HT.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Bg6Ve21a.css">
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <!-- TOP NAVIGATION / CONTROL BAR -->
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 28 28" width="24" height="24" fill="none">
+              <circle cx="14" cy="14" r="11.5" stroke="currentColor" stroke-width="1.6" opacity="0.9" />
+              <ellipse cx="14" cy="14" rx="5.5" ry="11.5" stroke="currentColor" stroke-width="1.2" opacity="0.6" />
+              <path d="M3 14h22M5.5 8.5h17M5.5 19.5h17" stroke="currentColor" stroke-width="1.1" opacity="0.45" />
+              <circle cx="18.5" cy="10.5" r="3" fill="#f97316" />
+              <circle cx="18.5" cy="10.5" r="5.5" stroke="#f43f5e" stroke-width="1.1" opacity="0.65" />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>Human Exposure to Polycrisis</h1>
+            <span class="brand-sub">Global Scenario Atlas · 2000–2100</span>
+          </div>
+        </div>
+
+        <div class="topbar-center">
+          <div class="control-group" role="group" aria-label="Climate and Socioeconomic Scenario">
+            <span class="control-label">Pathway</span>
+            <div class="segmented" id="scenario-selector"></div>
+          </div>
+
+          <div class="control-group">
+            <span class="control-label">Layer</span>
+            <select id="metric-select" class="select-pill" aria-label="Map metric layer"></select>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="btn-theme" class="icon-btn" title="Toggle Dark / Light Cartographic Theme" aria-label="Toggle theme">
+            <svg class="icon-sun" viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7">
+              <circle cx="10" cy="10" r="3.5" />
+              <path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M15.3 4.7l-1.4 1.4M6.1 13.9l-1.4 1.4" stroke-linecap="round" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7">
+              <path d="M16.2 12.6A6.5 6.5 0 0 1 7.4 3.8a6.8 6.8 0 1 0 8.8 8.8Z" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button id="btn-export" class="action-btn" title="Export current year & scenario data as CSV">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7">
+              <path d="M10 3v9.5M6.5 9.5 10 13l3.5-3.5M4 15.5h12" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>CSV</span>
+          </button>
+          <button id="btn-methodology" class="action-btn action-btn-accent" title="Model methodology, equations & calibration sources">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7">
+              <circle cx="10" cy="10" r="7.5" />
+              <path d="M10 9v4.5M10 6.5h.01" stroke-linecap="round" />
+            </svg>
+            <span>Methodology</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- MAIN FIXED WORKSPACE -->
+      <main class="workspace">
+        <!-- LEFT ANALYTICS RAIL -->
+        <aside class="panel panel-left">
+          <section class="card kpi-section">
+            <div class="section-head">
+              <h2>Global Snapshot</h2>
+              <span class="badge-period" id="kpi-period-badge">HISTORICAL</span>
+            </div>
+            <div class="kpi-grid">
+              <div class="kpi-box kpi-primary">
+                <div class="kpi-label">Exposed Population</div>
+                <div class="kpi-value" id="kpi-exposed-pop">—</div>
+                <div class="kpi-meta" id="kpi-exposed-pct">— of humanity</div>
+              </div>
+              <div class="kpi-box">
+                <div class="kpi-label">Pop-Wtd PEI</div>
+                <div class="kpi-value" id="kpi-global-pei">—</div>
+                <div class="kpi-meta" id="kpi-sync-avg">Sync +— pts</div>
+              </div>
+              <div class="kpi-box">
+                <div class="kpi-label">World Population</div>
+                <div class="kpi-value" id="kpi-total-pop">—</div>
+                <div class="kpi-meta" id="kpi-warming-tag">SSP2 · +2.7°C</div>
+              </div>
+              <div class="kpi-box">
+                <div class="kpi-label">Acute Hotspots</div>
+                <div class="kpi-value" id="kpi-hotspots">—</div>
+                <div class="kpi-meta">Nations PEI ≥ 65</div>
+              </div>
+            </div>
+            <div class="tier-bar-wrap">
+              <div class="tier-bar-head">
+                <span>Population by Exposure Tier</span>
+                <span id="tier-high-share" class="mono">—% High+</span>
+              </div>
+              <div class="tier-bar" id="tier-bar"></div>
+              <div class="tier-legend">
+                <span><i style="background:#2dd4bf"></i>Low</span>
+                <span><i style="background:#38bdf8"></i>Mod</span>
+                <span><i style="background:#eab308"></i>Elev</span>
+                <span><i style="background:#f97316"></i>High</span>
+                <span><i style="background:#f43f5e"></i>Extr</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card regional-section">
+            <div class="section-head">
+              <h2>Regional Exposure</h2>
+              <span class="subtle-tag">Pop-Wtd PEI</span>
+            </div>
+            <div id="regional-bars" class="regional-bars"></div>
+          </section>
+
+          <section class="card ranking-section">
+            <div class="section-head">
+              <h2>Highest Exposure</h2>
+              <div class="mini-toggle" id="ranking-mode-toggle">
+                <button data-mode="pei" class="active">Index</button>
+                <button data-mode="pop">Headcount</button>
+              </div>
+            </div>
+            <div id="country-ranking" class="ranking-list"></div>
+          </section>
+        </aside>
+
+        <!-- CENTER INTERACTIVE MAP STAGE -->
+        <section class="map-stage" id="map-stage">
+          <div id="map-container" class="map-container"></div>
+
+          <!-- Floating Top-Left Search & Region Filter -->
+          <div class="map-overlay map-top-left">
+            <div class="search-box">
+              <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="9" cy="9" r="5.5" />
+                <path d="m13.5 13.5 3.5 3.5" stroke-linecap="round" />
+              </svg>
+              <input
+                id="country-search"
+                type="text"
+                placeholder="Search country (⌘K)..."
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button id="btn-clear-search" class="clear-x hidden" aria-label="Clear search">×</button>
+              <div id="search-results" class="search-results hidden"></div>
+            </div>
+            <select id="region-filter" class="overlay-select" aria-label="Filter by region">
+              <option value="ALL">All Regions</option>
+            </select>
+          </div>
+
+          <!-- Floating Top-Right Map Tools -->
+          <div class="map-overlay map-top-right">
+            <div class="overlay-pill-group" id="projection-toggle" title="Map Projection">
+              <button data-proj="naturalEarth" class="active" title="Natural Earth Atlas">Atlas</button>
+              <button data-proj="equalEarth" title="Equal Earth (Area-Preserving)">Equal</button>
+              <button data-proj="orthographic" title="Interactive 3D Globe">Globe</button>
+            </div>
+            <button id="btn-bubbles" class="overlay-btn active" title="Toggle Proportional Exposed-Population Bubbles">
+              <span class="dot-indicator"></span>
+              <span>Bubbles</span>
+            </button>
+            <div class="zoom-stack">
+              <button id="btn-zoom-in" class="zoom-btn" title="Zoom In (+)">+</button>
+              <button id="btn-zoom-out" class="zoom-btn" title="Zoom Out (−)">−</button>
+              <button id="btn-zoom-reset" class="zoom-btn" title="Reset View (0)">⌖</button>
+            </div>
+          </div>
+
+          <!-- Floating Active Layer + Scenario Banner -->
+          <div class="map-overlay map-bottom-left">
+            <div class="legend-card">
+              <div class="legend-header">
+                <span id="legend-title" class="legend-title">Composite Polycrisis Exposure Index</span>
+                <span id="legend-unit" class="legend-unit mono">0–100</span>
+              </div>
+              <div class="legend-gradient-wrap">
+                <div id="legend-gradient" class="legend-gradient"></div>
+                <div id="legend-ticks" class="legend-ticks mono"></div>
+              </div>
+              <div class="legend-foot">
+                <span id="legend-bubble-note" class="bubble-note">● Circle area = exposed headcount</span>
+                <span class="hint-click">Click nation to inspect</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Year Watermark -->
+          <div class="map-overlay map-bottom-right">
+            <div class="year-watermark">
+              <div class="watermark-scenario" id="watermark-scenario">SSP2-4.5 · Middle of the Road</div>
+              <div class="watermark-year mono" id="watermark-year">2026</div>
+            </div>
+          </div>
+
+          <!-- Floating Hover Tooltip -->
+          <div id="map-tooltip" class="map-tooltip hidden" role="tooltip"></div>
+        </section>
+
+        <!-- RIGHT INSPECTOR RAIL -->
+        <aside class="panel panel-right">
+          <div class="inspector-header">
+            <div>
+              <div class="inspector-kicker" id="inspector-kicker">GLOBAL SYNTHESIS</div>
+              <h2 id="inspector-title">World Overview</h2>
+            </div>
+            <button id="btn-reset-global" class="chip-btn hidden">← Global</button>
+          </div>
+
+          <div class="inspector-scroll">
+            <!-- Selected Country Key Metrics (hidden in global mode, shown in country mode) -->
+            <section id="country-summary-card" class="card country-summary hidden">
+              <div class="country-score-row">
+                <div class="score-ring-wrap">
+                  <div class="score-big mono" id="cs-pei">—</div>
+                  <div class="score-sub">PEI / 100</div>
+                </div>
+                <div class="country-meta-stack">
+                  <div class="tier-pill" id="cs-tier">—</div>
+                  <div class="meta-line"><span>Exposed Pop</span><strong id="cs-exposed" class="mono">—</strong></div>
+                  <div class="meta-line"><span>Total Pop</span><strong id="cs-pop" class="mono">—</strong></div>
+                </div>
+              </div>
+              <div class="decomposition-strip">
+                <div class="decomp-cell">
+                  <span>Base Stress</span>
+                  <strong id="cs-base" class="mono">—</strong>
+                </div>
+                <div class="decomp-cell decomp-sync">
+                  <span>Compound Sync</span>
+                  <strong id="cs-sync" class="mono">+—</strong>
+                </div>
+                <div class="decomp-cell decomp-res">
+                  <span>Resilience Buffer</span>
+                  <strong id="cs-res" class="mono">−—</strong>
+                </div>
+              </div>
+              <p id="cs-cascade-note" class="cascade-note"></p>
+            </section>
+
+            <!-- 2000-2100 Multi-Scenario Trajectory Chart -->
+            <section class="card chart-card">
+              <div class="section-head">
+                <h3 id="traj-title">Century Trajectory (2000–2100)</h3>
+                <div class="mini-toggle" id="traj-metric-toggle">
+                  <button data-metric="exposedPop" class="active">Exposed</button>
+                  <button data-metric="pei">PEI</button>
+                </div>
+              </div>
+              <div id="trajectory-chart" class="svg-chart-box"></div>
+              <div class="ssp-mini-legend">
+                <span><i style="background:#2dd4bf"></i>SSP1</span>
+                <span><i style="background:#f59e0b"></i>SSP2</span>
+                <span><i style="background:#f43f5e"></i>SSP3</span>
+                <span><i style="background:#c084fc"></i>SSP5</span>
+              </div>
+            </section>
+
+            <!-- 7-Pillar Radar + Bars -->
+            <section class="card chart-card">
+              <div class="section-head">
+                <h3>Seven-Domain Stress Profile</h3>
+                <span class="subtle-tag" id="radar-subtitle">Pop-weighted mean</span>
+              </div>
+              <div class="radar-layout">
+                <div id="radar-chart" class="radar-box"></div>
+                <div id="pillar-list" class="pillar-list"></div>
+              </div>
+            </section>
+
+            <!-- Compound Co-Occurrence Matrix (Global) OR Scenario Divergence Table (Country) -->
+            <section class="card chart-card">
+              <div class="section-head">
+                <h3 id="bottom-card-title">Compound Co-Exposure Matrix</h3>
+                <span class="subtle-tag" id="bottom-card-sub">% global pop in both ≥56</span>
+              </div>
+              <div id="matrix-or-compare"></div>
+            </section>
+          </div>
+        </aside>
+      </main>
+
+      <!-- BOTTOM TIMELINE DOCK -->
+      <footer class="timeline-dock">
+        <div class="transport-controls">
+          <button id="btn-play" class="play-btn" title="Play / Pause Timeline (Space)" aria-label="Play or pause timeline">
+            <svg class="icon-play" viewBox="0 0 20 20" width="15" height="15" fill="currentColor">
+              <path d="M5.5 3.8 16 10 5.5 16.2V3.8Z" />
+            </svg>
+            <svg class="icon-pause hidden" viewBox="0 0 20 20" width="15" height="15" fill="currentColor">
+              <rect x="4.5" y="3.8" width="3.8" height="12.4" rx="1" />
+              <rect x="11.7" y="3.8" width="3.8" height="12.4" rx="1" />
+            </svg>
+          </button>
+          <button id="btn-speed" class="speed-btn mono" title="Playback Speed">1×</button>
+        </div>
+
+        <div class="scrubber-stage">
+          <div id="timeline-spark" class="timeline-spark"></div>
+          <input
+            id="year-slider"
+            class="year-slider"
+            type="range"
+            min="2000"
+            max="2100"
+            step="1"
+            value="2026"
+            aria-label="Select year from 2000 to 2100"
+          />
+          <div id="milestone-ticks" class="milestone-ticks"></div>
+        </div>
+
+        <div class="year-readout">
+          <div class="year-readout-top">
+            <span class="year-num mono" id="dock-year">2026</span>
+            <span class="year-tag" id="dock-phase">PROJ</span>
+          </div>
+          <div class="year-readout-sub" id="dock-scenario-desc">Middle of the Road · +2.7°C</div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- METHODOLOGY & SOURCES MODAL -->
+    <div id="methodology-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <div class="inspector-kicker">MODEL ARCHITECTURE & CALIBRATION</div>
+            <h2 id="modal-title">Human Exposure to Polycrisis (2000–2100)</h2>
+          </div>
+          <button id="btn-close-modal" class="icon-btn" aria-label="Close modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <p>
+            A <strong>polycrisis</strong> arises when multiple global systemic hazards cross critical thresholds
+            simultaneously, producing nonlinear second- and third-order cascades whose human impact exceeds the sum of
+            isolated shocks. This interactive atlas models national and population-weighted exposure across <strong>175
+            inhabited territories</strong> from 2000 to 2100 under four IPCC Shared Socioeconomic Pathways (SSPs).
+          </p>
+
+          <div class="formula-box mono">
+            PEI(c, t, s) = compress( Σ wₖ·Dₖ(c,t,s) + λ(s)·Sync(D₁..₇) − 0.25·(R(c,t,s) − 35) )
+          </div>
+
+          <div class="modal-grid">
+            <div>
+              <h4>Seven Hazard Domains (wₖ)</h4>
+              <ul>
+                <li><strong>Climate &amp; Thermal Extremes (20%):</strong> Wet-bulb heatwaves, drought/flood volatility, coastal &amp; cyclone hazard.</li>
+                <li><strong>Air, Water &amp; Chemical Pollution (15%):</strong> Ambient PM2.5 &amp; wildfire smoke, household biomass cooking smoke (HAP), contaminated freshwater, plastics &amp; chemical runoff.</li>
+                <li><strong>Food &amp; Water Scarcity (16%):</strong> Aquifer depletion, staple yield variance, calorie import &amp; bio-resource fragility.</li>
+                <li><strong>Macro-Fiscal Fragility (14%):</strong> Sovereign debt distress, inflation pass-through, trade concentration.</li>
+                <li><strong>Geopolitics &amp; Conflict (13%):</strong> Armed conflict proximity, forced displacement, chokepoint exposure.</li>
+                <li><strong>Health System Strain (11%):</strong> Climate- and pollution-sensitive disease burden and surge capacity deficit.</li>
+                <li><strong>Infrastructure Coupling (11%):</strong> Grid reliability, clean energy/water gap, rapid urbanization stress.</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Compound Sync &amp; Resilience</h4>
+              <ul>
+                <li><strong>Synchronization Amplification:</strong> Captures pairwise co-stress energy whenever 3+ domains concurrently exceed critical stress (54+), scaled by scenario fragmentation factor λ(s).</li>
+                <li><strong>Adaptive Resilience Buffer (R):</strong> Institutional governance, clean energy &amp; clean cooking adoption, wastewater/pollution controls, and fiscal headroom dampen cascade transmission.</li>
+                <li><strong>Empirical Anchors:</strong> Historical period (2000–2025) integrates UN WPP 2024 demographics, WHO/IHME GBD PM2.5 &amp; HAP estimates, Yale EPI water/pollution metrics, ND-GAIN, INFORM Risk Index, IPCC AR6 CMIP6 sensitivities, and 2008/2020 global shock pulses. Post-2025 values represent scenario projections.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="shortcuts-strip">
+            <span><kbd>Space</kbd> Play / Pause</span>
+            <span><kbd>←</kbd> <kbd>→</kbd> Step Year</span>
+            <span><kbd>⌘K</kbd> Search Nation</span>
+            <span><kbd>+</kbd> / <kbd>−</kbd> / <kbd>0</kbd> Map Zoom</span>
+            <span><kbd>Esc</kbd> Reset to Global</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
